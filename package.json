@@ -1,0 +1,33 @@
+{
+  "name": "wdu-playwright-ts",
+  "version": "1.0.0",
+  "description": "Practice suite for [WebdriverUniversity](https://webdriveruniversity.com/index.html) using **Playwright Test** and **TypeScript**.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solcala/wdu-playwright-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/solcala/wdu-playwright-ts/issues"
+  },
+  "homepage": "https://github.com/solcala/wdu-playwright-ts#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^26.6.5",
+    "dotenv": "^18.0.7",
+    "eslint": "^10.12.0",
+    "eslint-plugin-playwright": "^2.12.1",
+    "typescript": "^7.0.2"
+  }
+}
