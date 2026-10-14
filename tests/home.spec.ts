@@ -1,18 +1,16 @@
-import { test, expect } from '@playwright/test';
-import { BasePage } from '@/pages/base_page';
+import { test, expect } from '@/fixtures/base-test';
 
 test.describe('Home Page', () => {
-  test('navigate to home page', { tag: ['@smoke', '@regression'] }, async ({ page }) => {
+  test('navigate to home page', { tag: ['@smoke', '@regression'] }, async ({ homePage }) => {
 
-    const basePage = new BasePage(page);
-    await basePage.navigateTo();
+    await homePage.navigateTo();
 
     await test.step('verify title', async () => {
-      await expect(basePage.page).toHaveTitle(/Playwright/);
+      await expect(homePage.page).toHaveTitle(/WebDriverUniversity/);
     });
 
     await test.step('verify heading', async () => {
-      await expect(basePage.heading).toBeVisible();
+      await expect(homePage.heading).toBeVisible();
     });
   });
 });
