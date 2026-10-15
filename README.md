@@ -2,6 +2,8 @@
 
 [![Playwright Tests](https://github.com/solcala/wdu-playwright-ts/actions/workflows/playwright.yml/badge.svg)](https://github.com/solcala/wdu-playwright-ts/actions/workflows/playwright.yml)
 
+**[Latest test report](https://solcala.github.io/wdu-playwright-ts/)**: the Playwright HTML report from the most recent run on `main`, published on GitHub Pages.
+
 Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://webdriveruniversity.com/index.html), built with **Playwright Test** and **TypeScript**, and grown phase by phase into an **AI-native QA** setup. AI agents explore pages, draft test plans, triage failures, and heal broken locators. Every agent change goes through human review and CI before it is merged.
 
 ## What this project demonstrates
@@ -20,7 +22,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 - ESLint with `eslint-plugin-playwright`, strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
 - GitHub Actions running inside the official Playwright Docker image, pinned to the package version
 - Same image for local Docker runs, so a CI failure reproduces locally
-- HTML report, traces, screenshots, and video kept as CI artifacts
+- HTML report, traces, screenshots, and video kept as CI artifacts, and the latest `main` report published on GitHub Pages
+- Protected `main`: changes only through squash-merged pull requests with passing CI and resolved review conversations
 
 ### AI-native QA (in progress)
 
@@ -35,10 +38,11 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 | Area | Status |
 | --- | --- |
-| Playwright + TypeScript skeleton | Done |
-| Home page smoke test | Done |
-| Contact Us challenge | Done |
-| CI on GitHub Actions (Playwright Docker image) | In review |
+| Playwright + TypeScript skeleton | ✅ Done |
+| Home page smoke test | ✅ Done |
+| Contact Us challenge | ✅ Done |
+| CI on GitHub Actions (Playwright Docker image) | ✅ Done |
+| Published test report (GitHub Pages) | In review |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | Pending |
 | Remaining challenges | Pending (see coverage) |
 | AI track: failure artifacts, triage, guarded healing, evals | Pending |
@@ -49,8 +53,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
-| Home page | `tests/home.spec.ts` | 1 | Done |
-| Contact Us | `tests/contact-us.spec.ts` | 15 | Done |
+| Home page | `tests/home.spec.ts` | 1 | ✅ Done |
+| Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | — | Pending |
 | Button Clicks | `tests/button-clicks.spec.ts` | — | Pending |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
@@ -159,12 +163,16 @@ Steps:
 4. `npx playwright test`, with the `html`, `github`, and `list` reporters
 5. Upload `playwright-report/` as the `playwright-report` artifact, kept 30 days, even when tests fail
 6. Write the image, base URL, and report location to the job summary
+7. On pushes to `main` only: a second job, `deploy-report`, publishes the HTML report to [GitHub Pages](https://solcala.github.io/wdu-playwright-ts/). It publishes even when tests fail, so the public report always shows the latest `main` result. On pull requests this job is skipped
 
 On CI: one worker, two retries, and `test.only` fails the run.
 
-To read a CI report: open the run, download the `playwright-report` artifact, unzip it, then run `npx playwright show-report playwright-report`.
+To read a CI report:
 
-There is no deployment step. This repo is a test suite, so CI is the whole pipeline.
+- Latest `main` run: open the [published report](https://solcala.github.io/wdu-playwright-ts/).
+- Any run, including pull requests: open the run, download the `playwright-report` artifact, unzip it, then run `npx playwright show-report playwright-report`.
+
+The only thing deployed is the test report. This repo is a test suite, so there is no application to release.
 
 ## How this project is built
 
