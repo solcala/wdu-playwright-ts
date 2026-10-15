@@ -11,9 +11,15 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: process.env.CI
+    ? [
+        ['html', { open: 'never' }],
+        ['github'],
+        ['list'],
+      ]
+    : 'html',
   use: {
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.BASE_URL ?? 'https://webdriveruniversity.com',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
