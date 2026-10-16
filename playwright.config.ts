@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { SITE_STATE_PATH } from './support/bot-wall';
 
 dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
 
@@ -27,8 +28,15 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
+      name: 'setup',
+      testMatch: '**/bot-wall.setup.ts',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'chromium',
+      dependencies: ['setup'],
+      testIgnore: '**/*.setup.ts',
+      use: { ...devices['Desktop Chrome'], storageState: SITE_STATE_PATH },
     },
   ],
 });

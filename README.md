@@ -49,7 +49,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-16 tests in 2 spec files, Chromium only.
+16 challenge tests in 2 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
@@ -81,7 +81,8 @@ pages/                  Page objects (one class per file, kebab-case file names)
   home-page.ts
   contact-us-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
-tests/                  *.spec.ts files
+support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
+tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
@@ -166,6 +167,12 @@ Steps:
 7. On pushes to `main` only: a second job, `deploy-report`, publishes the HTML report to [GitHub Pages](https://solcala.github.io/wdu-playwright-ts/). It publishes even when tests fail, so the public report always shows the latest `main` result. On pull requests this job is skipped
 
 On CI: one worker, two retries, and `test.only` fails the run.
+
+The site runs an automatic browser check (SiteGround's "Robot Challenge Screen") on browsers without its cookie. A real browser passes it on its own in a few seconds. The setup test (`tests/bot-wall.setup.ts`) opens the site once, waits until the real page has loaded, and saves the browser state to `playwright/.auth/site.json` (gitignored). Every other test starts with that state, so the site does not challenge it again. Nothing about the check is skipped or faked; the suite behaves like one returning visitor instead of a new visitor per test.
+
+If the check does not pass after one reload, the setup test fails and the rest of the suite does not run. Any other failure still runs the remaining tests, so the report shows every product failure. The bot-wall message says the site blocked CI. It is not a product failure.
+
+Later, for a large suite: if that same bot-wall failure starts repeating after the run has begun (for example five in a row), abort the rest and review. One wall failure stays a single result. Waiting for thousands of tests to fail the same way does not add information. That abort must key off the bot-wall error only. `maxFailures` would also stop the run on a normal assertion failure and hide the rest of the report.
 
 To read a CI report:
 
