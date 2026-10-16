@@ -2,6 +2,8 @@
 
 [![Playwright Tests](https://github.com/solcala/wdu-playwright-ts/actions/workflows/playwright.yml/badge.svg)](https://github.com/solcala/wdu-playwright-ts/actions/workflows/playwright.yml)
 
+**[Latest test report](https://solcala.github.io/wdu-playwright-ts/)**: the Playwright HTML report from the most recent run on `main`, published on GitHub Pages.
+
 Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://webdriveruniversity.com/index.html), built with **Playwright Test** and **TypeScript**, and grown phase by phase into an **AI-native QA** setup. AI agents explore pages, draft test plans, triage failures, and heal broken locators. Every agent change goes through human review and CI before it is merged.
 
 ## What this project demonstrates
@@ -20,7 +22,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 - ESLint with `eslint-plugin-playwright`, strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
 - GitHub Actions running inside the official Playwright Docker image, pinned to the package version
 - Same image for local Docker runs, so a CI failure reproduces locally
-- HTML report, traces, screenshots, and video kept as CI artifacts
+- HTML report, traces, screenshots, and video kept as CI artifacts, and the latest `main` report published on GitHub Pages
+- Protected `main`: changes only through squash-merged pull requests with passing CI and resolved review conversations
 
 ### AI-native QA (in progress)
 
@@ -35,22 +38,23 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 | Area | Status |
 | --- | --- |
-| Playwright + TypeScript skeleton | Done |
-| Home page smoke test | Done |
-| Contact Us challenge | Done |
-| CI on GitHub Actions (Playwright Docker image) | In review |
+| Playwright + TypeScript skeleton | ✅ Done |
+| Home page smoke test | ✅ Done |
+| Contact Us challenge | ✅ Done |
+| CI on GitHub Actions (Playwright Docker image) | ✅ Done |
+| Published test report (GitHub Pages) | In review |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | Pending |
 | Remaining challenges | Pending (see coverage) |
 | AI track: failure artifacts, triage, guarded healing, evals | Pending |
 
 ## Coverage
 
-16 tests in 2 spec files, Chromium only.
+16 challenge tests in 2 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
-| Home page | `tests/home.spec.ts` | 1 | Done |
-| Contact Us | `tests/contact-us.spec.ts` | 15 | Done |
+| Home page | `tests/home.spec.ts` | 1 | ✅ Done |
+| Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | — | Pending |
 | Button Clicks | `tests/button-clicks.spec.ts` | — | Pending |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
@@ -77,7 +81,8 @@ pages/                  Page objects (one class per file, kebab-case file names)
   home-page.ts
   contact-us-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
-tests/                  *.spec.ts files
+support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
+tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
@@ -159,12 +164,22 @@ Steps:
 4. `npx playwright test`, with the `html`, `github`, and `list` reporters
 5. Upload `playwright-report/` as the `playwright-report` artifact, kept 30 days, even when tests fail
 6. Write the image, base URL, and report location to the job summary
+7. On pushes to `main` only: a second job, `deploy-report`, publishes the HTML report to [GitHub Pages](https://solcala.github.io/wdu-playwright-ts/). It publishes even when tests fail, so the public report always shows the latest `main` result. On pull requests this job is skipped
 
 On CI: one worker, two retries, and `test.only` fails the run.
 
-To read a CI report: open the run, download the `playwright-report` artifact, unzip it, then run `npx playwright show-report playwright-report`.
+The site runs an automatic browser check (SiteGround's "Robot Challenge Screen") on browsers without its cookie. A real browser passes it on its own in a few seconds. The setup test (`tests/bot-wall.setup.ts`) opens the site once, waits until the real page has loaded, and saves the browser state to `playwright/.auth/site.json` (gitignored). Every other test starts with that state, so the site does not challenge it again. Nothing about the check is skipped or faked; the suite behaves like one returning visitor instead of a new visitor per test.
 
-There is no deployment step. This repo is a test suite, so CI is the whole pipeline.
+If the check does not pass after one reload, the setup test fails and the rest of the suite does not run. Any other failure still runs the remaining tests, so the report shows every product failure. The bot-wall message says the site blocked CI. It is not a product failure.
+
+Later, for a large suite: if that same bot-wall failure starts repeating after the run has begun (for example five in a row), abort the rest and review. One wall failure stays a single result. Waiting for thousands of tests to fail the same way does not add information. That abort must key off the bot-wall error only. `maxFailures` would also stop the run on a normal assertion failure and hide the rest of the report.
+
+To read a CI report:
+
+- Latest `main` run: open the [published report](https://solcala.github.io/wdu-playwright-ts/).
+- Any run, including pull requests: open the run, download the `playwright-report` artifact, unzip it, then run `npx playwright show-report playwright-report`.
+
+The only thing deployed is the test report. This repo is a test suite, so there is no application to release.
 
 ## How this project is built
 
