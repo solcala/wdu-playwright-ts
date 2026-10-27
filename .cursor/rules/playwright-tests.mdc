@@ -1,0 +1,56 @@
+---
+description: Playwright test, page object, fixture, and support rules for this repo
+globs: tests/**/*.ts,pages/**/*.ts,fixtures/**/*.ts,support/**/*.ts
+alwaysApply: false
+---
+
+# Playwright test code (Cursor only)
+
+Cursor-only summary with examples. Every rule lives in `AGENTS.md`; if the two differ, `AGENTS.md` wins and this file gets fixed.
+
+- `test` and `expect` only in `*.spec.ts`, `*.setup.ts`, and `fixtures/base-test.ts`.
+- Specs import `test` and `expect` from `@/fixtures/base-test`. A new page object gets a fixture there.
+- Page objects never assert. They return what the spec needs to check (`resizeComments()` returns `{ before, after }`); otherwise they return nothing.
+- Every wait names its condition. Never `waitForTimeout`. Web-first assertions already retry, so no wait goes before them.
+- Group checks with `test.step`. Plain `expect` when the test cannot continue without the check; `expect.soft` for independent checks. Tag tests `@smoke` and/or `@regression`.
+- Locators: `getByRole` with `name` → `getByLabel` / `getByPlaceholder` → `getByText` → CSS or id. No XPath.
+- Imports use `@/`, never relative paths.
+- Name a page after its title on the site: `LoginPortalPage` in `pages/login-portal-page.ts`, fixture `loginPortalPage`, spec `tests/login-portal.spec.ts`.
+- Unsure about a locator, a wait, or a shared file? Follow "When to ask" in `AGENTS.md`.
+
+## Assertions stay in the spec
+
+```ts
+// ❌ pages/contact-us-page.ts — the page object asserts
+async fillFormAndSubmit(firstName: string, lastName: string, emailAddress: string, comments: string) {
+  await this.fillForm(firstName, lastName, emailAddress, comments);
+  await this.submitButton.click();
+  await expect(this.successMessage).toBeVisible();
+}
+
+// ✅ pages/contact-us-page.ts — the real method: action only
+async fillFormAndSubmit(firstName: string, lastName: string, emailAddress: string, comments: string) {
+  await this.fillForm(firstName, lastName, emailAddress, comments);
+  await this.submitButton.click();
+}
+
+// ✅ tests/contact-us.spec.ts — the spec asserts
+await contactUsPage.fillFormAndSubmit('John', 'Doe', 'john.doe@example.com', 'This is a test comment');
+await expect(contactUsPage.successMessage).toBeVisible(); // plain: later steps need the success page
+await expect.soft(contactUsPage.backToHomePageButton).toBeVisible(); // soft: independent check
+await expect.soft(contactUsPage.backToHomePageButton).toBeEnabled(); // soft: independent check
+```
+
+## Waits name the condition
+
+```ts
+// tests/contact-us.spec.ts — the click is fine; the fixed sleep is the problem
+// ❌ a reviewer cannot tell what this waits for
+await contactUsPage.submitButton.click();
+await contactUsPage.page.waitForTimeout(5000);
+
+// ✅ the assertion is the wait: it retries until the message is visible.
+//    Plain expect, because the next steps depend on the error being shown.
+await contactUsPage.submitButton.click();
+await expect(contactUsPage.errorMessageRequiredFields).toBeVisible();
+```
