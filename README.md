@@ -27,7 +27,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ### AI-native QA (in progress)
 
-- Repo context (`AGENTS.md`, Cursor rules) so any coding agent follows the suite's conventions
+- Repo context (`AGENTS.md`, Cursor rules) so any coding agent follows the suite's conventions (built)
 - Playwright Test Agents: the planner and generator draft tests, and a human reviews them before merge
 - Structured failure artifacts that an agent can read
 - Triage agent that classifies failures and cites evidence from the artifacts
@@ -42,8 +42,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Home page smoke test | ✅ Done |
 | Contact Us challenge | ✅ Done |
 | CI on GitHub Actions (Playwright Docker image) | ✅ Done |
-| Published test report (GitHub Pages) | In review |
-| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | Pending |
+| Published test report (GitHub Pages) | ✅ Done |
+| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | In review |
 | Remaining challenges | Pending (see coverage) |
 | AI track: failure artifacts, triage, guarded healing, evals | Pending |
 
@@ -86,6 +86,9 @@ tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
+AGENTS.md               Rules every coding agent follows in this repo
+.cursor/rules/          Cursor rule for test, page, fixture, and support files
+.cursor/mcp.json        Project MCP servers: Playwright browser and Playwright Test
 ```
 
 Imports use the `@/` alias for the repo root, for example `import { ContactUsPage } from '@/pages/contact-us-page'`.
@@ -180,6 +183,13 @@ To read a CI report:
 - Any run, including pull requests: open the run, download the `playwright-report` artifact, unzip it, then run `npx playwright show-report playwright-report`.
 
 The only thing deployed is the test report. This repo is a test suite, so there is no application to release.
+
+## Working with AI agents
+
+- Rules live in `AGENTS.md`. Any agent that opens the repo reads it: Cursor chats, cloud agents, and review bots. `.cursor/rules/playwright-tests.mdc` repeats the test rules with examples for Cursor; if the two differ, `AGENTS.md` wins.
+- `.cursor/mcp.json` adds two MCP servers: `playwright` (`@playwright/mcp`, pinned) to explore pages, and `playwright-test` (`playwright run-test-mcp-server`) for Playwright's planner, generator, and healer agents. The second ships with `@playwright/test`, so it always matches the suite's version.
+- Agents never stage, commit, or push. A human runs git, and every change goes through a pull request with passing CI.
+- Playwright's planner, generator, and healer agent definitions are not committed yet. They arrive in the AI phases with this repo's rules added.
 
 ## How this project is built
 
