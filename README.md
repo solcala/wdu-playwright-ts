@@ -41,21 +41,22 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Playwright + TypeScript skeleton | ✅ Done |
 | Home page smoke test | ✅ Done |
 | Contact Us challenge | ✅ Done |
+| Login Portal challenge | In review |
 | CI on GitHub Actions (Playwright Docker image) | ✅ Done |
 | Published test report (GitHub Pages) | ✅ Done |
-| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | In review |
+| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done |
 | Remaining challenges | Pending (see coverage) |
 | AI track: failure artifacts, triage, guarded healing, evals | Pending |
 
 ## Coverage
 
-16 challenge tests in 2 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+22 challenge tests in 3 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
 | Home page | `tests/home.spec.ts` | 1 | ✅ Done |
 | Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
-| Login Portal | `tests/login-portal.spec.ts` | — | Pending |
+| Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
 | Button Clicks | `tests/button-clicks.spec.ts` | — | Pending |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
 | Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
@@ -73,6 +74,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
+Login Portal covers: field placeholders, empty submit, valid login, a wrong password, a case-sensitive username, and an untrimmed username. Each check asserts the alert. The page stays on `index.html?` because the form submit is not cancelled. The jQuery fade is not covered, because that script never runs.
+
 ## Project layout
 
 ```text
@@ -80,6 +83,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   base-page.ts          Abstract BasePage: page, path, navigateTo()
   home-page.ts
   contact-us-page.ts
+  login-portal-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
