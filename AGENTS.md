@@ -34,6 +34,19 @@ The Husky pre-commit hook runs `npm run check`. Never suggest `--no-verify`.
 - Locator properties describe the element: `submitButton`, `emailAddressField`, `successMessage`.
 - Imports use the `@/` alias, never relative paths: `import { BasePage } from '@/pages/base-page'`.
 
+## Comments
+
+- Document a function with a block comment directly above it. First line: what it does. Then `@param` for each parameter, and `@returns` when it returns a value.
+- A comment that spans more than one line uses the same block. Do not stack `//` lines.
+
+```ts
+/**
+ * Fills out the login form with the provided user credentials.
+ * @param username - The username entered in the Username field
+ * @param password - The password entered in the Password field
+ */
+```
+
 ## Test code rules
 
 1. `test` and `expect` are called only in `*.spec.ts`, `*.setup.ts`, and `fixtures/base-test.ts`. Page objects and `support/` never import or call them; they may import types such as `Page` and `Locator`.
@@ -41,7 +54,7 @@ The Husky pre-commit hook runs `npm run check`. Never suggest `--no-verify`.
 3. Specs import `test` and `expect` from `@/fixtures/base-test`, never from `@playwright/test`.
 4. `fixtures/base-test.ts` is the only file that imports `test` and `expect` from `@playwright/test`. It extends `test` and re-exports both.
 5. A new page object gets a fixture in `fixtures/base-test.ts`. Specs use the fixture, never `new SomePage(page)`.
-6. Every wait names the condition: web-first `expect`, `waitForURL`, `waitForResponse`, `locator.waitFor()`. A reviewer should be able to name the condition from the line alone. Never `waitForTimeout`.
+6. Every wait names the condition: web-first `expect`, `waitForURL`, `waitForResponse`, `locator.waitFor()`. A reviewer should be able to name the condition from the line alone. Never `waitForTimeout`. Exception for now: `page.waitForEvent('dialog')` before a click that opens an alert. The alert is gone if nothing is listening.
 7. Group checks with `test.step`. Use plain `expect` for a check that must pass before the test can continue, and `expect.soft` for independent checks in one test.
 8. Tag tests `@smoke` and/or `@regression`.
 9. One behavior per test. Tests do not depend on each other's order or state.
