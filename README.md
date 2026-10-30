@@ -74,7 +74,27 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
-Login Portal covers: field placeholders, empty submit, valid login, a wrong password, a case-sensitive username, and an untrimmed username. Each check asserts the alert. The page stays on `index.html?` because the form submit is not cancelled. The jQuery fade is not covered, because that script never runs.
+### Login Portal
+
+Run all six tests, or only the smoke test:
+
+```bash
+npx playwright test tests/login-portal.spec.ts
+npx playwright test tests/login-portal.spec.ts --grep @smoke
+```
+
+`tests/login-portal.spec.ts` uses the `loginPortalPage` fixture. Scenarios:
+
+| Group | What it checks | Tag |
+| --- | --- | --- |
+| Form validation | Username and password placeholders are `Username` and `Password` | `@regression` |
+| Form validation | Empty submit shows the alert `validation failed` | `@regression` |
+| Happy path | `webdriver` / `webdriver123` shows the alert `validation succeeded` | `@smoke` `@regression` |
+| Negative path | `webdriver` / `wrong-password` shows the alert `validation failed` | `@regression` |
+| Edge cases | `Webdriver` fails because the check is case-sensitive | `@regression` |
+| Edge cases | `webdriver ` (trailing space) fails because the value is not trimmed | `@regression` |
+
+Each test accepts the alert, checks that text, and checks that the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
 
 ## Project layout
 
@@ -121,6 +141,7 @@ cp .env.example .env
 ```bash
 npx playwright test                              # all tests, headless
 npx playwright test tests/contact-us.spec.ts     # one spec
+npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test --grep @smoke                # smoke subset
 npx playwright test --headed                     # watch the browser
 npx playwright test --debug                      # step through with the inspector
