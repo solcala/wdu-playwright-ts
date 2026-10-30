@@ -88,13 +88,13 @@ npx playwright test tests/login-portal.spec.ts --grep @smoke
 | Group | What it checks | Tag |
 | --- | --- | --- |
 | Form validation | Username and password placeholders are `Username` and `Password` | `@regression` |
-| Form validation | Empty submit shows the alert `validation failed` | `@regression` |
-| Happy path | `webdriver` / `webdriver123` shows the alert `validation succeeded` | `@smoke` `@regression` |
-| Negative path | `webdriver` / `wrong-password` shows the alert `validation failed` | `@regression` |
-| Edge cases | `Webdriver` fails because the check is case-sensitive | `@regression` |
-| Edge cases | `webdriver ` (trailing space) fails because the value is not trimmed | `@regression` |
+| Submit | Empty submit shows the alert `validation failed` | `@regression` |
+| Submit / Happy path | `webdriver` / `webdriver123` shows the alert `validation succeeded` | `@smoke` `@regression` |
+| Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed` | `@regression` |
+| Submit / Edge cases | `Webdriver` fails because the check is case-sensitive | `@regression` |
+| Submit / Edge cases | `webdriver ` (trailing space) fails because the value is not trimmed | `@regression` |
 
-Each test accepts the alert, checks that text, and checks that the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
+The five submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
 
 ## Project layout
 

@@ -28,87 +28,86 @@ test.describe('Login Portal', () => {
       });
     });
 
+  });
+
+  test.describe('Submit', () => {
+
+    // The form GET wins, so every submit stays on the login page.
+    test.afterEach(async ({ loginPortalPage }) => {
+      await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
+    });
+
     // No `required` attributes and no field errors. An empty submit still runs `validate()`.
     test('empty submit shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
-      await test.step('accept the validation failed alert', async () => {
-        expect(await loginPortalPage.submitLogin()).toBe('validation failed');
-      });
+      const expectedMessage = 'validation failed';
 
-      await test.step('stay on the login page', async () => {
-        await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
+      await test.step(`accept the ${expectedMessage} alert`, async () => {
+        expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
       });
     });
 
-  });
+    test.describe('Happy path', () => {
 
-  test.describe('Happy path', () => {
+      // The only exact match in `validate()`.
+      test('valid credentials show validation succeeded', { tag: ['@smoke', '@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation succeeded';
 
-    // The only exact match in `validate()`.
-    test('valid credentials show validation succeeded', { tag: ['@smoke', '@regression'] }, async ({ loginPortalPage }) => {
-      await test.step('fill the matching credentials', async () => {
-        await loginPortalPage.fillCredentials('webdriver', 'webdriver123');
+        await test.step('fill the matching credentials', async () => {
+          await loginPortalPage.fillCredentials('webdriver', 'webdriver123');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
       });
 
-      await test.step('accept the validation succeeded alert', async () => {
-        expect(await loginPortalPage.submitLogin()).toBe('validation succeeded');
-      });
-
-      await test.step('stay on the login page', async () => {
-        await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
-      });
     });
 
-  });
+    test.describe('Negative path', () => {
 
-  test.describe('Negative path', () => {
+      // A wrong password still reaches `validate()` and takes the else branch.
+      test('wrong password shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation failed';
 
-    // A wrong password still reaches `validate()` and takes the else branch.
-    test('wrong password shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
-      await test.step('fill a wrong password', async () => {
-        await loginPortalPage.fillCredentials('webdriver', 'wrong-password');
+        await test.step('fill a wrong password', async () => {
+          await loginPortalPage.fillCredentials('webdriver', 'wrong-password');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
       });
 
-      await test.step('accept the validation failed alert', async () => {
-        expect(await loginPortalPage.submitLogin()).toBe('validation failed');
-      });
-
-      await test.step('stay on the login page', async () => {
-        await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
-      });
     });
 
-  });
+    test.describe('Edge cases', () => {
 
-  test.describe('Edge cases', () => {
+      // `==` is case-sensitive. `Webdriver` is not `webdriver`.
+      test('username case must match', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation failed';
 
-    // `==` is case-sensitive. `Webdriver` is not `webdriver`.
-    test('username case must match', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
-      await test.step('fill a capitalized username', async () => {
-        await loginPortalPage.fillCredentials('Webdriver', 'webdriver123');
+        await test.step('fill a capitalized username', async () => {
+          await loginPortalPage.fillCredentials('Webdriver', 'webdriver123');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
       });
 
-      await test.step('accept the validation failed alert', async () => {
-        expect(await loginPortalPage.submitLogin()).toBe('validation failed');
+      // `==` does not trim. A trailing space is a failed login.
+      test('username is not trimmed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation failed';
+
+        await test.step('fill a username with a trailing space', async () => {
+          await loginPortalPage.fillCredentials('webdriver ', 'webdriver123');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
       });
 
-      await test.step('stay on the login page', async () => {
-        await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
-      });
-    });
-
-    // `==` does not trim. A trailing space is a failed login.
-    test('username is not trimmed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
-      await test.step('fill a username with a trailing space', async () => {
-        await loginPortalPage.fillCredentials('webdriver ', 'webdriver123');
-      });
-
-      await test.step('accept the validation failed alert', async () => {
-        expect(await loginPortalPage.submitLogin()).toBe('validation failed');
-      });
-
-      await test.step('stay on the login page', async () => {
-        await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
-      });
     });
 
   });
