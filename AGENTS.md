@@ -112,7 +112,7 @@ In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to s
 
 ## Git
 
-- Agents never stage, commit, or push. The human runs git.
+- Agents do not stage, commit, or push unless the human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge.
 - The pre-commit hook runs `npm run check` on the human's commits. Agents run the same command themselves before reporting a change as done.
 - One concern per branch and pull request. `main` changes only through a squash-merged pull request with green CI.
 - Update `README.md` (status, coverage) in the same change as the code it describes.

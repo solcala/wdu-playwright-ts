@@ -217,7 +217,7 @@ The only thing deployed is the test report. This repo is a test suite, so there 
 - Rules live in `AGENTS.md`. Any agent that opens the repo reads it: Cursor chats, cloud agents, and review bots. `.cursor/rules/playwright-tests.mdc` repeats the test rules with examples for Cursor; if the two differ, `AGENTS.md` wins.
 - Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, Prettier formats the file when it is Markdown. When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
 - `.cursor/mcp.json` adds two MCP servers: `playwright` (`@playwright/mcp`, pinned) to explore pages, and `playwright-test` (`playwright run-test-mcp-server`) for Playwright's planner, generator, and healer agents. The second ships with `@playwright/test`, so it always matches the suite's version.
-- Agents never stage, commit, or push. A human runs git, and every change goes through a pull request with passing CI.
+- Agents do not stage, commit, or push unless a human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge. Every change goes through a pull request with passing CI.
 - Playwright's planner, generator, and healer agent definitions are not committed yet. They arrive in the AI phases with this repo's rules added.
 
 ## How this project is built
