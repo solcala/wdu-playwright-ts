@@ -36,6 +36,7 @@ function runTypecheck(root) {
   return spawnSync('npm', ['--silent', 'run', 'typecheck'], {
     cwd: root,
     encoding: 'utf8',
+    shell: process.platform === 'win32',
     timeout: 120000,
   });
 }
