@@ -1,0 +1,6 @@
+# Prettier is a devDependency for the afterFileEdit hook only.
+# Ignore everything except Markdown so a repo-wide format cannot rewrite TypeScript.
+*
+!*/
+!**/*.md
+!*.md
