@@ -25,21 +25,14 @@ export class DropdownCheckboxRadioPage extends BasePage {
   constructor(page: Page) {
     super(page);
     /**
-     * These selects have no accessible name. The option text identifies each one.
-     * The three menu ids are spelled dropdowm-menu-1, dropdowm-menu-2, and dropdowm-menu-3.
+     * These selects have no accessible name, so each one uses its id.
+     * The three menus are spelled dropdowm-menu-1, dropdowm-menu-2, and dropdowm-menu-3.
+     * The fruit select id is fruit-selects.
      */
-    this.languageDropdown = page.getByRole('combobox').filter({
-      has: page.getByRole('option', { name: 'JAVA', exact: true }),
-    });
-    this.toolDropdown = page.getByRole('combobox').filter({
-      has: page.getByRole('option', { name: 'Eclipse', exact: true }),
-    });
-    this.technologyDropdown = page.getByRole('combobox').filter({
-      has: page.getByRole('option', { name: 'HTML', exact: true }),
-    });
-    this.fruitDropdown = page.getByRole('combobox').filter({
-      has: page.getByRole('option', { name: 'Grape', exact: true }),
-    });
+    this.languageDropdown = page.locator('#dropdowm-menu-1');
+    this.toolDropdown = page.locator('#dropdowm-menu-2');
+    this.technologyDropdown = page.locator('#dropdowm-menu-3');
+    this.fruitDropdown = page.locator('#fruit-selects');
     this.orangeOption = this.fruitDropdown.getByRole('option', { name: 'Orange', exact: true });
     /**
      * Each checkbox sits inside a label, so its accessible name is Option 1 through Option 4.
