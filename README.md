@@ -52,14 +52,14 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-23 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+24 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
 | Home page | `tests/home.spec.ts` | 1 | ✅ Done |
 | Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
-| Button Clicks | `tests/button-clicks.spec.ts` | 1 | In review |
+| Button Clicks | `tests/button-clicks.spec.ts` | 2 | In review |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
 | Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
 | Actions | `tests/actions.spec.ts` | — | Pending |
@@ -111,8 +111,9 @@ npx playwright test tests/button-clicks.spec.ts
 | What it checks | Tag |
 | --- | --- |
 | Clicking `CLICK ME!` opens the modal titled Congratulations! with the `click()` message, and Close hides that modal | `@smoke` `@regression` |
+| Clicking `CLICK ME!!` opens the modal titled It’s that Easy!! with the JavaScript click message, and Close hides that modal | `@smoke` |
 
-The other two controls on the page, JavaScript Click and Action Move & Click, are not covered yet.
+Action Move & Click is not covered yet.
 
 ## Project layout
 
