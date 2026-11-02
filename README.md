@@ -52,14 +52,14 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-25 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+28 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
 | Home page | `tests/home.spec.ts` | 1 | ✅ Done |
 | Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
-| Button Clicks | `tests/button-clicks.spec.ts` | 3 | In review |
+| Button Clicks | `tests/button-clicks.spec.ts` | 6 | In review |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
 | Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
 | Actions | `tests/actions.spec.ts` | — | Pending |
@@ -100,19 +100,25 @@ The five submit tests each accept the alert and check that text against a messag
 
 ### Button Clicks
 
-Run the WebElement click test:
+Run all six tests, or only the smoke tests:
 
 ```bash
 npx playwright test tests/button-clicks.spec.ts
+npx playwright test tests/button-clicks.spec.ts --grep @smoke
 ```
 
-`tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. One scenario so far:
+`tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. Scenarios:
 
 | What it checks | Tag |
 | --- | --- |
-| Clicking `CLICK ME!` opens the modal titled Congratulations! with the `click()` message, and Close hides that modal | `@smoke` `@regression` |
-| Clicking `CLICK ME!!` opens the modal titled It’s that Easy!! with the JavaScript click message, and Close hides that modal | `@smoke` |
-| Clicking `CLICK ME!!!` opens the modal titled Well done! the Action Move & Click can become very useful!, and Close hides that modal | `@smoke` |
+| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it | `@smoke` |
+| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke` |
+| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke` |
+| Before a click every modal is hidden, and a click opens only that control's modal | `@regression` |
+| The × button hides the open modal, and the same control opens it again | `@regression` |
+| A click on the overlay, outside the dialog, hides the modal | `@regression` |
+
+The three controls are spans. A normal click opens each modal. The column text asks for an XPath click, a JavaScript click, and an action move and click; the controls do not move, and a normal click is what opens them. Escape does not close a modal, and the open modal covers its control, so those two are not tests. `js/script.js` is not valid JavaScript, and Bootstrap is loaded twice. Neither of those is asserted.
 
 ## Project layout
 

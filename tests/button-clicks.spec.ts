@@ -1,13 +1,11 @@
 import { test, expect } from '@/fixtures/base-test';
 
 /**
- * The WebElement Click control is the span labeled CLICK ME!.
- * A click opens the Bootstrap modal with the title Congratulations! and the click() message.
- * js/script.js is wrapped in a script tag, so it is not valid JavaScript and its jQuery UI dialog never opens.
- * JavaScript Click is the span labeled CLICK ME!!. A normal click opens its modal.
- * The page text asks for a JavaScript click. The control is a Bootstrap toggle, so a normal click is what opens it.
- * Action Move & Click is the span labeled CLICK ME!!!. A normal click opens its modal.
- * The page text asks for an action move and click. The control does not move, and a normal click opens it.
+ * Each control is a span. A normal click opens that control's Bootstrap modal.
+ * The columns ask for an XPath click, a JavaScript click, and an action move and click.
+ * None of the controls move, and a normal click opens all three.
+ * js/script.js is wrapped in a script tag, so it never runs and its jQuery UI dialog stays hidden.
+ * Escape leaves a modal open. The open modal covers its control, so a second click never lands.
  */
 
 test.describe('Button Clicks', () => {
@@ -16,7 +14,7 @@ test.describe('Button Clicks', () => {
     await buttonClicksPage.navigateTo();
   });
 
-  test('web element click opens the congratulations modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
+  test('web element click opens the congratulations modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!', async () => {
       await buttonClicksPage.clickWebElementButton();
     });
@@ -71,6 +69,99 @@ test.describe('Button Clicks', () => {
 
     await test.step('Close hides the modal', async () => {
       await buttonClicksPage.closeActionMoveClickModal();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
+    });
+  });
+
+  test('a click opens only that modal', { tag: ['@regression'] }, async ({ buttonClicksPage }) => {
+    await test.step('every modal is hidden', async () => {
+      await expect(buttonClicksPage.webElementClickModal).toBeHidden();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeHidden();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME! opens only its modal', async () => {
+      await buttonClicksPage.clickWebElementButton();
+      await expect(buttonClicksPage.webElementClickModal).toBeVisible();
+      await expect.soft(buttonClicksPage.javaScriptClickModal).toBeHidden();
+      await expect.soft(buttonClicksPage.actionMoveClickModal).toBeHidden();
+      await buttonClicksPage.closeWebElementClickModal();
+      await expect(buttonClicksPage.webElementClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!! opens only its modal', async () => {
+      await buttonClicksPage.clickJavaScriptButton();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
+      await expect.soft(buttonClicksPage.webElementClickModal).toBeHidden();
+      await expect.soft(buttonClicksPage.actionMoveClickModal).toBeHidden();
+      await buttonClicksPage.closeJavaScriptClickModal();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!!! opens only its modal', async () => {
+      await buttonClicksPage.clickActionMoveButton();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
+      await expect.soft(buttonClicksPage.webElementClickModal).toBeHidden();
+      await expect.soft(buttonClicksPage.javaScriptClickModal).toBeHidden();
+      await buttonClicksPage.closeActionMoveClickModal();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
+    });
+  });
+
+  test('the × button hides the modal and the control opens it again', { tag: ['@regression'] }, async ({ buttonClicksPage }) => {
+    await test.step('CLICK ME!', async () => {
+      await buttonClicksPage.clickWebElementButton();
+      await expect(buttonClicksPage.webElementClickModal).toBeVisible();
+      await buttonClicksPage.dismissWebElementClickModal();
+      await expect(buttonClicksPage.webElementClickModal).toBeHidden();
+      await buttonClicksPage.clickWebElementButton();
+      await expect(buttonClicksPage.webElementClickModal).toBeVisible();
+      await buttonClicksPage.closeWebElementClickModal();
+      await expect(buttonClicksPage.webElementClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!!', async () => {
+      await buttonClicksPage.clickJavaScriptButton();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
+      await buttonClicksPage.dismissJavaScriptClickModal();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeHidden();
+      await buttonClicksPage.clickJavaScriptButton();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
+      await buttonClicksPage.closeJavaScriptClickModal();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!!!', async () => {
+      await buttonClicksPage.clickActionMoveButton();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
+      await buttonClicksPage.dismissActionMoveClickModal();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
+      await buttonClicksPage.clickActionMoveButton();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
+      await buttonClicksPage.closeActionMoveClickModal();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
+    });
+  });
+
+  test('a click outside the dialog hides the modal', { tag: ['@regression'] }, async ({ buttonClicksPage }) => {
+    await test.step('CLICK ME!', async () => {
+      await buttonClicksPage.clickWebElementButton();
+      await expect(buttonClicksPage.webElementClickModal).toBeVisible();
+      await buttonClicksPage.clickWebElementClickOverlay();
+      await expect(buttonClicksPage.webElementClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!!', async () => {
+      await buttonClicksPage.clickJavaScriptButton();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
+      await buttonClicksPage.clickJavaScriptClickOverlay();
+      await expect(buttonClicksPage.javaScriptClickModal).toBeHidden();
+    });
+
+    await test.step('CLICK ME!!!', async () => {
+      await buttonClicksPage.clickActionMoveButton();
+      await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
+      await buttonClicksPage.clickActionMoveClickOverlay();
       await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
     });
   });
