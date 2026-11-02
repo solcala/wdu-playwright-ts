@@ -116,7 +116,7 @@ In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to s
 - The pre-commit hook runs `npm run check` on the human's commits. Agents run the same command themselves before reporting a change as done.
 - One concern per branch and pull request. `main` changes only through a squash-merged pull request with green CI.
 - A rule change is never in the same pull request as a test change (see Changing these rules).
-- Update `README.md` (status, coverage) in the same change as the code it describes.
+- Update `README.md` (status, coverage, test counts) in the same pull request as the code it describes. Mark the work ✅ Done in that pull request. The merge is the approval, so `main` never shows work as "In review". Do not open a follow-up pull request only to change a status.
 
 ## Changing these rules
 
