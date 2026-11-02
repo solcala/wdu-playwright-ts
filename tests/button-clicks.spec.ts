@@ -21,7 +21,7 @@ test.describe('Button Clicks', () => {
     await test.step('modal shows the click() result', async () => {
       await expect(buttonClicksPage.webElementClickModal).toBeVisible();
       await expect.soft(buttonClicksPage.webElementClickModalTitle).toHaveText('Congratulations!');
-      await expect.soft(buttonClicksPage.webElementClickModalMessage).toHaveText(
+      await expect.soft(buttonClicksPage.webElementClickModal).toContainText(
         'Well done for successfully using the click() method!',
       );
     });

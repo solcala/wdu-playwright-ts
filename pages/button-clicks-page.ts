@@ -7,7 +7,6 @@ export class ButtonClicksPage extends BasePage {
   readonly webElementClickButton: Locator;
   readonly webElementClickModal: Locator;
   readonly webElementClickModalTitle: Locator;
-  readonly webElementClickModalMessage: Locator;
   readonly webElementClickModalCloseButton: Locator;
 
   constructor(page: Page) {
@@ -22,11 +21,7 @@ export class ButtonClicksPage extends BasePage {
      * This one stays in the page when it is hidden, so the id is the unambiguous locator.
      */
     this.webElementClickModal = page.locator('#myModalClick');
-    this.webElementClickModalTitle = this.webElementClickModal.getByRole('heading', { name: 'Congratulations!' });
-    this.webElementClickModalMessage = this.webElementClickModal.getByText(
-      'Well done for successfully using the click() method!',
-      { exact: true },
-    );
+    this.webElementClickModalTitle = this.webElementClickModal.getByRole('heading');
     this.webElementClickModalCloseButton = this.webElementClickModal.getByRole('button', { name: 'Close', exact: true });
   }
 

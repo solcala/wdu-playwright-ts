@@ -163,7 +163,7 @@ cp .env.example .env
 npx playwright test                              # all tests, headless
 npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
-npx playwright test tests/button-clicks.spec.ts   # Button Clicks (see Coverage)
+npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test --grep @smoke                # smoke subset
 npx playwright test --headed                     # watch the browser
 npx playwright test --debug                      # step through with the inspector
