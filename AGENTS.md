@@ -6,14 +6,14 @@ Owner: [@solcala](https://github.com/solcala). If a rule here seems wrong, ask t
 
 ## Commands
 
-| Command | Use |
-| --- | --- |
-| `npm run check` | Lint, typecheck, and tests. Run before saying a change is done |
-| `npm run lint` | ESLint with `eslint-plugin-playwright` |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run test` | `playwright test`, the whole suite |
-| `npx playwright test tests/<name>.spec.ts` | One spec |
-| `npx playwright test --grep @smoke` | Smoke subset |
+| Command                                    | Use                                                            |
+| ------------------------------------------ | -------------------------------------------------------------- |
+| `npm run check`                            | Lint, typecheck, and tests. Run before saying a change is done |
+| `npm run lint`                             | ESLint with `eslint-plugin-playwright`                         |
+| `npm run typecheck`                        | `tsc --noEmit`                                                 |
+| `npm run test`                             | `playwright test`, the whole suite                             |
+| `npx playwright test tests/<name>.spec.ts` | One spec                                                       |
+| `npx playwright test --grep @smoke`        | Smoke subset                                                   |
 
 After changing one spec or page object, run that spec first for fast feedback, then `npm run check` before reporting done.
 
