@@ -53,7 +53,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-44 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+45 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                   | Spec                                    | Tests | Status    |
 | --------------------------- | --------------------------------------- | ----: | --------- |
@@ -61,7 +61,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done   |
 | Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done   |
 | Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done   |
-| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    16 | In review |
+| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    17 | In review |
 | Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending   |
 | Actions                     | `tests/actions.spec.ts`                 |     — | Pending   |
 | IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending   |
@@ -123,7 +123,7 @@ The three controls are spans. A normal click opens each modal. The column text a
 
 ### Dropdown, Checkbox & Radio
 
-Run all 16 tests, or only the smoke tests:
+Run all 17 tests, or only the smoke tests:
 
 ```bash
 npx playwright test tests/dropdown-checkbox-radio.spec.ts
@@ -146,7 +146,8 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 | No color radio starts selected                                                                                         | `@regression` |
 | Selecting Orange after Yellow leaves only Orange selected                                                              | `@regression` |
 | Clicking the selected Purple radio again leaves it selected                                                            | `@regression` |
-| Lettuce can be selected, which clears Pumpkin, and Pear can be selected                                                | `@smoke`      |
+| Lettuce can be selected, which clears Pumpkin                                                                          | `@smoke`      |
+| Pear can be selected                                                                                                   | `@smoke`      |
 | Pumpkin starts selected, Lettuce does not, and Cabbage is disabled                                                     | `@regression` |
 | The fruit menu starts on Grape, and Orange is disabled                                                                 | `@regression` |
 | Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color                | `@regression` |

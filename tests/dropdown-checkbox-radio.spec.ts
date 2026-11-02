@@ -1,13 +1,8 @@
 import { test, expect } from '@/fixtures/base-test';
 
 /**
- * Native controls only. The page loads jQuery, Bootstrap, and jQuery UI, and none of them change these controls.
- * Dropdown option values are the visible labels in lower case. The three menu ids are spelled dropdowm-menu-*.
- * Checkboxes sit inside labels. Option 3 starts checked.
- * The color and vegetable radios are not labelled. The word beside each one is a text node, so the control has no accessible name.
- * No color starts selected. Pumpkin starts selected. Cabbage is disabled. The fruit dropdown starts on Grape, and Orange is disabled.
- * Not automated: clicking the word beside a radio does not select it, selectOption on the disabled Orange option waits until timeout,
- * the autofocus attribute on that option does nothing, and /Dropdown-Checkboxe-RadioButtons/index.html is a 404.
+ * Option values are the visible label in lower case.
+ * Color and vegetable captions are not labels, so those radios are found by value.
  */
 
 test.describe('Dropdown, Checkbox & Radio', () => {
@@ -217,20 +212,18 @@ test.describe('Dropdown, Checkbox & Radio', () => {
 
   test.describe('Selected and disabled', () => {
 
-    test('lettuce and pear can be selected', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await test.step('select Lettuce', async () => {
-        await dropdownCheckboxRadioPage.lettuceRadio.check();
-        await expect(dropdownCheckboxRadioPage.lettuceRadio).toBeChecked();
-        await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).not.toBeChecked();
-        await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
-      });
+    test('lettuce can be selected, which clears pumpkin', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await dropdownCheckboxRadioPage.lettuceRadio.check();
+      await expect(dropdownCheckboxRadioPage.lettuceRadio).toBeChecked();
+      await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).not.toBeChecked();
+      await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
+    });
 
-      await test.step('select Pear', async () => {
-        await dropdownCheckboxRadioPage.selectFruit('Pear');
-        await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('pear');
-        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveCount(1);
-        await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveText('Pear');
-      });
+    test('pear can be selected', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await dropdownCheckboxRadioPage.selectFruit('Pear');
+      await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('pear');
+      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveCount(1);
+      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveText('Pear');
     });
 
     // Pumpkin has checked. Cabbage has disabled.
