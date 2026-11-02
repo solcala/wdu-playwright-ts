@@ -36,43 +36,43 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Project status
 
-| Area | Status |
-| --- | --- |
-| Playwright + TypeScript skeleton | ✅ Done |
-| Home page smoke test | ✅ Done |
-| Contact Us challenge | ✅ Done |
-| Login Portal challenge | In review |
-| Button Clicks challenge | In review |
-| CI on GitHub Actions (Playwright Docker image) | ✅ Done |
-| Published test report (GitHub Pages) | ✅ Done |
-| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done |
-| Agent hooks (Markdown format, typecheck on stop) | ✅ Done |
-| Remaining challenges | Pending (see coverage) |
-| AI track: failure artifacts, triage, guarded healing, evals | Pending |
+| Area                                                         | Status                 |
+| ------------------------------------------------------------ | ---------------------- |
+| Playwright + TypeScript skeleton                             | ✅ Done                |
+| Home page smoke test                                         | ✅ Done                |
+| Contact Us challenge                                         | ✅ Done                |
+| Login Portal challenge                                       | ✅ Done                |
+| Button Clicks challenge                                      | ✅ Done                |
+| CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
+| Published test report (GitHub Pages)                         | ✅ Done                |
+| Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
+| Agent hooks (Markdown format, typecheck on stop)             | ✅ Done                |
+| Remaining challenges                                         | Pending (see coverage) |
+| AI track: failure artifacts, triage, guarded healing, evals  | Pending                |
 
 ## Coverage
 
 28 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge | Spec | Tests | Status |
-| --- | --- | ---: | --- |
-| Home page | `tests/home.spec.ts` | 1 | ✅ Done |
-| Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
-| Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
-| Button Clicks | `tests/button-clicks.spec.ts` | 6 | In review |
-| Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
-| Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
-| Actions | `tests/actions.spec.ts` | — | Pending |
-| IFrame | `tests/iframe.spec.ts` | — | Pending |
-| Ajax Loader | `tests/ajax-loader.spec.ts` | — | Pending |
-| Autocomplete | `tests/autocomplete.spec.ts` | — | Pending |
-| Datepicker | `tests/datepicker.spec.ts` | — | Pending |
-| File Upload | `tests/file-upload.spec.ts` | — | Pending |
-| To Do List | `tests/todo-list.spec.ts` | — | Pending |
-| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts` | — | Pending |
-| Data Tables | `tests/data-tables.spec.ts` | — | Pending |
-| Page Object Model | `tests/page-object-model.spec.ts` | — | Pending |
-| Scrolling | `tests/scrolling.spec.ts` | — | Pending |
+| Challenge                   | Spec                                    | Tests | Status  |
+| --------------------------- | --------------------------------------- | ----: | ------- |
+| Home page                   | `tests/home.spec.ts`                    |     1 | ✅ Done |
+| Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
+| Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
+| Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |     — | Pending |
+| Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending |
+| Actions                     | `tests/actions.spec.ts`                 |     — | Pending |
+| IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending |
+| Ajax Loader                 | `tests/ajax-loader.spec.ts`             |     — | Pending |
+| Autocomplete                | `tests/autocomplete.spec.ts`            |     — | Pending |
+| Datepicker                  | `tests/datepicker.spec.ts`              |     — | Pending |
+| File Upload                 | `tests/file-upload.spec.ts`             |     — | Pending |
+| To Do List                  | `tests/todo-list.spec.ts`               |     — | Pending |
+| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts`        |     — | Pending |
+| Data Tables                 | `tests/data-tables.spec.ts`             |     — | Pending |
+| Page Object Model           | `tests/page-object-model.spec.ts`       |     — | Pending |
+| Scrolling                   | `tests/scrolling.spec.ts`               |     — | Pending |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
@@ -87,14 +87,14 @@ npx playwright test tests/login-portal.spec.ts --grep @smoke
 
 `tests/login-portal.spec.ts` uses the `loginPortalPage` fixture. Scenarios:
 
-| Group | What it checks | Tag |
-| --- | --- | --- |
-| Form validation | Username and password placeholders are `Username` and `Password` | `@regression` |
-| Submit | Empty submit shows the alert `validation failed` | `@regression` |
-| Submit / Happy path | `webdriver` / `webdriver123` shows the alert `validation succeeded` | `@smoke` `@regression` |
-| Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed` | `@regression` |
-| Submit / Edge cases | `Webdriver` fails because the check is case-sensitive | `@regression` |
-| Submit / Edge cases | `webdriver` with a trailing space fails because the value is not trimmed | `@regression` |
+| Group                  | What it checks                                                           | Tag                    |
+| ---------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| Form validation        | Username and password placeholders are `Username` and `Password`         | `@regression`          |
+| Submit                 | Empty submit shows the alert `validation failed`                         | `@regression`          |
+| Submit / Happy path    | `webdriver` / `webdriver123` shows the alert `validation succeeded`      | `@smoke` `@regression` |
+| Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed`       | `@regression`          |
+| Submit / Edge cases    | `Webdriver` fails because the check is case-sensitive                    | `@regression`          |
+| Submit / Edge cases    | `webdriver` with a trailing space fails because the value is not trimmed | `@regression`          |
 
 The five submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
 
@@ -109,14 +109,14 @@ npx playwright test tests/button-clicks.spec.ts --grep @smoke
 
 `tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. Scenarios:
 
-| What it checks | Tag |
-| --- | --- |
-| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it | `@smoke` |
-| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke` |
-| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke` |
-| Before a click every modal is hidden, and a click opens only that control's modal | `@regression` |
-| The × button hides the open modal, and the same control opens it again | `@regression` |
-| A click on the overlay, outside the dialog, hides the modal | `@regression` |
+| What it checks                                                                                            | Tag           |
+| --------------------------------------------------------------------------------------------------------- | ------------- |
+| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it         | `@smoke`      |
+| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke`      |
+| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke`      |
+| Before a click every modal is hidden, and a click opens only that control's modal                         | `@regression` |
+| The × button hides the open modal, and the same control opens it again                                    | `@regression` |
+| A click on the overlay, outside the dialog, hides the modal                                               | `@regression` |
 
 The three controls are spans. A normal click opens each modal. The column text asks for an XPath click, a JavaScript click, and an action move and click; the controls do not move, and a normal click is what opens them. Escape does not close a modal, and the open modal covers its control, so those two are not tests. `js/script.js` is not valid JavaScript, and Bootstrap is loaded twice. Neither of those is asserted.
 
@@ -179,12 +179,12 @@ npx playwright show-report                       # open the last HTML report
 
 ### Checks
 
-| Script | What it runs |
-| --- | --- |
-| `npm run lint` | ESLint, including `eslint-plugin-playwright` |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run test` | `playwright test` |
-| `npm run check` | All three, in that order |
+| Script              | What it runs                                 |
+| ------------------- | -------------------------------------------- |
+| `npm run lint`      | ESLint, including `eslint-plugin-playwright` |
+| `npm run typecheck` | `tsc --noEmit`                               |
+| `npm run test`      | `playwright test`                            |
+| `npm run check`     | All three, in that order                     |
 
 The pre-commit hook runs `npm run check` and blocks the commit if it fails.
 
