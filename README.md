@@ -12,7 +12,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 - Page Object Model with an abstract `BasePage`, and thin specs that read like test cases
 - Page objects injected through Playwright fixtures (`test.extend`), not built by hand in each test
-- Locators by role, label, and placeholder first; CSS only when nothing else is unambiguous
+- Locators in order: role with a name, label, placeholder, text, test id when the app has them, a stable unique id, CSS, then XPath only as a last resort
 - No fixed sleeps: only Playwright's auto-waiting and web-first assertions
 - Negative paths, edge cases, keyboard flow, and accessible-name checks, not only the happy path
 - Tags (`@smoke`, `@regression`) for running a subset
