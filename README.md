@@ -42,6 +42,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Home page smoke test | ✅ Done |
 | Contact Us challenge | ✅ Done |
 | Login Portal challenge | In review |
+| Button Clicks challenge | In review |
 | CI on GitHub Actions (Playwright Docker image) | ✅ Done |
 | Published test report (GitHub Pages) | ✅ Done |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done |
@@ -51,14 +52,14 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-22 challenge tests in 3 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+28 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
 | Home page | `tests/home.spec.ts` | 1 | ✅ Done |
 | Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
-| Button Clicks | `tests/button-clicks.spec.ts` | — | Pending |
+| Button Clicks | `tests/button-clicks.spec.ts` | 6 | In review |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
 | Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
 | Actions | `tests/actions.spec.ts` | — | Pending |
@@ -93,9 +94,31 @@ npx playwright test tests/login-portal.spec.ts --grep @smoke
 | Submit / Happy path | `webdriver` / `webdriver123` shows the alert `validation succeeded` | `@smoke` `@regression` |
 | Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed` | `@regression` |
 | Submit / Edge cases | `Webdriver` fails because the check is case-sensitive | `@regression` |
-| Submit / Edge cases | `webdriver ` (trailing space) fails because the value is not trimmed | `@regression` |
+| Submit / Edge cases | `webdriver` with a trailing space fails because the value is not trimmed | `@regression` |
 
 The five submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
+
+### Button Clicks
+
+Run all six tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/button-clicks.spec.ts
+npx playwright test tests/button-clicks.spec.ts --grep @smoke
+```
+
+`tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. Scenarios:
+
+| What it checks | Tag |
+| --- | --- |
+| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it | `@smoke` |
+| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke` |
+| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke` |
+| Before a click every modal is hidden, and a click opens only that control's modal | `@regression` |
+| The × button hides the open modal, and the same control opens it again | `@regression` |
+| A click on the overlay, outside the dialog, hides the modal | `@regression` |
+
+The three controls are spans. A normal click opens each modal. The column text asks for an XPath click, a JavaScript click, and an action move and click; the controls do not move, and a normal click is what opens them. Escape does not close a modal, and the open modal covers its control, so those two are not tests. `js/script.js` is not valid JavaScript, and Bootstrap is loaded twice. Neither of those is asserted.
 
 ## Project layout
 
@@ -105,6 +128,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   home-page.ts
   contact-us-page.ts
   login-portal-page.ts
+  button-clicks-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -145,6 +169,7 @@ cp .env.example .env
 npx playwright test                              # all tests, headless
 npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
+npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test --grep @smoke                # smoke subset
 npx playwright test --headed                     # watch the browser
 npx playwright test --debug                      # step through with the inspector
