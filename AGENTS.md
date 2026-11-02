@@ -101,9 +101,18 @@ The site runs SiteGround's "Robot Challenge Screen". `tests/bot-wall.setup.ts` p
 - Use `npm ci`, not `npm install`, in Docker and CI.
 - Before adding or bumping a GitHub Action, check its latest release. Do not copy versions from docs or memory. If you cannot check, ask the human for the version.
 
+## Agent hooks
+
+Cursor hooks in `.cursor/hooks.json` are hard guardrails. Cursor runs them on agent events and sends the event JSON on stdin. This file and `.cursor/rules/` are advice the agent can ignore. Husky is a third gate: the pre-commit hook runs `npm run check` when a human commits.
+
+- `afterFileEdit` runs `node .cursor/hooks/format-md.js`. The script reads `file_path` and, only for `.md` files, formats that file with Prettier so markdown tables line up. Other files are skipped. `.prettierignore` ignores everything except Markdown, so a repo-wide Prettier run cannot rewrite TypeScript. If formatting fails, the script logs to stderr and exits 0, so the agent is not blocked.
+- `stop` runs `node .cursor/hooks/check-ts.js` with `loop_limit` 3. It runs `npm run typecheck` (`tsc --noEmit` on the whole project, not one file). If that fails and the agent status is `completed`, the script prints a `followup_message` (`Fix these errors:` plus the typecheck output) so Cursor sends it back and the agent keeps working. If typecheck passes, or the status is `aborted` or `error`, the script prints nothing and exits 0.
+
+In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to see the configured hooks and their output.
+
 ## Git
 
-- Agents never stage, commit, or push. The human runs git.
+- Agents do not stage, commit, or push unless the human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge.
 - The pre-commit hook runs `npm run check` on the human's commits. Agents run the same command themselves before reporting a change as done.
 - One concern per branch and pull request. `main` changes only through a squash-merged pull request with green CI.
 - Update `README.md` (status, coverage) in the same change as the code it describes.

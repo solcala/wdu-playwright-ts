@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "node .cursor/hooks/format-md.js"
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/check-ts.js",
+        "loop_limit": 3
+      }
+    ]
+  }
+}
