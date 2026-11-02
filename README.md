@@ -42,7 +42,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Home page smoke test | ✅ Done |
 | Contact Us challenge | ✅ Done |
 | Login Portal challenge | In review |
-| Button Clicks challenge | In review (WebElement click only) |
+| Button Clicks challenge | In review |
 | CI on GitHub Actions (Playwright Docker image) | ✅ Done |
 | Published test report (GitHub Pages) | ✅ Done |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done |
@@ -52,14 +52,14 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-24 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+25 challenge tests in 4 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge | Spec | Tests | Status |
 | --- | --- | ---: | --- |
 | Home page | `tests/home.spec.ts` | 1 | ✅ Done |
 | Contact Us | `tests/contact-us.spec.ts` | 15 | ✅ Done |
 | Login Portal | `tests/login-portal.spec.ts` | 6 | In review |
-| Button Clicks | `tests/button-clicks.spec.ts` | 2 | In review |
+| Button Clicks | `tests/button-clicks.spec.ts` | 3 | In review |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` | — | Pending |
 | Popup & Alerts | `tests/popup-alerts.spec.ts` | — | Pending |
 | Actions | `tests/actions.spec.ts` | — | Pending |
@@ -112,8 +112,7 @@ npx playwright test tests/button-clicks.spec.ts
 | --- | --- |
 | Clicking `CLICK ME!` opens the modal titled Congratulations! with the `click()` message, and Close hides that modal | `@smoke` `@regression` |
 | Clicking `CLICK ME!!` opens the modal titled It’s that Easy!! with the JavaScript click message, and Close hides that modal | `@smoke` |
-
-Action Move & Click is not covered yet.
+| Clicking `CLICK ME!!!` opens the modal titled Well done! the Action Move & Click can become very useful!, and Close hides that modal | `@smoke` |
 
 ## Project layout
 

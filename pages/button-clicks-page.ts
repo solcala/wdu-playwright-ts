@@ -12,6 +12,10 @@ export class ButtonClicksPage extends BasePage {
   readonly javaScriptClickModal: Locator;
   readonly javaScriptClickModalTitle: Locator;
   readonly javaScriptClickModalCloseButton: Locator;
+  readonly actionMoveClickButton: Locator;
+  readonly actionMoveClickModal: Locator;
+  readonly actionMoveClickModalTitle: Locator;
+  readonly actionMoveClickModalCloseButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -21,6 +25,7 @@ export class ButtonClicksPage extends BasePage {
      */
     this.webElementClickButton = page.getByText('CLICK ME!', { exact: true });
     this.javaScriptClickButton = page.getByText('CLICK ME!!', { exact: true });
+    this.actionMoveClickButton = page.getByText('CLICK ME!!!', { exact: true });
     /**
      * All three modals use role="dialog" and none has an accessible name.
      * Each stays in the page when it is hidden, so the id is the unambiguous locator.
@@ -31,6 +36,9 @@ export class ButtonClicksPage extends BasePage {
     this.javaScriptClickModal = page.locator('#myModalJSClick');
     this.javaScriptClickModalTitle = this.javaScriptClickModal.getByRole('heading');
     this.javaScriptClickModalCloseButton = this.javaScriptClickModal.getByRole('button', { name: 'Close', exact: true });
+    this.actionMoveClickModal = page.locator('#myModalMoveClick');
+    this.actionMoveClickModalTitle = this.actionMoveClickModal.getByRole('heading');
+    this.actionMoveClickModalCloseButton = this.actionMoveClickModal.getByRole('button', { name: 'Close', exact: true });
   }
 
   /**
@@ -59,5 +67,19 @@ export class ButtonClicksPage extends BasePage {
    */
   async closeJavaScriptClickModal(): Promise<void> {
     await this.javaScriptClickModalCloseButton.click();
+  }
+
+  /**
+   * Clicks the Action Move & Click control. That opens its modal.
+   */
+  async clickActionMoveButton(): Promise<void> {
+    await this.actionMoveClickButton.click();
+  }
+
+  /**
+   * Clicks Close on the Action Move & Click modal.
+   */
+  async closeActionMoveClickModal(): Promise<void> {
+    await this.actionMoveClickModalCloseButton.click();
   }
 }
