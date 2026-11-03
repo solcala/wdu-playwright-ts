@@ -4,12 +4,14 @@ import { HomePage } from '@/pages/home-page';
 import { ContactUsPage } from '@/pages/contact-us-page';
 import { LoginPortalPage } from '@/pages/login-portal-page';
 import { ButtonClicksPage } from '@/pages/button-clicks-page';
+import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
 
 type MyFixtures = {
   homePage: HomePage;
   contactUsPage: ContactUsPage;
   loginPortalPage: LoginPortalPage;
   buttonClicksPage: ButtonClicksPage;
+  dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
 }
 
 export const test = base.extend<MyFixtures>({
@@ -29,6 +31,10 @@ export const test = base.extend<MyFixtures>({
   buttonClicksPage: async ({ page }, use) => {
     const buttonClicksPage = new ButtonClicksPage(page);
     await use(buttonClicksPage);
+  },
+  dropdownCheckboxRadioPage: async ({ page }, use) => {
+    const dropdownCheckboxRadioPage = new DropdownCheckboxRadioPage(page);
+    await use(dropdownCheckboxRadioPage);
   },
 
 })
