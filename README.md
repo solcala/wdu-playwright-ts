@@ -19,7 +19,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ### Quality gates (built)
 
-- ESLint with `eslint-plugin-playwright`, strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
+- ESLint with `eslint-plugin-playwright`, then Prettier (`prettier --check`), strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
 - GitHub Actions running inside the official Playwright Docker image, pinned to the package version
 - Same image for local Docker runs, so a CI failure reproduces locally
 - HTML report, traces, screenshots, and video kept as CI artifacts, and the latest `main` report published on GitHub Pages
@@ -181,8 +181,8 @@ playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
 .cursor/rules/          Cursor rule for test, page, fixture, and support files
-.cursor/hooks.json      Agent hooks: format Markdown after an edit; typecheck when the agent stops
-.cursor/hooks/          format-md.js and check-ts.js
+.cursor/hooks.json      Agent hooks: format Markdown, TypeScript, and ES modules after an edit; typecheck when the agent stops
+.cursor/hooks/          format-file.js and check-ts.js
 .cursor/mcp.json        Project MCP servers: Playwright browser and Playwright Test
 ```
 
@@ -224,12 +224,12 @@ npx playwright show-report                       # open the last HTML report
 
 ### Checks
 
-| Script              | What it runs                                 |
-| ------------------- | -------------------------------------------- |
-| `npm run lint`      | ESLint, including `eslint-plugin-playwright` |
-| `npm run typecheck` | `tsc --noEmit`                               |
-| `npm run test`      | `playwright test`                            |
-| `npm run check`     | All three, in that order                     |
+| Script              | What it runs                  |
+| ------------------- | ----------------------------- |
+| `npm run lint`      | ESLint, then prettier --check |
+| `npm run typecheck` | `tsc --noEmit`                |
+| `npm run test`      | `playwright test`             |
+| `npm run check`     | All three, in that order      |
 
 The pre-commit hook runs `npm run check` and blocks the commit if it fails.
 
@@ -285,7 +285,7 @@ The only thing deployed is the test report. This repo is a test suite, so there 
 ## Working with AI agents
 
 - Rules live in `AGENTS.md`. Any agent that opens the repo reads it: Cursor chats, cloud agents, and review bots. `.cursor/rules/playwright-tests.mdc` repeats the test rules with examples for Cursor; if the two differ, `AGENTS.md` wins.
-- Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, Prettier formats the file when it is Markdown. When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
+- Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, `node .cursor/hooks/format-file.js` formats `.md`, `.ts`, and `.mjs` files with Prettier, which infers the parser from the path, and skips paths in `.prettierignore` (`node_modules/`, `playwright-report/`, `test-results/`, `blob-report/`, `playwright/.auth/`, `package-lock.json`). When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
 - `.cursor/mcp.json` adds two MCP servers: `playwright` (`@playwright/mcp`, pinned) to explore pages, and `playwright-test` (`playwright run-test-mcp-server`) for Playwright's planner, generator, and healer agents. The second ships with `@playwright/test`, so it always matches the suite's version.
 - How an agent works depends on whether a human is in the conversation. Interactive (a chat in the IDE): edit locally, and do not stage, commit, push, or open a pull request unless the human asks. Autonomous (a cloud agent, background agent, or automation with no human in the conversation): create a branch from `main`, commit, push, and open the pull request, as a draft when a question is still open. Agents never merge. Every change goes through a pull request with passing CI.
 - Playwright's planner, generator, and healer agent definitions are not committed yet. They arrive in the AI phases with this repo's rules added.

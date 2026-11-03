@@ -9,7 +9,8 @@ Owner: [@solcala](https://github.com/solcala). If a rule here seems wrong, propo
 | Command                                    | Use                                                            |
 | ------------------------------------------ | -------------------------------------------------------------- |
 | `npm run check`                            | Lint, typecheck, and tests. Run before saying a change is done |
-| `npm run lint`                             | ESLint with `eslint-plugin-playwright`                         |
+| `npm run lint`                             | ESLint, then prettier --check                                  |
+| `npm run format`                           | Format the repo with Prettier (`prettier --write .`)           |
 | `npm run typecheck`                        | `tsc --noEmit`                                                 |
 | `npm run test`                             | `playwright test`, the whole suite                             |
 | `npx playwright test tests/<name>.spec.ts` | One spec                                                       |
@@ -105,7 +106,7 @@ The site runs SiteGround's "Robot Challenge Screen". `tests/bot-wall.setup.ts` p
 
 Cursor hooks in `.cursor/hooks.json` are hard guardrails. Cursor runs them on agent events and sends the event JSON on stdin. This file and `.cursor/rules/` are advice the agent can ignore. Husky is a third gate: the pre-commit hook runs `npm run check` when a human commits.
 
-- `afterFileEdit` runs `node .cursor/hooks/format-md.js`. The script reads `file_path` and, only for `.md` files, formats that file with Prettier so markdown tables line up. Other files are skipped. `.prettierignore` ignores everything except Markdown, so a repo-wide Prettier run cannot rewrite TypeScript. If formatting fails, the script logs to stderr and exits 0, so the agent is not blocked.
+- `afterFileEdit` runs `node .cursor/hooks/format-file.js`. The script reads `file_path` and formats `.md`, `.ts`, and `.mjs` files with Prettier, which infers the parser from the path. It skips a file `.prettierignore` excludes: `node_modules/`, `playwright-report/`, `test-results/`, `blob-report/`, `playwright/.auth/`, and `package-lock.json`. Other files are skipped. If formatting fails, the script logs to stderr and exits 0, so the agent is not blocked.
 - `stop` runs `node .cursor/hooks/check-ts.js` with `loop_limit` 3. It runs `npm run typecheck` (`tsc --noEmit` on the whole project, not one file). If that fails and the agent status is `completed`, the script prints a `followup_message` (`Fix these errors:` plus the typecheck output) so Cursor sends it back and the agent keeps working. If typecheck passes, or the status is `aborted` or `error`, the script prints nothing and exits 0.
 
 In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to see the configured hooks and their output.
