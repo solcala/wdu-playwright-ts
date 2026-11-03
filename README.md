@@ -53,7 +53,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-49 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+54 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                   | Spec                                    | Tests | Status  |
 | --------------------------- | --------------------------------------- | ----: | ------- |
@@ -61,7 +61,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
 | Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
 | Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
-| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    21 | ✅ Done |
+| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
 | Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending |
 | Actions                     | `tests/actions.spec.ts`                 |     — | Pending |
 | IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending |
@@ -123,7 +123,7 @@ The three controls are spans. A normal click opens each modal. The column text a
 
 ### Dropdown, Checkbox & Radio
 
-Run all 21 tests, or only the smoke tests:
+Run all 26 tests, or only the smoke tests:
 
 ```bash
 npx playwright test tests/dropdown-checkbox-radio.spec.ts
@@ -137,8 +137,11 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 | `C#` becomes the selected language, and its value is `c#`                                               | `@smoke`      |
 | `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke`      |
 | `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke`      |
-| The three menus start on `JAVA`, `Eclipse`, and `HTML`                                                  | `@regression` |
-| Changing the language menu or the fruit menu leaves the other dropdowns on their current values         | `@regression` |
+| The language menu starts on `JAVA`                                                                      | `@regression` |
+| The tool menu starts on `Eclipse`                                                                       | `@regression` |
+| The technology menu starts on `HTML`                                                                    | `@regression` |
+| Selecting `Python` leaves the tool, technology, and fruit menus unchanged                               | `@regression` |
+| Selecting `Apple` leaves the language, tool, and technology menus unchanged                             | `@regression` |
 | `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression` |
 | `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression` |
 | `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression` |
@@ -152,8 +155,10 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 | Clicking the selected Purple radio again leaves it selected                                             | `@regression` |
 | Lettuce can be selected, which clears Pumpkin                                                           | `@smoke`      |
 | Pear can be selected                                                                                    | `@smoke`      |
-| Pumpkin starts selected, Lettuce does not, and Cabbage is disabled                                      | `@regression` |
-| The fruit menu starts on Grape, and Orange is disabled                                                  | `@regression` |
+| Pumpkin starts selected, and Lettuce does not                                                           | `@regression` |
+| Cabbage is disabled and not selected                                                                    | `@regression` |
+| The fruit menu starts on Grape                                                                          | `@regression` |
+| Orange is disabled                                                                                      | `@regression` |
 | Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression` |
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.

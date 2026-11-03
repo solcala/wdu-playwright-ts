@@ -33,67 +33,78 @@ test.describe('Dropdown, Checkbox & Radio', () => {
     });
 
     // None of these selects sets selected, so the first option is showing.
-    test('dropdowns start on their first option', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await test.step('languages start on JAVA', async () => {
-        await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('java');
-        await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveText('JAVA');
-      });
-
-      await test.step('tools start on Eclipse', async () => {
-        await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
-        await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveText('Eclipse');
-      });
-
-      await test.step('technologies start on HTML', async () => {
-        await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
-        await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveText('HTML');
-      });
+    test('the language menu starts on JAVA', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('java');
+      await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveText('JAVA');
     });
 
-    test('selecting one dropdown leaves the others unchanged', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await test.step('Python leaves the other menus', async () => {
-        await dropdownCheckboxRadioPage.selectLanguage('Python');
-        await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('python');
-        await expect.soft(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
-        await expect.soft(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
-        await expect.soft(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('grape');
-      });
+    test('the tool menu starts on Eclipse', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
+      await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveText('Eclipse');
+    });
 
-      await test.step('Apple leaves the language menu', async () => {
-        await dropdownCheckboxRadioPage.selectFruit('Apple');
-        await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('apple');
-        await expect.soft(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('python');
-        await expect.soft(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
-        await expect.soft(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
-      });
+    test('the technology menu starts on HTML', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
+      await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveText('HTML');
+    });
+
+    test('selecting Python leaves the other menus unchanged', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await dropdownCheckboxRadioPage.selectLanguage('Python');
+      await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('python');
+      await expect.soft(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
+      await expect.soft(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
+      await expect.soft(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('grape');
+    });
+
+    test('selecting Apple leaves the other menus unchanged', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await dropdownCheckboxRadioPage.selectFruit('Apple');
+      await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('apple');
+      await expect.soft(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('java');
+      await expect.soft(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('eclipse');
+      await expect.soft(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('html');
     });
 
     // Each menu is a single select. The second choice replaces the first.
     test('SQL replaces Python', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await dropdownCheckboxRadioPage.selectLanguage('Python');
-      await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('python');
-      await dropdownCheckboxRadioPage.selectLanguage('SQL');
-      await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('sql');
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveCount(1);
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveText('SQL');
+      await test.step('select Python', async () => {
+        await dropdownCheckboxRadioPage.selectLanguage('Python');
+        await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('python');
+      });
+
+      await test.step('select SQL instead', async () => {
+        await dropdownCheckboxRadioPage.selectLanguage('SQL');
+        await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('sql');
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveCount(1);
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.languageDropdown)).toHaveText('SQL');
+      });
     });
 
     test('JUnit replaces Maven', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await dropdownCheckboxRadioPage.selectTool('Maven');
-      await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('maven');
-      await dropdownCheckboxRadioPage.selectTool('JUnit');
-      await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('junit');
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveCount(1);
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveText('JUnit');
+      await test.step('select Maven', async () => {
+        await dropdownCheckboxRadioPage.selectTool('Maven');
+        await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('maven');
+      });
+
+      await test.step('select JUnit instead', async () => {
+        await dropdownCheckboxRadioPage.selectTool('JUnit');
+        await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('junit');
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveCount(1);
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.toolDropdown)).toHaveText('JUnit');
+      });
     });
 
     test('CSS replaces JavaScript', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
-      await dropdownCheckboxRadioPage.selectTechnology('JavaScript');
-      await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('javascript');
-      await dropdownCheckboxRadioPage.selectTechnology('CSS');
-      await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('css');
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveCount(1);
-      await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveText('CSS');
+      await test.step('select JavaScript', async () => {
+        await dropdownCheckboxRadioPage.selectTechnology('JavaScript');
+        await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('javascript');
+      });
+
+      await test.step('select CSS instead', async () => {
+        await dropdownCheckboxRadioPage.selectTechnology('CSS');
+        await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('css');
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveCount(1);
+        await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.technologyDropdown)).toHaveText('CSS');
+      });
     });
 
   });
@@ -222,21 +233,29 @@ test.describe('Dropdown, Checkbox & Radio', () => {
       await expect(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveText('Pear');
     });
 
-    // Pumpkin has checked. Cabbage has disabled.
-    test('pumpkin starts selected and cabbage is disabled', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+    // Pumpkin has checked. Lettuce does not.
+    test('pumpkin starts selected', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.pumpkinRadio).toBeChecked();
+      await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).toBeEnabled();
       await expect.soft(dropdownCheckboxRadioPage.lettuceRadio).toBeEnabled();
       await expect.soft(dropdownCheckboxRadioPage.lettuceRadio).not.toBeChecked();
-      await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).toBeDisabled();
-      await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
-      await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).toBeEnabled();
-      await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).toBeChecked();
     });
 
-    // Grape has selected, so Apple is not the default. Orange is disabled.
-    test('grape starts selected and orange is disabled', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+    // Cabbage has disabled.
+    test('cabbage is disabled', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.cabbageRadio).toBeDisabled();
+      await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
+    });
+
+    // Grape has selected, so Apple is not the default.
+    test('the fruit menu starts on Grape', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('grape');
       await expect.soft(dropdownCheckboxRadioPage.selectedOption(dropdownCheckboxRadioPage.fruitDropdown)).toHaveText('Grape');
-      await expect.soft(dropdownCheckboxRadioPage.orangeOption).toBeDisabled();
+    });
+
+    // Orange has disabled.
+    test('orange is disabled', { tag: ['@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
+      await expect(dropdownCheckboxRadioPage.orangeOption).toBeDisabled();
     });
 
     // color and vegetable are different name groups.
