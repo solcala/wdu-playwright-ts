@@ -77,7 +77,7 @@ Stop and ask the human before continuing if any of these apply:
 How to ask:
 
 - Give the question, the options you see, and your recommendation. Do not guess and continue.
-- If no human can answer (CI, cloud, or review agents), stop and report the question instead of guessing.
+- If no human can answer, follow How agents work: an autonomous agent opens a draft pull request with the question; a CI or review agent reports the question and stops.
 
 ## Site browser check (bot wall)
 
@@ -110,9 +110,17 @@ Cursor hooks in `.cursor/hooks.json` are hard guardrails. Cursor runs them on ag
 
 In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to see the configured hooks and their output.
 
+## How agents work
+
+How an agent works depends on whether a human is in the conversation.
+
+- Interactive: a chat in the IDE with a human present. Edit files locally. Do not stage, commit, push, or open a pull request unless the human asks. Ask questions in the chat (see When to ask). Propose rule changes in the chat. The human decides whether they become a rules pull request.
+- Autonomous: a cloud agent, background agent, or automation working toward a goal with no human in the conversation. Create a branch from `main`, commit, push, and open the pull request yourself. Open a separate rules pull request when the work shows a rule change is needed (see Changing these rules). Run `npm run check` before opening any pull request.
+- Questions in autonomous work: when a question from When to ask comes up, open the pull request as a draft. Put the question, the options, and your recommendation at the top of the description. Do not guess, and do not mark it ready for review until a human answers.
+- In every mode: agents never merge, and humans review and merge every pull request. If the mode is unclear, work in interactive mode.
+
 ## Git
 
-- Agents do not stage, commit, or push unless the human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge.
 - The pre-commit hook runs `npm run check` on the human's commits. Agents run the same command themselves before reporting a change as done.
 - One concern per branch and pull request. `main` changes only through a squash-merged pull request with green CI.
 - A rule change is never in the same pull request as a test change (see Changing these rules).
