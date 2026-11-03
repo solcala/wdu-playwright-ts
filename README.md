@@ -43,7 +43,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Contact Us challenge                                         | ✅ Done                |
 | Login Portal challenge                                       | ✅ Done                |
 | Button Clicks challenge                                      | ✅ Done                |
-| Dropdown, Checkbox & Radio challenge                         | In review              |
+| Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -53,27 +53,27 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-45 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+49 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge                   | Spec                                    | Tests | Status    |
-| --------------------------- | --------------------------------------- | ----: | --------- |
-| Home page                   | `tests/home.spec.ts`                    |     1 | ✅ Done   |
-| Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done   |
-| Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done   |
-| Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done   |
-| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    17 | In review |
-| Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending   |
-| Actions                     | `tests/actions.spec.ts`                 |     — | Pending   |
-| IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending   |
-| Ajax Loader                 | `tests/ajax-loader.spec.ts`             |     — | Pending   |
-| Autocomplete                | `tests/autocomplete.spec.ts`            |     — | Pending   |
-| Datepicker                  | `tests/datepicker.spec.ts`              |     — | Pending   |
-| File Upload                 | `tests/file-upload.spec.ts`             |     — | Pending   |
-| To Do List                  | `tests/todo-list.spec.ts`               |     — | Pending   |
-| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts`        |     — | Pending   |
-| Data Tables                 | `tests/data-tables.spec.ts`             |     — | Pending   |
-| Page Object Model           | `tests/page-object-model.spec.ts`       |     — | Pending   |
-| Scrolling                   | `tests/scrolling.spec.ts`               |     — | Pending   |
+| Challenge                   | Spec                                    | Tests | Status  |
+| --------------------------- | --------------------------------------- | ----: | ------- |
+| Home page                   | `tests/home.spec.ts`                    |     1 | ✅ Done |
+| Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
+| Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
+| Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    21 | ✅ Done |
+| Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending |
+| Actions                     | `tests/actions.spec.ts`                 |     — | Pending |
+| IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending |
+| Ajax Loader                 | `tests/ajax-loader.spec.ts`             |     — | Pending |
+| Autocomplete                | `tests/autocomplete.spec.ts`            |     — | Pending |
+| Datepicker                  | `tests/datepicker.spec.ts`              |     — | Pending |
+| File Upload                 | `tests/file-upload.spec.ts`             |     — | Pending |
+| To Do List                  | `tests/todo-list.spec.ts`               |     — | Pending |
+| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts`        |     — | Pending |
+| Data Tables                 | `tests/data-tables.spec.ts`             |     — | Pending |
+| Page Object Model           | `tests/page-object-model.spec.ts`       |     — | Pending |
+| Scrolling                   | `tests/scrolling.spec.ts`               |     — | Pending |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
@@ -123,7 +123,7 @@ The three controls are spans. A normal click opens each modal. The column text a
 
 ### Dropdown, Checkbox & Radio
 
-Run all 17 tests, or only the smoke tests:
+Run all 21 tests, or only the smoke tests:
 
 ```bash
 npx playwright test tests/dropdown-checkbox-radio.spec.ts
@@ -132,25 +132,29 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 `tests/dropdown-checkbox-radio.spec.ts` uses the `dropdownCheckboxRadioPage` fixture. The live path is `/Dropdown-Checkboxes-RadioButtons/index.html`. Scenarios:
 
-| What it checks                                                                                                         | Tag           |
-| ---------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `C#`, `TestNG`, and `JQuery` become the selected options, and each value is the label in lower case                    | `@smoke`      |
-| The three menus start on `JAVA`, `Eclipse`, and `HTML`                                                                 | `@regression` |
-| Changing the language menu or the fruit menu leaves the other dropdowns on their current values                        | `@regression` |
-| `SQL` replaces `Python`, `JUnit` replaces `Maven`, and `CSS` replaces `JavaScript`, with one option selected each time | `@regression` |
-| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked                        | `@smoke`      |
-| Option 3 starts checked and the other boxes do not                                                                     | `@regression` |
-| Option 3 can be unchecked, and the other boxes stay clear                                                              | `@regression` |
-| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                               | `@regression` |
-| Blue can be selected, and the other colors stay clear                                                                  | `@smoke`      |
-| No color radio starts selected                                                                                         | `@regression` |
-| Selecting Orange after Yellow leaves only Orange selected                                                              | `@regression` |
-| Clicking the selected Purple radio again leaves it selected                                                            | `@regression` |
-| Lettuce can be selected, which clears Pumpkin                                                                          | `@smoke`      |
-| Pear can be selected                                                                                                   | `@smoke`      |
-| Pumpkin starts selected, Lettuce does not, and Cabbage is disabled                                                     | `@regression` |
-| The fruit menu starts on Grape, and Orange is disabled                                                                 | `@regression` |
-| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color                | `@regression` |
+| What it checks                                                                                          | Tag           |
+| ------------------------------------------------------------------------------------------------------- | ------------- |
+| `C#` becomes the selected language, and its value is `c#`                                               | `@smoke`      |
+| `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke`      |
+| `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke`      |
+| The three menus start on `JAVA`, `Eclipse`, and `HTML`                                                  | `@regression` |
+| Changing the language menu or the fruit menu leaves the other dropdowns on their current values         | `@regression` |
+| `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression` |
+| `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression` |
+| `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression` |
+| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked         | `@smoke`      |
+| Option 3 starts checked and the other boxes do not                                                      | `@regression` |
+| Option 3 can be unchecked, and the other boxes stay clear                                               | `@regression` |
+| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                | `@regression` |
+| Blue can be selected, and the other colors stay clear                                                   | `@smoke`      |
+| No color radio starts selected                                                                          | `@regression` |
+| Selecting Orange after Yellow leaves only Orange selected                                               | `@regression` |
+| Clicking the selected Purple radio again leaves it selected                                             | `@regression` |
+| Lettuce can be selected, which clears Pumpkin                                                           | `@smoke`      |
+| Pear can be selected                                                                                    | `@smoke`      |
+| Pumpkin starts selected, Lettuce does not, and Cabbage is disabled                                      | `@regression` |
+| The fruit menu starts on Grape, and Orange is disabled                                                  | `@regression` |
+| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression` |
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
 
