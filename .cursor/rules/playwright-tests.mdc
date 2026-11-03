@@ -19,9 +19,9 @@ Cursor-only summary with examples. Every rule lives in `AGENTS.md`; if the two d
 - Name a page after its title on the site: `LoginPortalPage` in `pages/login-portal-page.ts`, fixture `loginPortalPage`, spec `tests/login-portal.spec.ts`.
 - Comment a function with a `/** */` block: what it does, then `@param` for each parameter and `@returns` when it returns a value. A comment longer than one line uses that block too, not stacked `//` lines.
 - Unsure about a locator, a wait, or a shared file? Follow "When to ask" in `AGENTS.md`.
-- Rule changes go in their own pull request, never with a test, page-object, or config change.
+- Rule changes go in their own pull request, never with a test, page-object, or config change. An autonomous agent puts that change on a separate branch from `main`; in interactive mode, propose it in the chat.
 - Update `README.md` (status, coverage, test counts) in the same pull request as the code and mark the work ✅ Done there. The merge is the approval, so `main` never shows work as "In review". Do not open a follow-up pull request only to change a status.
-- Interactive agents ask before committing or opening a pull request. Autonomous agents open pull requests themselves, as a draft when a question is open, and never merge.
+- Interactive agents ask before committing or opening a pull request. Autonomous agents open pull requests themselves, as a draft when a question is open. CI and review agents report and stop, and never edit or open pull requests. Agents never merge.
 
 ## Assertions stay in the spec
 

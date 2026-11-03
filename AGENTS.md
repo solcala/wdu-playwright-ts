@@ -117,6 +117,7 @@ How an agent works depends on whether a human is in the conversation.
 - Interactive: a chat in the IDE with a human present. Edit files locally. Do not stage, commit, push, or open a pull request unless the human asks. Ask questions in the chat (see When to ask). Propose rule changes in the chat. The human decides whether they become a rules pull request.
 - Autonomous: a cloud agent, background agent, or automation working toward a goal with no human in the conversation. Create a branch from `main`, commit, push, and open the pull request yourself. Open a separate rules pull request when the work shows a rule change is needed (see Changing these rules). Run `npm run check` before opening any pull request.
 - Questions in autonomous work: when a question from When to ask comes up, open the pull request as a draft. Put the question, the options, and your recommendation at the top of the description. Do not guess, and do not mark it ready for review until a human answers.
+- CI and review: report and stop; never edit or open pull requests.
 - In every mode: agents never merge, and humans review and merge every pull request. If the mode is unclear, work in interactive mode.
 
 ## Git
@@ -130,7 +131,7 @@ How an agent works depends on whether a human is in the conversation.
 
 Agents may change `AGENTS.md` and `.cursor/rules/`. A rule change is its own branch and pull request, never part of a test, page-object, or config change. Humans review and merge it like any other change.
 
-- When work shows that a rule is wrong or missing, finish the work under the current rule if you can. Put the rule change on a separate branch, based on `main`.
+- When work shows that a rule is wrong or missing, finish the work under the current rule if you can. Put the rule change on a separate branch, based on `main` (autonomous; in interactive mode, propose it in the chat).
 - In the rules PR description, say what changed, why, and which page or test showed the need. Link it from the work PR under "Follow-up".
 - If the work cannot meet the current rule, say so in the work PR and wait for the rules PR to merge. Do not change the rule on the work branch.
 - Update `AGENTS.md` and `.cursor/rules/playwright-tests.mdc` together.
