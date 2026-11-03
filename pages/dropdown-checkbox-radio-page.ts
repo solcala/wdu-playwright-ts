@@ -8,7 +8,11 @@ export class DropdownCheckboxRadioPage extends BasePage {
   readonly toolDropdown: Locator;
   readonly technologyDropdown: Locator;
   readonly fruitDropdown: Locator;
-  readonly orangeOption: Locator;
+  readonly orangeFruitOption: Locator;
+  readonly selectedLanguageOption: Locator;
+  readonly selectedToolOption: Locator;
+  readonly selectedTechnologyOption: Locator;
+  readonly selectedFruitOption: Locator;
   readonly option1Checkbox: Locator;
   readonly option2Checkbox: Locator;
   readonly option3Checkbox: Locator;
@@ -33,7 +37,14 @@ export class DropdownCheckboxRadioPage extends BasePage {
     this.toolDropdown = page.locator('#dropdowm-menu-2');
     this.technologyDropdown = page.locator('#dropdowm-menu-3');
     this.fruitDropdown = page.locator('#fruit-selects');
-    this.orangeOption = this.fruitDropdown.getByRole('option', { name: 'Orange', exact: true });
+    this.orangeFruitOption = this.fruitDropdown.getByRole('option', { name: 'Orange', exact: true });
+    /**
+     * The option with the selected state in each dropdown.
+     */
+    this.selectedLanguageOption = this.languageDropdown.getByRole('option', { selected: true });
+    this.selectedToolOption = this.toolDropdown.getByRole('option', { selected: true });
+    this.selectedTechnologyOption = this.technologyDropdown.getByRole('option', { selected: true });
+    this.selectedFruitOption = this.fruitDropdown.getByRole('option', { selected: true });
     /**
      * Each checkbox sits inside a label, so its accessible name is Option 1 through Option 4.
      */
@@ -87,12 +98,4 @@ export class DropdownCheckboxRadioPage extends BasePage {
     await this.fruitDropdown.selectOption({ label });
   }
 
-  /**
-   * Returns the option that is selected in a dropdown.
-   * @param dropdown - The dropdown whose selected option is read
-   * @returns The selected option
-   */
-  selectedOption(dropdown: Locator): Locator {
-    return dropdown.getByRole('option', { selected: true });
-  }
 }
