@@ -2,7 +2,7 @@
 
 Playwright Test + TypeScript end-to-end suite for [WebdriverUniversity](https://webdriveruniversity.com). Portfolio project: code is reviewed as if a hiring manager reads it.
 
-Owner: [@solcala](https://github.com/solcala). If a rule here seems wrong, ask the owner instead of working around it. When you change a rule here, update `.cursor/rules/playwright-tests.mdc` in the same change.
+Owner: [@solcala](https://github.com/solcala). If a rule here seems wrong, propose a change (see Changing these rules) instead of working around it. When you change a rule here, update `.cursor/rules/playwright-tests.mdc` in the same change.
 
 ## Commands
 
@@ -57,11 +57,11 @@ The Husky pre-commit hook runs `npm run check`. Never suggest `--no-verify`.
 6. Every wait names the condition: web-first `expect`, `waitForURL`, `waitForResponse`, `locator.waitFor()`. A reviewer should be able to name the condition from the line alone. Never `waitForTimeout`. Exception for now: `page.waitForEvent('dialog')` before a click that opens an alert. The alert is gone if nothing is listening.
 7. Group checks with `test.step`. Use plain `expect` for a check that must pass before the test can continue, and `expect.soft` for independent checks in one test.
 8. Tag tests `@smoke` and/or `@regression`.
-9. One behavior per test. Tests do not depend on each other's order or state.
+9. One behavior per test. A behavior is one outcome and can take many steps, such as filling out a form and submitting it, or an end-to-end flow. Do not put unrelated controls or features in one test because they share a page or section. If the test name needs "and" to join two unrelated outcomes, split it. Tests do not depend on each other's order or state.
 
 ## Locators
 
-Prefer, in order: `getByRole` with `name` → `getByLabel` / `getByPlaceholder` → `getByText` → CSS or id only when nothing above is unambiguous. No XPath. Never select by generated classes or index unless the page gives no other option; say why in a comment.
+Prefer, in order: `getByRole` with `name` → `getByLabel` → `getByPlaceholder` → `getByText` → `getByTestId` when the app has test ids → a stable unique id (`#id`) when the element has no accessible name → CSS → XPath. XPath is the last resort: use it only when nothing above can find the element, and say why in a comment. An id beats a position or a content filter. Never select by a generated class or index unless the page gives no other option; say why in a comment. On a project where the team owns the app, ask developers for a `data-testid` instead of reaching for CSS or XPath. WebdriverUniversity has no test ids and cannot be changed, so the id, CSS, and XPath steps exist for this site.
 
 ## When to ask
 
@@ -77,7 +77,7 @@ Stop and ask the human before continuing if any of these apply:
 How to ask:
 
 - Give the question, the options you see, and your recommendation. Do not guess and continue.
-- If no human can answer (CI, cloud, or review agents), stop and report the question instead of guessing.
+- If no human can answer, follow How agents work: an autonomous agent opens a draft pull request with the question; a CI or review agent reports the question and stops.
 
 ## Site browser check (bot wall)
 
@@ -110,9 +110,29 @@ Cursor hooks in `.cursor/hooks.json` are hard guardrails. Cursor runs them on ag
 
 In Cursor, open Customize, then the Hooks tab, or the Hooks output channel, to see the configured hooks and their output.
 
+## How agents work
+
+How an agent works depends on whether a human is in the conversation.
+
+- Interactive: a chat in the IDE with a human present. Edit files locally. Do not stage, commit, push, or open a pull request unless the human asks. Ask questions in the chat (see When to ask). Propose rule changes in the chat. The human decides whether they become a rules pull request.
+- Autonomous: a cloud agent, background agent, or automation working toward a goal with no human in the conversation. Create a branch from `main`, commit, push, and open the pull request yourself. Open a separate rules pull request when the work shows a rule change is needed (see Changing these rules). Run `npm run check` before opening any pull request.
+- Questions in autonomous work: when a question from When to ask comes up, open the pull request as a draft. Put the question, the options, and your recommendation at the top of the description. Do not guess, and do not mark it ready for review until a human answers.
+- CI and review: report and stop; never edit or open pull requests.
+- In every mode: agents never merge, and humans review and merge every pull request. If the mode is unclear, work in interactive mode.
+
 ## Git
 
-- Agents do not stage, commit, or push unless the human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge.
 - The pre-commit hook runs `npm run check` on the human's commits. Agents run the same command themselves before reporting a change as done.
 - One concern per branch and pull request. `main` changes only through a squash-merged pull request with green CI.
-- Update `README.md` (status, coverage) in the same change as the code it describes.
+- A rule change is never in the same pull request as a test change (see Changing these rules).
+- Update `README.md` (status, coverage, test counts) in the same pull request as the code it describes. Mark the work ✅ Done in that pull request. The merge is the approval, so `main` never shows work as "In review". Do not open a follow-up pull request only to change a status.
+
+## Changing these rules
+
+Agents may change `AGENTS.md` and `.cursor/rules/`. A rule change is its own branch and pull request, never part of a test, page-object, or config change. Humans review and merge it like any other change.
+
+- When work shows that a rule is wrong or missing, finish the work under the current rule if you can. Put the rule change on a separate branch, based on `main` (autonomous; in interactive mode, propose it in the chat).
+- In the rules PR description, say what changed, why, and which page or test showed the need. Link it from the work PR under "Follow-up".
+- If the work cannot meet the current rule, say so in the work PR and wait for the rules PR to merge. Do not change the rule on the work branch.
+- Update `AGENTS.md` and `.cursor/rules/playwright-tests.mdc` together.
+- On a team project, the rule change also gets a ticket (for example, in Jira) and a team review.

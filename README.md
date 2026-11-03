@@ -12,7 +12,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 - Page Object Model with an abstract `BasePage`, and thin specs that read like test cases
 - Page objects injected through Playwright fixtures (`test.extend`), not built by hand in each test
-- Locators by role, label, and placeholder first; CSS only when nothing else is unambiguous
+- Locators in order: role with a name, label, placeholder, text, test id when the app has them, a stable unique id, CSS, then XPath only as a last resort
 - No fixed sleeps: only Playwright's auto-waiting and web-first assertions
 - Negative paths, edge cases, keyboard flow, and accessible-name checks, not only the happy path
 - Tags (`@smoke`, `@regression`) for running a subset
@@ -242,7 +242,7 @@ The only thing deployed is the test report. This repo is a test suite, so there 
 - Rules live in `AGENTS.md`. Any agent that opens the repo reads it: Cursor chats, cloud agents, and review bots. `.cursor/rules/playwright-tests.mdc` repeats the test rules with examples for Cursor; if the two differ, `AGENTS.md` wins.
 - Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, Prettier formats the file when it is Markdown. When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
 - `.cursor/mcp.json` adds two MCP servers: `playwright` (`@playwright/mcp`, pinned) to explore pages, and `playwright-test` (`playwright run-test-mcp-server`) for Playwright's planner, generator, and healer agents. The second ships with `@playwright/test`, so it always matches the suite's version.
-- Agents do not stage, commit, or push unless a human explicitly asks, for example when a cloud agent is asked to open a pull request. Humans own merges; agents never merge. Every change goes through a pull request with passing CI.
+- How an agent works depends on whether a human is in the conversation. Interactive (a chat in the IDE): edit locally, and do not stage, commit, push, or open a pull request unless the human asks. Autonomous (a cloud agent, background agent, or automation with no human in the conversation): create a branch from `main`, commit, push, and open the pull request, as a draft when a question is still open. Agents never merge. Every change goes through a pull request with passing CI.
 - Playwright's planner, generator, and healer agent definitions are not committed yet. They arrive in the AI phases with this repo's rules added.
 
 ## How this project is built
