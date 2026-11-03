@@ -6,13 +6,11 @@ import { test, expect } from '@/fixtures/base-test';
  */
 
 test.describe('Dropdown, Checkbox & Radio', () => {
-
   test.beforeEach(async ({ dropdownCheckboxRadioPage }) => {
     await dropdownCheckboxRadioPage.navigateTo();
   });
 
   test.describe('Dropdown menus', () => {
-
     test('the language menu selects C#', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.selectLanguage('C#');
       await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('c#');
@@ -109,11 +107,9 @@ test.describe('Dropdown, Checkbox & Radio', () => {
         await expect(dropdownCheckboxRadioPage.selectedTechnologyOption).toHaveText('CSS');
       });
     });
-
   });
 
   test.describe('Checkboxes', () => {
-
     test('several checkboxes can be checked', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
       await test.step('check Option 1 and Option 4', async () => {
         await dropdownCheckboxRadioPage.option1Checkbox.check();
@@ -164,11 +160,9 @@ test.describe('Dropdown, Checkbox & Radio', () => {
         await expect.soft(dropdownCheckboxRadioPage.option4Checkbox).not.toBeChecked();
       });
     });
-
   });
 
   test.describe('Radio buttons', () => {
-
     test('a color radio can be selected', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
       await test.step('select Blue', async () => {
         await dropdownCheckboxRadioPage.blueRadio.check();
@@ -217,11 +211,9 @@ test.describe('Dropdown, Checkbox & Radio', () => {
         await expect(dropdownCheckboxRadioPage.purpleRadio).toBeChecked();
       });
     });
-
   });
 
   test.describe('Selected and disabled', () => {
-
     test('lettuce can be selected, which clears pumpkin', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.lettuceRadio.check();
       await expect(dropdownCheckboxRadioPage.lettuceRadio).toBeChecked();
@@ -278,7 +270,5 @@ test.describe('Dropdown, Checkbox & Radio', () => {
         await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
       });
     });
-
   });
-
 });

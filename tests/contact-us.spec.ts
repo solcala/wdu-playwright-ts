@@ -1,22 +1,17 @@
 import { test, expect } from '@/fixtures/base-test';
 
-
 test.describe('Contact Us Page', () => {
-
   test.beforeEach(async ({ contactUsPage }) => {
     await contactUsPage.navigateTo();
   });
 
   test.describe('Core Behavior', { tag: ['@smoke'] }, () => {
-
     test('navigate to contact us page', async ({ contactUsPage }) => {
       await expect.soft(contactUsPage.heading).toBeVisible();
       await expect.soft(contactUsPage.page).toHaveURL(contactUsPage.path);
-
     });
 
     test('Validate Contact Us Page Elements', async ({ contactUsPage }) => {
-
       await test.step('validate first name field is visible and enabled', async () => {
         await expect.soft(contactUsPage.firstNameField).toBeVisible();
         await expect.soft(contactUsPage.firstNameField).toBeEnabled();
@@ -46,7 +41,6 @@ test.describe('Contact Us Page', () => {
         await expect.soft(contactUsPage.resetButton).toBeVisible();
         await expect.soft(contactUsPage.resetButton).toBeEnabled();
       });
-
     });
 
     test('Validate that a user is able to contact us', async ({ contactUsPage, homePage }) => {
@@ -73,7 +67,6 @@ test.describe('Contact Us Page', () => {
         await contactUsPage.backToHomePageButton.click();
         await expect.soft(homePage.page).toHaveURL(homePage.path);
       });
-
     });
 
     test('validate Empty submit behavior', async ({ contactUsPage }) => {
@@ -103,11 +96,9 @@ test.describe('Contact Us Page', () => {
         await expect.soft(contactUsPage.page).toHaveURL(contactUsPage.path);
       });
     });
-
   });
 
   test.describe('Important navigation and ui states', () => {
-
     test('validate reset button clears the form', async ({ contactUsPage }) => {
       await contactUsPage.navigateTo();
       await contactUsPage.fillForm('John', 'Doe', 'john.doe@example.com', 'This is a test comment');
@@ -128,10 +119,6 @@ test.describe('Contact Us Page', () => {
       });
     });
 
-
-
-
-
     test('validate "Back to Homepage" button navigates to home page', async ({ contactUsPage, homePage }) => {
       await contactUsPage.navigateTo();
       await contactUsPage.fillFormAndSubmit('John', 'Doe', 'john.doe@example.com', 'This is a test comment');
@@ -145,11 +132,9 @@ test.describe('Contact Us Page', () => {
         await contactUsPage.backToHomePageButton.click();
         await expect.soft(homePage.page).toHaveURL(homePage.path);
       });
-
     });
 
     test.describe('Invalid form submission buttons navigation', () => {
-
       test('validate try again button navigates to contact us page', async ({ contactUsPage, homePage }) => {
         await contactUsPage.navigateTo();
         await contactUsPage.fillFormAndSubmit('John', 'Doe', 'john.doe.com', 'This is a test comment');
@@ -169,15 +154,10 @@ test.describe('Contact Us Page', () => {
           await expect.soft(homePage.page).toHaveURL(homePage.path);
         });
       });
-
     });
-
-
   });
 
-
   test.describe('Edge Cases', () => {
-
     test('valid edge email formats are accepted', async ({ contactUsPage }) => {
       const emails = ['ada+qa@example.com', 'ada@mail.example.com'];
 
@@ -205,12 +185,7 @@ test.describe('Contact Us Page', () => {
 
     test('special characters are accepted and whitespace-only input is empty', async ({ contactUsPage }) => {
       await test.step('special characters in each text field', async () => {
-        await contactUsPage.fillFormAndSubmit(
-          'Ann-Marie',
-          "O'Brien",
-          'ada@example.com',
-          'Cost is $5 & "quoted"',
-        );
+        await contactUsPage.fillFormAndSubmit('Ann-Marie', "O'Brien", 'ada@example.com', 'Cost is $5 & "quoted"');
         await expect(contactUsPage.successMessage).toBeVisible();
       });
 
@@ -259,7 +234,5 @@ test.describe('Contact Us Page', () => {
       const shrunk = await contactUsPage.resizeComments(-80);
       expect(shrunk.after).toBeLessThan(shrunk.before);
     });
-
   });
-
 });

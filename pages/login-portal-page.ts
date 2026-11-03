@@ -2,7 +2,6 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
 export class LoginPortalPage extends BasePage {
-
   readonly path = '/Login-Portal/index.html';
   readonly usernameField: Locator;
   readonly passwordField: Locator;

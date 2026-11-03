@@ -12,10 +12,9 @@ type MyFixtures = {
   loginPortalPage: LoginPortalPage;
   buttonClicksPage: ButtonClicksPage;
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
-}
+};
 
 export const test = base.extend<MyFixtures>({
-
   homePage: async ({ page }, use) => {
     const homePage = new HomePage(page);
     await use(homePage);
@@ -36,7 +35,6 @@ export const test = base.extend<MyFixtures>({
     const dropdownCheckboxRadioPage = new DropdownCheckboxRadioPage(page);
     await use(dropdownCheckboxRadioPage);
   },
-
-})
+});
 
 export { expect } from '@playwright/test';

@@ -9,7 +9,6 @@ import { test, expect } from '@/fixtures/base-test';
  */
 
 test.describe('Button Clicks', () => {
-
   test.beforeEach(async ({ buttonClicksPage }) => {
     await buttonClicksPage.navigateTo();
   });
@@ -22,9 +21,7 @@ test.describe('Button Clicks', () => {
     await test.step('modal shows the click() result', async () => {
       await expect(buttonClicksPage.webElementClickModal).toBeVisible();
       await expect.soft(buttonClicksPage.webElementClickModalTitle).toHaveText('Congratulations!');
-      await expect.soft(buttonClicksPage.webElementClickModal).toContainText(
-        'Well done for successfully using the click() method!',
-      );
+      await expect.soft(buttonClicksPage.webElementClickModal).toContainText('Well done for successfully using the click() method!');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -41,9 +38,7 @@ test.describe('Button Clicks', () => {
     await test.step('modal shows the JavaScript click result', async () => {
       await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
       await expect.soft(buttonClicksPage.javaScriptClickModalTitle).toHaveText('It’s that Easy!! Well I think it is.....');
-      await expect.soft(buttonClicksPage.javaScriptClickModal).toContainText(
-        'We can use JavaScript code if all else fails!',
-      );
+      await expect.soft(buttonClicksPage.javaScriptClickModal).toContainText('We can use JavaScript code if all else fails!');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -59,12 +54,12 @@ test.describe('Button Clicks', () => {
 
     await test.step('modal shows the action move result', async () => {
       await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
-      await expect.soft(buttonClicksPage.actionMoveClickModalTitle).toHaveText(
-        'Well done! the Action Move & Click can become very useful!',
-      );
-      await expect.soft(buttonClicksPage.actionMoveClickModal).toContainText(
-        'Advanced user interactions (API) has been developed to enable you to perform more complex interactions such as:',
-      );
+      await expect
+        .soft(buttonClicksPage.actionMoveClickModalTitle)
+        .toHaveText('Well done! the Action Move & Click can become very useful!');
+      await expect
+        .soft(buttonClicksPage.actionMoveClickModal)
+        .toContainText('Advanced user interactions (API) has been developed to enable you to perform more complex interactions such as:');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -165,5 +160,4 @@ test.describe('Button Clicks', () => {
       await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
     });
   });
-
 });

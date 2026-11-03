@@ -2,7 +2,6 @@ import { Page } from '@playwright/test';
 import { assertBotWallCleared } from '@/support/bot-wall';
 
 export abstract class BasePage {
-
   readonly page: Page;
   protected abstract readonly path: string;
 
