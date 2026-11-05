@@ -1,4 +1,5 @@
-docs/
+docs/*
+!docs/agentic-testing-plan.md
 node_modules/
 
 # Playwright
