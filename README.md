@@ -55,25 +55,27 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 54 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge                   | Spec                                    | Tests | Status  |
-| --------------------------- | --------------------------------------- | ----: | ------- |
-| Home page                   | `tests/home.spec.ts`                    |     1 | ✅ Done |
-| Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
-| Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
-| Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
-| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending |
-| Actions                     | `tests/actions.spec.ts`                 |     — | Pending |
-| IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending |
-| Ajax Loader                 | `tests/ajax-loader.spec.ts`             |     — | Pending |
-| Autocomplete                | `tests/autocomplete.spec.ts`            |     — | Pending |
-| Datepicker                  | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                 | `tests/file-upload.spec.ts`             |     — | Pending |
-| To Do List                  | `tests/todo-list.spec.ts`               |     — | Pending |
-| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts`        |     — | Pending |
-| Data Tables                 | `tests/data-tables.spec.ts`             |     — | Pending |
-| Page Object Model           | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                   | `tests/scrolling.spec.ts`               |     — | Pending |
+| Challenge                  | Spec                                    | Tests | Status  |
+| -------------------------- | --------------------------------------- | ----: | ------- |
+| Home page                  | `tests/home.spec.ts`                    |     1 | ✅ Done |
+| Contact Us                 | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
+| Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
+| Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
+| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     — | Pending |
+| Actions                    | `tests/actions.spec.ts`                 |     — | Pending |
+| IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
+| Ajax Loader                | `tests/ajax-loader.spec.ts`             |     — | Pending |
+| Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
+| Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
+| File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
+| To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
+| Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
+| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
+| Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
+| Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
+| Scrolling                  | `tests/scrolling.spec.ts`               |     — | Pending |
+| AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
