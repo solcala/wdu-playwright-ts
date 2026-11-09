@@ -8,12 +8,12 @@ import { test, expect } from '@/fixtures/base-test';
  * Escape leaves a modal open. The open modal covers its control, so a second click never lands.
  */
 
-test.describe('Button Clicks', () => {
+test.describe('Button Clicks', { tag: ['@button-clicks'] }, () => {
   test.beforeEach(async ({ buttonClicksPage }) => {
     await buttonClicksPage.navigateTo();
   });
 
-  test('web element click opens the congratulations modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('web element click opens the congratulations modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!', async () => {
       await buttonClicksPage.clickWebElementButton();
     });
@@ -30,7 +30,7 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('javascript click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('javascript click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!', async () => {
       await buttonClicksPage.clickJavaScriptButton();
     });
@@ -47,7 +47,7 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('action move and click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('action move and click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!!', async () => {
       await buttonClicksPage.clickActionMoveButton();
     });

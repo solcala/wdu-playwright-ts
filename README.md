@@ -15,7 +15,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 - Locators in order: role with a name, label, placeholder, text, test id when the app has them, a stable unique id, CSS, then XPath only as a last resort
 - No fixed sleeps: only Playwright's auto-waiting and web-first assertions
 - Negative paths, edge cases, keyboard flow, and accessible-name checks, not only the happy path
-- Tags (`@smoke`, `@regression`) for running a subset
+- Tags: every test gets its section tag (the spec name in kebab-case, such as `@button-clicks`) and `@regression`; `@smoke` is a small subset, and those tests carry both
 
 ### Quality gates (built)
 
@@ -114,14 +114,14 @@ npx playwright test tests/button-clicks.spec.ts --grep @smoke
 
 `tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. Scenarios:
 
-| What it checks                                                                                            | Tag           |
-| --------------------------------------------------------------------------------------------------------- | ------------- |
-| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it         | `@smoke`      |
-| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke`      |
-| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke`      |
-| Before a click every modal is hidden, and a click opens only that control's modal                         | `@regression` |
-| The × button hides the open modal, and the same control opens it again                                    | `@regression` |
-| A click on the overlay, outside the dialog, hides the modal                                               | `@regression` |
+| What it checks                                                                                            | Tag                    |
+| --------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it         | `@smoke` `@regression` |
+| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke` `@regression` |
+| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke` `@regression` |
+| Before a click every modal is hidden, and a click opens only that control's modal                         | `@regression`          |
+| The × button hides the open modal, and the same control opens it again                                    | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                                               | `@regression`          |
 
 The three controls are spans. A normal click opens each modal. The column text asks for an XPath click, a JavaScript click, and an action move and click; the controls do not move, and a normal click is what opens them. Escape does not close a modal, and the open modal covers its control, so those two are not tests. `js/script.js` is not valid JavaScript, and Bootstrap is loaded twice. Neither of those is asserted.
 
@@ -136,34 +136,34 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 `tests/dropdown-checkbox-radio.spec.ts` uses the `dropdownCheckboxRadioPage` fixture. The live path is `/Dropdown-Checkboxes-RadioButtons/index.html`. Scenarios:
 
-| What it checks                                                                                          | Tag           |
-| ------------------------------------------------------------------------------------------------------- | ------------- |
-| `C#` becomes the selected language, and its value is `c#`                                               | `@smoke`      |
-| `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke`      |
-| `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke`      |
-| The language menu starts on `JAVA`                                                                      | `@regression` |
-| The tool menu starts on `Eclipse`                                                                       | `@regression` |
-| The technology menu starts on `HTML`                                                                    | `@regression` |
-| Selecting `Python` leaves the tool, technology, and fruit menus unchanged                               | `@regression` |
-| Selecting `Apple` leaves the language, tool, and technology menus unchanged                             | `@regression` |
-| `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression` |
-| `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression` |
-| `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression` |
-| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked         | `@smoke`      |
-| Option 3 starts checked and the other boxes do not                                                      | `@regression` |
-| Option 3 can be unchecked, and the other boxes stay clear                                               | `@regression` |
-| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                | `@regression` |
-| Blue can be selected, and the other colors stay clear                                                   | `@smoke`      |
-| No color radio starts selected                                                                          | `@regression` |
-| Selecting Orange after Yellow leaves only Orange selected                                               | `@regression` |
-| Clicking the selected Purple radio again leaves it selected                                             | `@regression` |
-| Lettuce can be selected, which clears Pumpkin                                                           | `@smoke`      |
-| Pear can be selected                                                                                    | `@smoke`      |
-| Pumpkin starts selected, and Lettuce does not                                                           | `@regression` |
-| Cabbage is disabled and not selected                                                                    | `@regression` |
-| The fruit menu starts on Grape                                                                          | `@regression` |
-| Orange is disabled                                                                                      | `@regression` |
-| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression` |
+| What it checks                                                                                          | Tag                    |
+| ------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `C#` becomes the selected language, and its value is `c#`                                               | `@smoke` `@regression` |
+| `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke` `@regression` |
+| `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke` `@regression` |
+| The language menu starts on `JAVA`                                                                      | `@regression`          |
+| The tool menu starts on `Eclipse`                                                                       | `@regression`          |
+| The technology menu starts on `HTML`                                                                    | `@regression`          |
+| Selecting `Python` leaves the tool, technology, and fruit menus unchanged                               | `@regression`          |
+| Selecting `Apple` leaves the language, tool, and technology menus unchanged                             | `@regression`          |
+| `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression`          |
+| `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression`          |
+| `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression`          |
+| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked         | `@smoke` `@regression` |
+| Option 3 starts checked and the other boxes do not                                                      | `@regression`          |
+| Option 3 can be unchecked, and the other boxes stay clear                                               | `@regression`          |
+| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                | `@regression`          |
+| Blue can be selected, and the other colors stay clear                                                   | `@smoke` `@regression` |
+| No color radio starts selected                                                                          | `@regression`          |
+| Selecting Orange after Yellow leaves only Orange selected                                               | `@regression`          |
+| Clicking the selected Purple radio again leaves it selected                                             | `@regression`          |
+| Lettuce can be selected, which clears Pumpkin                                                           | `@smoke` `@regression` |
+| Pear can be selected                                                                                    | `@smoke` `@regression` |
+| Pumpkin starts selected, and Lettuce does not                                                           | `@regression`          |
+| Cabbage is disabled and not selected                                                                    | `@regression`          |
+| The fruit menu starts on Grape                                                                          | `@regression`          |
+| Orange is disabled                                                                                      | `@regression`          |
+| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression`          |
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
 
@@ -178,20 +178,20 @@ npx playwright test tests/actions.spec.ts --grep @smoke
 
 `tests/actions.spec.ts` uses the `actionsPage` fixture. The live path is `/Actions/index.html`. Every test is also tagged `@actions`. The case list is `specs/actions.plan.md`. Scenarios:
 
-| What it checks                                                                                                         | Tag           |
-| ---------------------------------------------------------------------------------------------------------------------- | ------------- |
-| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke`      |
-| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression` |
-| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression` |
-| A double click adds the `double` class and turns the heading green                                                     | `@smoke`      |
-| A single click leaves the double-click box off                                                                         | `@regression` |
-| A second double click removes `double` and turns the heading back                                                      | `@regression` |
-| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke`      |
-| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression` |
-| Moving the pointer to the heading hides the open menu                                                                  | `@regression` |
-| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression` |
-| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke`      |
-| Releasing the pointer over the heading keeps the hold message                                                          | `@regression` |
+| What it checks                                                                                                         | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke` `@regression` |
+| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression`          |
+| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression`          |
+| A double click adds the `double` class and turns the heading green                                                     | `@smoke` `@regression` |
+| A single click leaves the double-click box off                                                                         | `@regression`          |
+| A second double click removes `double` and turns the heading back                                                      | `@regression`          |
+| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke` `@regression` |
+| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression`          |
+| Moving the pointer to the heading hides the open menu                                                                  | `@regression`          |
+| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression`          |
+| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke` `@regression` |
+| Releasing the pointer over the heading keeps the hold message                                                          | `@regression`          |
 
 The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
 
@@ -271,7 +271,8 @@ npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
-npx playwright test --grep @smoke                # smoke subset
+npx playwright test --grep @smoke                # smoke subset (also `@regression`)
+npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
 npx playwright test --debug                      # step through with the inspector
 npx playwright test --ui                         # UI mode

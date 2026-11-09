@@ -9,7 +9,7 @@ import { test, expect } from '@/fixtures/base-test';
  * Not automated: the jQuery fade never runs, and the Home link is left out because it is not login behavior.
  */
 
-test.describe('Login Portal', () => {
+test.describe('Login Portal', { tag: ['@login-portal'] }, () => {
   test.beforeEach(async ({ loginPortalPage }) => {
     await loginPortalPage.navigateTo();
   });
