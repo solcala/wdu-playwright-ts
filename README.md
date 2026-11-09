@@ -45,6 +45,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Button Clicks challenge                                      | ✅ Done                |
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | Actions challenge                                            | ✅ Done                |
+| IFrame challenge                                             | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
@@ -55,7 +56,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-70 challenge tests in 7 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+75 challenge tests in 8 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -66,7 +67,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
 | Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     — | Pending |
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
-| IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
+| IFrame                     | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
 | Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
@@ -195,6 +196,27 @@ npx playwright test tests/actions.spec.ts --grep @smoke
 
 The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
 
+### IFrame
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/iframe.spec.ts
+npx playwright test tests/iframe.spec.ts --grep @smoke
+```
+
+`tests/iframe.spec.ts` uses the `iframePage` fixture. The live path is `/IFrame/index.html`. Every test is tagged `@iframe`. The case list is `specs/iframe.plan.md`. Scenarios:
+
+| What it checks                                                                                      | Tag                              |
+| --------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `Find Out More!` opens the welcome dialog, Close hides it, and the parent stays on the IFrame page  | `@iframe` `@smoke` `@regression` |
+| Our Products loads inside the frame, and the parent stays on the IFrame page                        | `@iframe` `@regression`          |
+| Contact Us loads the contact form inside the frame, and the parent stays on the IFrame page         | `@iframe` `@regression`          |
+| The parent brand link leaves the IFrame page for the site home                                      | `@iframe` `@regression`          |
+| The framed brand link loads the site home inside the frame, and the parent stays on the IFrame page | `@iframe` `@regression`          |
+
+`#frame` has no name or title and loads the Page Object Model home. Contact Us inside the frame is `/Contact-Us/contactus.html`; the test stops when that form is showing and does not submit it. The dialog's other dismiss controls, Escape, the product tiles (`href="#"`), and the carousel are not covered. This spec uses a 1280×1400 viewport because the frame is 1000px tall.
+
 ### Ajax Loader
 
 Run all four tests, or only the smoke test:
@@ -226,11 +248,13 @@ pages/                  Page objects (one class per file, kebab-case file names)
   button-clicks-page.ts
   dropdown-checkbox-radio-page.ts
   actions-page.ts
+  iframe-page.ts
   ajax-loader-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
+specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -270,6 +294,7 @@ npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
+npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
