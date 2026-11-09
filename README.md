@@ -15,7 +15,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 - Locators in order: role with a name, label, placeholder, text, test id when the app has them, a stable unique id, CSS, then XPath only as a last resort
 - No fixed sleeps: only Playwright's auto-waiting and web-first assertions
 - Negative paths, edge cases, keyboard flow, and accessible-name checks, not only the happy path
-- Tags: every test gets its section tag and `@regression`; `@smoke` is a small subset, and those tests carry both
+- Tags: every test gets its section tag (the spec name in kebab-case, such as `@button-clicks`) and `@regression`; `@smoke` is a small subset, and those tests carry both
 
 ### Quality gates (built)
 
@@ -178,20 +178,20 @@ npx playwright test tests/actions.spec.ts --grep @smoke
 
 `tests/actions.spec.ts` uses the `actionsPage` fixture. The live path is `/Actions/index.html`. Every test is also tagged `@actions`. The case list is `specs/actions.plan.md`. Scenarios:
 
-| What it checks                                                                                                         | Tag           |
-| ---------------------------------------------------------------------------------------------------------------------- | ------------- |
-| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke`      |
-| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression` |
-| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression` |
-| A double click adds the `double` class and turns the heading green                                                     | `@smoke`      |
-| A single click leaves the double-click box off                                                                         | `@regression` |
-| A second double click removes `double` and turns the heading back                                                      | `@regression` |
-| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke`      |
-| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression` |
-| Moving the pointer to the heading hides the open menu                                                                  | `@regression` |
-| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression` |
-| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke`      |
-| Releasing the pointer over the heading keeps the hold message                                                          | `@regression` |
+| What it checks                                                                                                         | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke` `@regression` |
+| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression`          |
+| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression`          |
+| A double click adds the `double` class and turns the heading green                                                     | `@smoke` `@regression` |
+| A single click leaves the double-click box off                                                                         | `@regression`          |
+| A second double click removes `double` and turns the heading back                                                      | `@regression`          |
+| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke` `@regression` |
+| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression`          |
+| Moving the pointer to the heading hides the open menu                                                                  | `@regression`          |
+| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression`          |
+| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke` `@regression` |
+| Releasing the pointer over the heading keeps the hold message                                                          | `@regression`          |
 
 The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
 

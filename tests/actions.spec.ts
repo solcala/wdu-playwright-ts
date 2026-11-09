@@ -18,7 +18,7 @@ test.describe('Actions', () => {
   });
 
   test.describe('Drag and drop', () => {
-    test('dragging onto the target shows Dropped', { tag: ['@actions', '@smoke'] }, async ({ actionsPage }) => {
+    test('dragging onto the target shows Dropped', { tag: ['@actions', '@smoke', '@regression'] }, async ({ actionsPage }) => {
       await test.step('the target starts as DROP HERE!', async () => {
         await expect(actionsPage.droppable).toHaveText('DROP HERE!');
       });
@@ -72,7 +72,7 @@ test.describe('Actions', () => {
   });
 
   test.describe('Double click', () => {
-    test('double click turns the box on', { tag: ['@actions', '@smoke'] }, async ({ actionsPage }) => {
+    test('double click turns the box on', { tag: ['@actions', '@smoke', '@regression'] }, async ({ actionsPage }) => {
       await test.step('the box starts off', async () => {
         await expect(actionsPage.doubleClickBox).not.toHaveClass(doubleClass);
         await expect(actionsPage.doubleClickHeading).toHaveCSS('color', restingCoral);
@@ -114,7 +114,7 @@ test.describe('Actions', () => {
   });
 
   test.describe('Hover', () => {
-    test('the first hover link shows the click alert', { tag: ['@actions', '@smoke'] }, async ({ actionsPage }) => {
+    test('the first hover link shows the click alert', { tag: ['@actions', '@smoke', '@regression'] }, async ({ actionsPage }) => {
       const expectedMessage = 'Well done you clicked on the link!';
 
       await test.step('Link 1 starts hidden', async () => {
@@ -199,7 +199,7 @@ test.describe('Actions', () => {
   });
 
   test.describe('Click and hold', () => {
-    test('pressing then releasing the box shows both messages', { tag: ['@actions', '@smoke'] }, async ({ actionsPage }) => {
+    test('pressing then releasing the box shows both messages', { tag: ['@actions', '@smoke', '@regression'] }, async ({ actionsPage }) => {
       await test.step('the box starts as Click and Hold!', async () => {
         await expect(actionsPage.clickAndHoldBox).toHaveText('Click and Hold!');
       });

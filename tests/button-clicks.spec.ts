@@ -8,7 +8,7 @@ import { test, expect } from '@/fixtures/base-test';
  * Escape leaves a modal open. The open modal covers its control, so a second click never lands.
  */
 
-test.describe('Button Clicks', () => {
+test.describe('Button Clicks', { tag: ['@button-clicks'] }, () => {
   test.beforeEach(async ({ buttonClicksPage }) => {
     await buttonClicksPage.navigateTo();
   });

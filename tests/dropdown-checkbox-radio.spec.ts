@@ -5,7 +5,7 @@ import { test, expect } from '@/fixtures/base-test';
  * Color and vegetable captions are not labels, so those radios are found by value.
  */
 
-test.describe('Dropdown, Checkbox & Radio', () => {
+test.describe('Dropdown, Checkbox & Radio', { tag: ['@dropdown-checkbox-radio'] }, () => {
   test.beforeEach(async ({ dropdownCheckboxRadioPage }) => {
     await dropdownCheckboxRadioPage.navigateTo();
   });

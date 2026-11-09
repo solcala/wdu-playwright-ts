@@ -1,6 +1,6 @@
 import { test, expect } from '@/fixtures/base-test';
 
-test.describe('Contact Us Page', () => {
+test.describe('Contact Us Page', { tag: ['@contact-us'] }, () => {
   test.beforeEach(async ({ contactUsPage }) => {
     await contactUsPage.navigateTo();
   });
@@ -98,7 +98,7 @@ test.describe('Contact Us Page', () => {
     });
   });
 
-  test.describe('Important navigation and ui states', () => {
+  test.describe('Important navigation and ui states', { tag: ['@regression'] }, () => {
     test('validate reset button clears the form', async ({ contactUsPage }) => {
       await contactUsPage.navigateTo();
       await contactUsPage.fillForm('John', 'Doe', 'john.doe@example.com', 'This is a test comment');
@@ -157,7 +157,7 @@ test.describe('Contact Us Page', () => {
     });
   });
 
-  test.describe('Edge Cases', () => {
+  test.describe('Edge Cases', { tag: ['@regression'] }, () => {
     test('valid edge email formats are accepted', async ({ contactUsPage }) => {
       const emails = ['ada+qa@example.com', 'ada@mail.example.com'];
 
