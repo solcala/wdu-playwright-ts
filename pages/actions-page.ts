@@ -41,7 +41,7 @@ export class ActionsPage extends BasePage {
     this.hoverThirdButton = page.getByRole('button', { name: 'Hover Over Me Third!', exact: true });
     /**
      * Link 1 is in every menu, and each link is display:none until that menu is hovered.
-     * The menu is the button's parent: it has no id and no accessible name.
+     * The menu is the button's parent: it has no id and no accessible name, so menuLink uses the XPath parent step.
      * includeHidden keeps the hidden link matchable.
      */
     this.hoverFirstLink = this.menuLink(this.hoverFirstButton, 'Link 1');
