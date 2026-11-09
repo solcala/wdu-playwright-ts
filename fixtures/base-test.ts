@@ -7,6 +7,7 @@ import { ButtonClicksPage } from '@/pages/button-clicks-page';
 import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
 import { ActionsPage } from '@/pages/actions-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
+import { AutocompletePage } from '@/pages/autocomplete-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -16,6 +17,7 @@ type MyFixtures = {
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
   actionsPage: ActionsPage;
   ajaxLoaderPage: AjaxLoaderPage;
+  autocompletePage: AutocompletePage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -46,6 +48,10 @@ export const test = base.extend<MyFixtures>({
   ajaxLoaderPage: async ({ page }, use) => {
     const ajaxLoaderPage = new AjaxLoaderPage(page);
     await use(ajaxLoaderPage);
+  },
+  autocompletePage: async ({ page }, use) => {
+    const autocompletePage = new AutocompletePage(page);
+    await use(autocompletePage);
   },
 });
 

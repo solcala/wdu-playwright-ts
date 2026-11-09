@@ -46,6 +46,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | Actions challenge                                            | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
+| Autocomplete challenge                                       | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -55,7 +56,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-70 challenge tests in 7 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+79 challenge tests in 8 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -68,7 +69,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
 | IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
-| Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
+| Autocomplete               | `tests/autocomplete.spec.ts`            |     9 | ✅ Done |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
 | File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
 | To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
@@ -215,6 +216,31 @@ npx playwright test tests/ajax-loader.spec.ts --grep @smoke
 
 The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
 
+### Autocomplete
+
+Run all nine tests, or only the smoke test:
+
+```bash
+npx playwright test tests/autocomplete.spec.ts
+npx playwright test tests/autocomplete.spec.ts --grep @smoke
+```
+
+`tests/autocomplete.spec.ts` uses the `autocompletePage` fixture. The describe block is tagged `@autocomplete`. The live path is `/Autocomplete-TextField/autocomplete-textfield.html`. The case list is `specs/autocomplete.plan.md`. Scenarios:
+
+| What it checks                                                                                     | Tag                    |
+| -------------------------------------------------------------------------------------------------- | ---------------------- |
+| `Pi` shows only `Pizza`, the click puts `Pizza` in the field, and Submit sends `food-item=Pizza`   | `@smoke` `@regression` |
+| `a` shows `Asparagus`, `Avacado`, `Almond`, `Artichoke`, and `Apple`, in that order                | `@regression`          |
+| `zz` leaves the field as `zz` and the suggestion list has no rows                                  | `@regression`          |
+| `App` shows `Apple`, and Submit sends `food-item=App`                                              | `@regression`          |
+| `APP` shows `Apple` and leaves `APP` in the field                                                  | `@regression`          |
+| Arrow Down highlights `Grapes`, and Enter puts `Grapes` in the field without submitting            | `@regression`          |
+| Enter with nothing highlighted leaves `Pi` in the field, leaves `Pizza` shown, and does not submit | `@regression`          |
+| A click on the heading closes the suggestions and leaves the typed text                            | `@regression`          |
+| An empty field submits as `food-item=`                                                             | `@regression`          |
+
+The list is built in the input handler. A suggestion click, or Enter on a highlighted row, copies that catalog value into the field and closes the list. Enter does not submit the form. Submit posts the field as the `food-item` query on the same page. The catalog spells `Avacado` with one c. The navbar and the shop logo are not covered.
+
 ## Project layout
 
 ```text
@@ -227,6 +253,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   dropdown-checkbox-radio-page.ts
   actions-page.ts
   ajax-loader-page.ts
+  autocomplete-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -271,6 +298,7 @@ npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
