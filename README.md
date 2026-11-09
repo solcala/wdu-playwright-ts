@@ -44,6 +44,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Login Portal challenge                                       | ✅ Done                |
 | Button Clicks challenge                                      | ✅ Done                |
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
+| Actions challenge                                            | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
@@ -54,7 +55,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-58 challenge tests in 6 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+70 challenge tests in 7 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -64,7 +65,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
 | Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     — | Pending |
-| Actions                    | `tests/actions.spec.ts`                 |     — | Pending |
+| Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
 | IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
 | Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
@@ -166,6 +167,34 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
 
+### Actions
+
+Run all 12 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/actions.spec.ts
+npx playwright test tests/actions.spec.ts --grep @smoke
+```
+
+`tests/actions.spec.ts` uses the `actionsPage` fixture. The live path is `/Actions/index.html`. Every test is also tagged `@actions`. The case list is `specs/actions.plan.md`. Scenarios:
+
+| What it checks                                                                                                         | Tag           |
+| ---------------------------------------------------------------------------------------------------------------------- | ------------- |
+| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke`      |
+| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression` |
+| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression` |
+| A double click adds the `double` class and turns the heading green                                                     | `@smoke`      |
+| A single click leaves the double-click box off                                                                         | `@regression` |
+| A second double click removes `double` and turns the heading back                                                      | `@regression` |
+| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke`      |
+| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression` |
+| Moving the pointer to the heading hides the open menu                                                                  | `@regression` |
+| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression` |
+| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke`      |
+| Releasing the pointer over the heading keeps the hold message                                                          | `@regression` |
+
+The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
+
 ### Ajax Loader
 
 Run all four tests, or only the smoke test:
@@ -196,6 +225,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   login-portal-page.ts
   button-clicks-page.ts
   dropdown-checkbox-radio-page.ts
+  actions-page.ts
   ajax-loader-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
@@ -239,6 +269,7 @@ npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
+npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
