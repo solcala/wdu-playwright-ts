@@ -46,6 +46,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | Actions challenge                                            | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
+| To Do List challenge                                         | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -55,7 +56,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-70 challenge tests in 7 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+78 challenge tests in 8 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -71,7 +72,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
 | File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
-| To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
+| To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
 | Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
@@ -215,6 +216,30 @@ npx playwright test tests/ajax-loader.spec.ts --grep @smoke
 
 The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
 
+### To Do List
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/todo-list.spec.ts
+npx playwright test tests/todo-list.spec.ts --grep @smoke
+```
+
+`tests/todo-list.spec.ts` uses the `todoListPage` fixture. The describe block is tagged `@todo-list`. The live path is `/To-Do-List/index.html`. The case list is `specs/todo-list.plan.md`. Scenarios:
+
+| What it checks                                                                                               | Tag                    |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The list starts as `Go to potion class`, `Buy new robes`, and `Practice magic`, none struck through          | `@regression`          |
+| Enter on `Brew a potion` adds that row, clears the field, and leaves the count at 4                          | `@smoke` `@regression` |
+| Clicking `Buy new robes` strikes it through, leaves the count at 3, and leaves the other rows open           | `@smoke` `@regression` |
+| Hovering `Practice magic` opens its delete control, and the click removes that row and leaves the count at 2 | `@smoke` `@regression` |
+| Enter on an empty field adds a blank row and leaves the count at 4                                           | `@regression`          |
+| A second click on `Buy new robes` clears the strike-through and leaves the count at 3                        | `@regression`          |
+| The plus icon hides the add field, then shows it again, and the count stays 3                                | `@regression`          |
+| Enter on `Practice "magic" & potions` shows that text and leaves the count at 4                              | `@regression`          |
+
+Enter is the only way to add a row. The plus icon toggles the field and does not add one. A click toggles the `completed` class, which strikes the text through. The delete control is a span at width 0 until the row is hovered; the click fades that row out and removes it. Empty Enter is not rejected. The quotes-and-ampersand row is stored as text.
+
 ## Project layout
 
 ```text
@@ -227,6 +252,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   dropdown-checkbox-radio-page.ts
   actions-page.ts
   ajax-loader-page.ts
+  todo-list-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -271,6 +297,7 @@ npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
