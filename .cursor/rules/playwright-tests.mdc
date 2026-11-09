@@ -12,7 +12,7 @@ Cursor-only summary with examples. Every rule lives in `AGENTS.md`; if the two d
 - Specs import `test` and `expect` from `@/fixtures/base-test`. A new page object gets a fixture there.
 - Page objects never assert. They return what the spec needs to check (`resizeComments()` returns `{ before, after }`); otherwise they return nothing.
 - Every wait names its condition. Never `waitForTimeout`. Web-first assertions already retry, so no wait goes before them. Exception for now: `waitForEvent('dialog')` before the click that opens an alert.
-- Group checks with `test.step`. Plain `expect` when the test cannot continue without the check; `expect.soft` for independent checks. Tag tests `@smoke` and/or `@regression`.
+- Group checks with `test.step`. Plain `expect` when the test cannot continue without the check; `expect.soft` for independent checks. Every test gets its section tag and `@regression`. `@smoke` is a small subset of regression, so those tests carry both. The section tag may be on the `describe` or on each test.
 - One behavior per test: one outcome, which can take many steps. Do not combine unrelated controls or features because they share a page. If the name needs "and" for two unrelated outcomes, split it. Tests do not depend on each other's order or state.
 - Locators: `getByRole` with `name` → `getByLabel` → `getByPlaceholder` → `getByText` → `getByTestId` when the app has test ids → a stable unique id (`#id`) when the element has no accessible name → CSS → XPath. XPath is the last resort; say why in a comment. An id beats a position or a content filter. Never a generated class or index unless the page gives no other option; say why in a comment.
 - Imports use `@/`, never relative paths.

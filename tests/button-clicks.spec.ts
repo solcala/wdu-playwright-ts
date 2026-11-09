@@ -13,7 +13,7 @@ test.describe('Button Clicks', () => {
     await buttonClicksPage.navigateTo();
   });
 
-  test('web element click opens the congratulations modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('web element click opens the congratulations modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!', async () => {
       await buttonClicksPage.clickWebElementButton();
     });
@@ -30,7 +30,7 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('javascript click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('javascript click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!', async () => {
       await buttonClicksPage.clickJavaScriptButton();
     });
@@ -47,7 +47,7 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('action move and click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('action move and click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!!', async () => {
       await buttonClicksPage.clickActionMoveButton();
     });

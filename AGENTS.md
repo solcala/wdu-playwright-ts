@@ -14,7 +14,8 @@ Owner: [@solcala](https://github.com/solcala). If a rule here seems wrong, propo
 | `npm run typecheck`                        | `tsc --noEmit`                                                 |
 | `npm run test`                             | `playwright test`, the whole suite                             |
 | `npx playwright test tests/<name>.spec.ts` | One spec                                                       |
-| `npx playwright test --grep @smoke`        | Smoke subset                                                   |
+| `npx playwright test --grep @smoke`        | Smoke subset (those tests are also `@regression`)              |
+| `npx playwright test --grep @regression`   | Regression subset, which includes every smoke test             |
 
 After changing one spec or page object, run that spec first for fast feedback, then `npm run check` before reporting done.
 
@@ -57,7 +58,7 @@ The Husky pre-commit hook runs `npm run check`. Never suggest `--no-verify`.
 5. A new page object gets a fixture in `fixtures/base-test.ts`. Specs use the fixture, never `new SomePage(page)`.
 6. Every wait names the condition: web-first `expect`, `waitForURL`, `waitForResponse`, `locator.waitFor()`. A reviewer should be able to name the condition from the line alone. Never `waitForTimeout`. Exception for now: `page.waitForEvent('dialog')` before a click that opens an alert. The alert is gone if nothing is listening.
 7. Group checks with `test.step`. Use plain `expect` for a check that must pass before the test can continue, and `expect.soft` for independent checks in one test.
-8. Tag tests `@smoke` and/or `@regression`.
+8. Every test gets its section tag and `@regression`. `@smoke` is a small high-value subset of regression, so a smoke test carries both. The section tag may be on the `describe` block or on each test.
 9. One behavior per test. A behavior is one outcome and can take many steps, such as filling out a form and submitting it, or an end-to-end flow. Do not put unrelated controls or features in one test because they share a page or section. If the test name needs "and" to join two unrelated outcomes, split it. Tests do not depend on each other's order or state.
 
 ## Locators

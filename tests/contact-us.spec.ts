@@ -5,7 +5,7 @@ test.describe('Contact Us Page', () => {
     await contactUsPage.navigateTo();
   });
 
-  test.describe('Core Behavior', { tag: ['@smoke'] }, () => {
+  test.describe('Core Behavior', { tag: ['@smoke', '@regression'] }, () => {
     test('navigate to contact us page', async ({ contactUsPage }) => {
       await expect.soft(contactUsPage.heading).toBeVisible();
       await expect.soft(contactUsPage.page).toHaveURL(contactUsPage.path);

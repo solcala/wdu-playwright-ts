@@ -11,19 +11,19 @@ test.describe('Dropdown, Checkbox & Radio', () => {
   });
 
   test.describe('Dropdown menus', () => {
-    test('the language menu selects C#', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('the language menu selects C#', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.selectLanguage('C#');
       await expect(dropdownCheckboxRadioPage.languageDropdown).toHaveValue('c#');
       await expect.soft(dropdownCheckboxRadioPage.selectedLanguageOption).toHaveText('C#');
     });
 
-    test('the tool menu selects TestNG', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('the tool menu selects TestNG', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.selectTool('TestNG');
       await expect(dropdownCheckboxRadioPage.toolDropdown).toHaveValue('testng');
       await expect.soft(dropdownCheckboxRadioPage.selectedToolOption).toHaveText('TestNG');
     });
 
-    test('the technology menu selects JQuery', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('the technology menu selects JQuery', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.selectTechnology('JQuery');
       await expect(dropdownCheckboxRadioPage.technologyDropdown).toHaveValue('jquery');
       await expect.soft(dropdownCheckboxRadioPage.selectedTechnologyOption).toHaveText('JQuery');
@@ -110,7 +110,7 @@ test.describe('Dropdown, Checkbox & Radio', () => {
   });
 
   test.describe('Checkboxes', () => {
-    test('several checkboxes can be checked', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('several checkboxes can be checked', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await test.step('check Option 1 and Option 4', async () => {
         await dropdownCheckboxRadioPage.option1Checkbox.check();
         await dropdownCheckboxRadioPage.option4Checkbox.check();
@@ -163,7 +163,7 @@ test.describe('Dropdown, Checkbox & Radio', () => {
   });
 
   test.describe('Radio buttons', () => {
-    test('a color radio can be selected', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('a color radio can be selected', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await test.step('select Blue', async () => {
         await dropdownCheckboxRadioPage.blueRadio.check();
       });
@@ -214,14 +214,14 @@ test.describe('Dropdown, Checkbox & Radio', () => {
   });
 
   test.describe('Selected and disabled', () => {
-    test('lettuce can be selected, which clears pumpkin', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('lettuce can be selected, which clears pumpkin', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.lettuceRadio.check();
       await expect(dropdownCheckboxRadioPage.lettuceRadio).toBeChecked();
       await expect.soft(dropdownCheckboxRadioPage.pumpkinRadio).not.toBeChecked();
       await expect.soft(dropdownCheckboxRadioPage.cabbageRadio).not.toBeChecked();
     });
 
-    test('pear can be selected', { tag: ['@smoke'] }, async ({ dropdownCheckboxRadioPage }) => {
+    test('pear can be selected', { tag: ['@smoke', '@regression'] }, async ({ dropdownCheckboxRadioPage }) => {
       await dropdownCheckboxRadioPage.selectFruit('Pear');
       await expect(dropdownCheckboxRadioPage.fruitDropdown).toHaveValue('pear');
       await expect(dropdownCheckboxRadioPage.selectedFruitOption).toHaveCount(1);
