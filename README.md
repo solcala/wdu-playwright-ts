@@ -57,7 +57,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-83 challenge tests in 9 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+84 challenge tests in 9 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -66,7 +66,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
 | Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     8 | ✅ Done |
+| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
 | IFrame                     | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
@@ -171,7 +171,7 @@ The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is
 
 ### Popup & Alerts
 
-Run all eight tests, or only the smoke tests:
+Run all nine tests, or only the smoke tests:
 
 ```bash
 npx playwright test tests/popup-alerts.spec.ts
@@ -187,7 +187,8 @@ npx playwright test tests/popup-alerts.spec.ts --grep @smoke
 | Cancel on the confirm box shows `You pressed Cancel!` in gray                     | `@regression`          |
 | A second choice replaces the confirm result                                       | `@regression`          |
 | Modal Popup shows its title and the `WebElement.click()` body, and Close hides it | `@smoke` `@regression` |
-| The × button hides the modal, and the control opens it again                      | `@regression`          |
+| The × button hides the modal                                                      | `@regression`          |
+| The control opens the modal again                                                 | `@regression`          |
 | A click on the overlay, outside the dialog, hides the modal                       | `@regression`          |
 | The Ajax Loader control opens `/Ajax-Loader/index.html`                           | `@regression`          |
 

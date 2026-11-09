@@ -124,10 +124,49 @@ export class PopupAlertsPage extends BasePage {
   }
 
   /**
-   * Clicks the left edge of an open modal, outside the centered dialog.
+   * Clicks the open modal outside its dialog panel. That dismisses the modal.
+   * The panel is `.modal-dialog`. It has no accessible name, and the heading is smaller than the panel, so the class is the locator.
    * @param modal - The open modal
    */
   private async clickModalOverlay(modal: Locator): Promise<void> {
-    await modal.click({ position: { x: 12, y: 120 } });
+    const dialog = modal.locator('.modal-dialog');
+    const overlayBox = await modal.boundingBox();
+    const dialogBox = await dialog.boundingBox();
+    if (!overlayBox || !dialogBox) {
+      throw new Error('The modal overlay is not visible');
+    }
+
+    await modal.click({ position: this.pointOutsideDialog(overlayBox, dialogBox) });
+  }
+
+  /**
+   * Returns a point on the overlay, in the overlay's coordinates, that falls outside the dialog.
+   * @param overlayBox - The overlay bounding box, in viewport coordinates
+   * @param dialogBox - The dialog bounding box, in viewport coordinates
+   * @returns The click position relative to the overlay's top left
+   */
+  private pointOutsideDialog(
+    overlayBox: { x: number; y: number; width: number; height: number },
+    dialogBox: { x: number; y: number; width: number; height: number },
+  ): { x: number; y: number } {
+    const left = dialogBox.x - overlayBox.x;
+    const top = dialogBox.y - overlayBox.y;
+    const right = left + dialogBox.width;
+    const bottom = top + dialogBox.height;
+    const midY = Math.min(Math.max(top + dialogBox.height / 2, 1), overlayBox.height - 1);
+
+    if (left >= 2) {
+      return { x: left / 2, y: midY };
+    }
+    if (overlayBox.width - right >= 2) {
+      return { x: right + (overlayBox.width - right) / 2, y: midY };
+    }
+    if (top >= 2) {
+      return { x: overlayBox.width / 2, y: top / 2 };
+    }
+    if (overlayBox.height - bottom >= 2) {
+      return { x: overlayBox.width / 2, y: bottom + (overlayBox.height - bottom) / 2 };
+    }
+    throw new Error('The modal dialog covers the overlay');
   }
 }

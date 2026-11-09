@@ -32,8 +32,8 @@ test.describe('Popup & Alerts', { tag: ['@popup-alerts'] }, () => {
       });
 
       await test.step('the page stays here and the confirm result stays empty', async () => {
-        await expect(popupAlertsPage.confirmResult).toHaveText('');
-        await expect(popupAlertsPage.page).toHaveURL(/\/Popup-Alerts\/index\.html$/);
+        await expect.soft(popupAlertsPage.confirmResult).toHaveText('');
+        await expect.soft(popupAlertsPage.page).toHaveURL(/\/Popup-Alerts\/index\.html$/);
       });
     });
   });
@@ -102,7 +102,19 @@ test.describe('Popup & Alerts', { tag: ['@popup-alerts'] }, () => {
       });
     });
 
-    test('the × button hides the modal and the control opens it again', { tag: ['@regression'] }, async ({ popupAlertsPage }) => {
+    test('the × button hides the modal', { tag: ['@regression'] }, async ({ popupAlertsPage }) => {
+      await test.step('CLICK ME! opens the modal', async () => {
+        await popupAlertsPage.clickModalPopup();
+        await expect(popupAlertsPage.modalPopup).toBeVisible();
+      });
+
+      await test.step('× hides the modal', async () => {
+        await popupAlertsPage.dismissModalPopup();
+        await expect(popupAlertsPage.modalPopup).toBeHidden();
+      });
+    });
+
+    test('the control opens the modal again', { tag: ['@regression'] }, async ({ popupAlertsPage }) => {
       await test.step('× hides the modal', async () => {
         await popupAlertsPage.clickModalPopup();
         await expect(popupAlertsPage.modalPopup).toBeVisible();
