@@ -76,6 +76,7 @@ test.describe('IFrame', () => {
       await iframePage.followBrandLink();
       await expect(iframePage.page).toHaveURL(/\/IFrame\/index\.html$/);
       await expect.poll(() => iframePage.contentUrl()).toMatch(/^https?:\/\/[^/]+\/index\.html$/);
+      await expect.soft(iframePage.homeHeading).toBeVisible();
       await expect.soft(iframePage.page).toHaveTitle('WebDriver | IFrame');
     });
   });

@@ -16,6 +16,7 @@ export class IframePage extends BasePage {
   readonly contactHeading: Locator;
   readonly firstNameField: Locator;
   readonly brandLink: Locator;
+  readonly homeHeading: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -42,15 +43,20 @@ export class IframePage extends BasePage {
      * WebdriverUniversity.com (Page Object Model). The id stays nav-title.
      */
     this.brandLink = this.frame.locator('#nav-title');
+    /**
+     * The site home heading. The framed brand link loads that page inside #frame.
+     */
+    this.homeHeading = this.frame.getByRole('heading', { name: 'Practise Test Automation on a Real Site', exact: true });
   }
 
   /**
    * Returns the URL of the document loaded in #frame.
-   * The iframe has no name, so this is the child of the main frame.
+   * The iframe has no name, so the frame is resolved from the #frame element.
    * @returns The frame URL
    */
-  contentUrl(): string {
-    const frame = this.page.frames().find((candidate) => candidate.parentFrame() === this.page.mainFrame());
+  async contentUrl(): Promise<string> {
+    const handle = await this.frameElement.elementHandle();
+    const frame = await handle.contentFrame();
     if (!frame) {
       throw new Error('The #frame iframe has no content document');
     }
