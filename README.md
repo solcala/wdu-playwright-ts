@@ -46,6 +46,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | Actions challenge                                            | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
+| Popup & Alerts challenge                                     | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -55,7 +56,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-70 challenge tests in 7 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+78 challenge tests in 8 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -64,7 +65,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
 | Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     — | Pending |
+| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     8 | ✅ Done |
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
 | IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
@@ -167,6 +168,30 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
 
+### Popup & Alerts
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/popup-alerts.spec.ts
+npx playwright test tests/popup-alerts.spec.ts --grep @smoke
+```
+
+`tests/popup-alerts.spec.ts` uses the `popupAlertsPage` fixture. The describe block is tagged `@popup-alerts`. The live path is `/Popup-Alerts/index.html`. The case list is `specs/popup-alerts.plan.md`. Scenarios:
+
+| What it checks                                                                    | Tag                    |
+| --------------------------------------------------------------------------------- | ---------------------- |
+| The alert says `I am an alert box!`, and the confirm result stays empty           | `@smoke` `@regression` |
+| OK on the confirm box shows `You pressed OK!` in green                            | `@smoke` `@regression` |
+| Cancel on the confirm box shows `You pressed Cancel!` in gray                     | `@regression`          |
+| A second choice replaces the confirm result                                       | `@regression`          |
+| Modal Popup shows its title and the `WebElement.click()` body, and Close hides it | `@smoke` `@regression` |
+| The × button hides the modal, and the control opens it again                      | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                       | `@regression`          |
+| The Ajax Loader control opens `/Ajax-Loader/index.html`                           | `@regression`          |
+
+The alert and the confirm box are spans. The listener is registered before the click. The confirm box writes the choice into the result paragraph: OK is green, Cancel is gray. The modal is Bootstrap, not a JavaScript dialog. Escape leaves it open, and the three popup spans are not in the tab order, so those are not tests. The modal body spells it `allot`. The Ajax Loader control is a link; the loader page is covered in `tests/ajax-loader.spec.ts`.
+
 ### Actions
 
 Run all 12 tests, or only the smoke tests:
@@ -225,6 +250,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   login-portal-page.ts
   button-clicks-page.ts
   dropdown-checkbox-radio-page.ts
+  popup-alerts-page.ts
   actions-page.ts
   ajax-loader-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
@@ -269,6 +295,7 @@ npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
+npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
