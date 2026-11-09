@@ -6,6 +6,7 @@ import { LoginPortalPage } from '@/pages/login-portal-page';
 import { ButtonClicksPage } from '@/pages/button-clicks-page';
 import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
 import { ActionsPage } from '@/pages/actions-page';
+import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -14,6 +15,7 @@ type MyFixtures = {
   buttonClicksPage: ButtonClicksPage;
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
   actionsPage: ActionsPage;
+  ajaxLoaderPage: AjaxLoaderPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -40,6 +42,10 @@ export const test = base.extend<MyFixtures>({
   actionsPage: async ({ page }, use) => {
     const actionsPage = new ActionsPage(page);
     await use(actionsPage);
+  },
+  ajaxLoaderPage: async ({ page }, use) => {
+    const ajaxLoaderPage = new AjaxLoaderPage(page);
+    await use(ajaxLoaderPage);
   },
 });
 
