@@ -5,7 +5,9 @@ import { ContactUsPage } from '@/pages/contact-us-page';
 import { LoginPortalPage } from '@/pages/login-portal-page';
 import { ButtonClicksPage } from '@/pages/button-clicks-page';
 import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
+import { ActionsPage } from '@/pages/actions-page';
 import { IframePage } from '@/pages/iframe-page';
+import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -13,7 +15,9 @@ type MyFixtures = {
   loginPortalPage: LoginPortalPage;
   buttonClicksPage: ButtonClicksPage;
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
+  actionsPage: ActionsPage;
   iframePage: IframePage;
+  ajaxLoaderPage: AjaxLoaderPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -37,9 +41,17 @@ export const test = base.extend<MyFixtures>({
     const dropdownCheckboxRadioPage = new DropdownCheckboxRadioPage(page);
     await use(dropdownCheckboxRadioPage);
   },
+  actionsPage: async ({ page }, use) => {
+    const actionsPage = new ActionsPage(page);
+    await use(actionsPage);
+  },
   iframePage: async ({ page }, use) => {
     const iframePage = new IframePage(page);
     await use(iframePage);
+  },
+  ajaxLoaderPage: async ({ page }, use) => {
+    const ajaxLoaderPage = new AjaxLoaderPage(page);
+    await use(ajaxLoaderPage);
   },
 });
 

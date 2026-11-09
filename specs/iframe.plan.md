@@ -15,6 +15,8 @@ Explored `https://webdriveruniversity.com/IFrame/index.html` in a browser, then 
 
 ## Cases
 
+Tags: `@iframe` and `@regression` on every test. `@smoke` only on the welcome dialog, so that test carries both.
+
 | Case                                     | Expected outcome                                                                                                                                                       | Category | Priority and rationale                                                                                                                             | Tags                             |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | Find Out More opens the welcome dialog   | `Find Out More!` shows the dialog with that title and body. Close hides it. Parent URL stays `/IFrame/index.html` and the frame stays `/Page-Object-Model/index.html`. | Positive | High. Only in-frame action, and the smallest check that a click inside the frame does not replace the parent. The one smoke test.                  | `@iframe` `@smoke` `@regression` |
