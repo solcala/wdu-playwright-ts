@@ -8,6 +8,7 @@ import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page'
 import { ActionsPage } from '@/pages/actions-page';
 import { IframePage } from '@/pages/iframe-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
+import { PopupAlertsPage } from '@/pages/popup-alerts-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -18,6 +19,7 @@ type MyFixtures = {
   actionsPage: ActionsPage;
   iframePage: IframePage;
   ajaxLoaderPage: AjaxLoaderPage;
+  popupAlertsPage: PopupAlertsPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -52,6 +54,10 @@ export const test = base.extend<MyFixtures>({
   ajaxLoaderPage: async ({ page }, use) => {
     const ajaxLoaderPage = new AjaxLoaderPage(page);
     await use(ajaxLoaderPage);
+  },
+  popupAlertsPage: async ({ page }, use) => {
+    const popupAlertsPage = new PopupAlertsPage(page);
+    await use(popupAlertsPage);
   },
 });
 
