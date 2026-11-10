@@ -350,7 +350,7 @@ npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see C
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
-npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
+npx playwright test tests/todo-list.spec.ts              # To Do List (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser

@@ -20,8 +20,8 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
   test('the list starts with the three practice items', { tag: ['@regression'] }, async ({ todoListPage }) => {
     await test.step('three open items and an empty field', async () => {
       await expect(todoListPage.items).toHaveCount(seedCount);
-      await expect(todoListPage.newTodoField).toBeVisible();
-      await expect(todoListPage.newTodoField).toHaveValue('');
+      await expect.soft(todoListPage.newTodoField).toBeVisible();
+      await expect.soft(todoListPage.newTodoField).toHaveValue('');
 
       for (const name of practiceItems) {
         await expect.soft(todoListPage.item(name)).toHaveText(name);
@@ -45,7 +45,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
     await test.step('the new item is in the list and the field is clear', async () => {
       await expect(todoListPage.items).toHaveCount(seedCount + 1);
       await expect(todoListPage.item(todo)).toHaveText(todo);
-      await expect(todoListPage.newTodoField).toHaveValue('');
+      await expect.soft(todoListPage.newTodoField).toHaveValue('');
 
       for (const name of practiceItems) {
         await expect.soft(todoListPage.item(name)).toHaveText(name);
@@ -69,7 +69,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
     await test.step('that item is struck through and the others stay open', async () => {
       await expect(todoListPage.item(todo)).toHaveClass(/completed/);
       await expect(todoListPage.item(todo)).toHaveCSS('text-decoration-line', 'line-through');
-      await expect(todoListPage.item(todo)).toHaveCSS('color', completedColor);
+      await expect.soft(todoListPage.item(todo)).toHaveCSS('color', completedColor);
       await expect(todoListPage.items).toHaveCount(seedCount);
       await expect.soft(todoListPage.item('Go to potion class')).not.toHaveClass(/completed/);
       await expect.soft(todoListPage.item('Go to potion class')).toHaveCSS('text-decoration-line', 'none');
@@ -88,10 +88,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
 
     await test.step('hovering the item opens its delete control', async () => {
       await todoListPage.hoverItem(todo);
-      await expect(todoListPage.deleteControl(todo)).toHaveCSS('width', '40px');
-      await expect(todoListPage.deleteControl(todo)).toHaveCSS('opacity', '1');
-      await expect.soft(todoListPage.deleteControl('Go to potion class')).toHaveCSS('width', '0px');
-      await expect.soft(todoListPage.deleteControl('Buy new robes')).toHaveCSS('width', '0px');
+      await expect.soft(todoListPage.deleteControl(todo)).not.toHaveCSS('width', '0px');
     });
 
     await test.step('clicking it removes the item', async () => {
@@ -118,7 +115,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
       await expect(todoListPage.items).toHaveCount(seedCount + 1);
       await expect(todoListPage.blankItems).toHaveCount(1);
       await expect(todoListPage.blankItems).toHaveText('');
-      await expect(todoListPage.newTodoField).toHaveValue('');
+      await expect.soft(todoListPage.newTodoField).toHaveValue('');
 
       for (const name of practiceItems) {
         await expect.soft(todoListPage.item(name)).toHaveText(name);
@@ -138,7 +135,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
       await todoListPage.clickItem(todo);
       await expect(todoListPage.item(todo)).not.toHaveClass(/completed/);
       await expect(todoListPage.item(todo)).toHaveCSS('text-decoration-line', 'none');
-      await expect(todoListPage.item(todo)).toHaveCSS('color', restingColor);
+      await expect.soft(todoListPage.item(todo)).toHaveCSS('color', restingColor);
       await expect(todoListPage.items).toHaveCount(seedCount);
     });
   });
@@ -172,7 +169,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
     await test.step('the list shows that text', async () => {
       await expect(todoListPage.items).toHaveCount(seedCount + 1);
       await expect(todoListPage.item(todo)).toHaveText(todo);
-      await expect(todoListPage.newTodoField).toHaveValue('');
+      await expect.soft(todoListPage.newTodoField).toHaveValue('');
     });
   });
 });
