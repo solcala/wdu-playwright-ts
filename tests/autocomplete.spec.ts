@@ -35,15 +35,19 @@ test.describe('Autocomplete', { tag: ['@autocomplete'] }, () => {
   });
 
   test('typing a shows only the foods that start with A', { tag: ['@regression'] }, async ({ autocompletePage }) => {
-    await autocompletePage.typeFoodItem('a');
-    await expect(autocompletePage.suggestions).toHaveText(foodsStartingWithA);
+    await test.step('a shows the foods that start with A', async () => {
+      await autocompletePage.typeFoodItem('a');
+      await expect(autocompletePage.suggestions).toHaveText(foodsStartingWithA);
+    });
   });
 
   test('an unknown prefix shows no foods', { tag: ['@regression'] }, async ({ autocompletePage }) => {
-    await autocompletePage.typeFoodItem('zz');
-    await expect(autocompletePage.foodItemField).toHaveValue('zz');
-    await expect(autocompletePage.suggestionList).toBeAttached();
-    await expect(autocompletePage.suggestions).toHaveCount(0);
+    await test.step('zz shows no foods', async () => {
+      await autocompletePage.typeFoodItem('zz');
+      await expect.soft(autocompletePage.foodItemField).toHaveValue('zz');
+      await expect.soft(autocompletePage.suggestionList).toBeAttached();
+      await expect.soft(autocompletePage.suggestions).toHaveCount(0);
+    });
   });
 
   test('submitting a prefix sends the typed text', { tag: ['@regression'] }, async ({ autocompletePage }) => {
@@ -59,9 +63,11 @@ test.describe('Autocomplete', { tag: ['@autocomplete'] }, () => {
   });
 
   test('an uppercase prefix shows the catalog food', { tag: ['@regression'] }, async ({ autocompletePage }) => {
-    await autocompletePage.typeFoodItem('APP');
-    await expect(autocompletePage.suggestions).toHaveText(['Apple']);
-    await expect(autocompletePage.foodItemField).toHaveValue('APP');
+    await test.step('APP shows Apple', async () => {
+      await autocompletePage.typeFoodItem('APP');
+      await expect(autocompletePage.suggestions).toHaveText(['Apple']);
+      await expect.soft(autocompletePage.foodItemField).toHaveValue('APP');
+    });
   });
 
   test('arrow down and enter fills the highlighted food without submitting', { tag: ['@regression'] }, async ({ autocompletePage }) => {
@@ -80,9 +86,9 @@ test.describe('Autocomplete', { tag: ['@autocomplete'] }, () => {
 
     await test.step('Enter copies Grapes and stays on the form', async () => {
       await autocompletePage.pressEnterInFoodItemField();
-      await expect(autocompletePage.foodItemField).toHaveValue('Grapes');
-      await expect(autocompletePage.suggestionList).toBeHidden();
-      await expect(autocompletePage.page).toHaveURL(autocompletePage.path);
+      await expect.soft(autocompletePage.foodItemField).toHaveValue('Grapes');
+      await expect.soft(autocompletePage.suggestionList).toBeHidden();
+      await expect.soft(autocompletePage.page).toHaveURL(autocompletePage.path);
     });
   });
 
@@ -94,9 +100,9 @@ test.describe('Autocomplete', { tag: ['@autocomplete'] }, () => {
 
     await test.step('Enter leaves the form as it is', async () => {
       await autocompletePage.pressEnterInFoodItemField();
-      await expect(autocompletePage.page).toHaveURL(autocompletePage.path);
-      await expect(autocompletePage.foodItemField).toHaveValue('Pi');
-      await expect(autocompletePage.suggestions).toHaveText(['Pizza']);
+      await expect.soft(autocompletePage.page).toHaveURL(autocompletePage.path);
+      await expect.soft(autocompletePage.foodItemField).toHaveValue('Pi');
+      await expect.soft(autocompletePage.suggestions).toHaveText(['Pizza']);
     });
   });
 
@@ -114,8 +120,13 @@ test.describe('Autocomplete', { tag: ['@autocomplete'] }, () => {
   });
 
   test('submitting an empty field sends an empty food item', { tag: ['@regression'] }, async ({ autocompletePage }) => {
-    await expect(autocompletePage.foodItemField).toHaveValue('');
-    await autocompletePage.submit();
-    await expect(autocompletePage.page).toHaveURL(`${autocompletePage.path}?food-item=`);
+    await test.step('the field starts empty', async () => {
+      await expect(autocompletePage.foodItemField).toHaveValue('');
+    });
+
+    await test.step('Submit sends an empty food item', async () => {
+      await autocompletePage.submit();
+      await expect(autocompletePage.page).toHaveURL(`${autocompletePage.path}?food-item=`);
+    });
   });
 });
