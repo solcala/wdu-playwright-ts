@@ -29,12 +29,15 @@ export class TodoListPage extends BasePage {
   }
 
   /**
-   * Returns the to-do row with this text.
+   * Returns the to-do row whose text is exactly this name.
+   * A string filter matches part of the text, so "Buy" would also match "Buy new robes".
+   * The row is a span and then a space before the value. A text filter keeps that space, so the match trims it.
    * @param name - The todo text
    * @returns The matching list item
    */
   item(name: string): Locator {
-    return this.items.filter({ hasText: name });
+    const escaped = name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.items.filter({ hasText: new RegExp(`^\\s*${escaped}\\s*$`) });
   }
 
   /**

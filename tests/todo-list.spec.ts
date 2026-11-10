@@ -88,7 +88,7 @@ test.describe('To Do List', { tag: ['@todo-list'] }, () => {
 
     await test.step('hovering the item opens its delete control', async () => {
       await todoListPage.hoverItem(todo);
-      await expect.soft(todoListPage.deleteControl(todo)).not.toHaveCSS('width', '0px');
+      await expect(todoListPage.deleteControl(todo)).not.toHaveCSS('width', '0px');
     });
 
     await test.step('clicking it removes the item', async () => {
