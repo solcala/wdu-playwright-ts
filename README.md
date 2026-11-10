@@ -48,6 +48,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | IFrame challenge                                             | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
 | Popup & Alerts challenge                                     | ✅ Done                |
+| Accordion Items challenge                                    | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -57,7 +58,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-84 challenge tests in 9 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+95 challenge tests in 10 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -74,7 +75,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
 | File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
 | To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
-| Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
+| Accordion Items            | `tests/accordion.spec.ts`               |    11 | ✅ Done |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
@@ -263,6 +264,33 @@ npx playwright test tests/ajax-loader.spec.ts --grep @smoke
 
 The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
 
+### Accordion Items
+
+Run all 11 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/accordion.spec.ts
+npx playwright test tests/accordion.spec.ts --grep @smoke
+```
+
+`tests/accordion.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. Every test is tagged `@accordion`. The case list is `specs/accordion.plan.md`. Scenarios:
+
+| What it checks                                                                                                            | Tag                                 |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| Manual Testing opens its description, and the other panels stay closed                                                    | `@accordion` `@smoke` `@regression` |
+| Cucumber BDD opens its description                                                                                        | `@accordion` `@regression`          |
+| Automation Testing opens its description                                                                                  | `@accordion` `@regression`          |
+| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                | `@accordion` `@smoke` `@regression` |
+| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                           | `@accordion` `@regression`          |
+| Hovering Cucumber BDD leaves that panel closed                                                                            | `@accordion` `@regression`          |
+| Clicking the loading line leaves the delayed panel closed                                                                 | `@accordion` `@regression`          |
+| A second click on Manual Testing closes it, and the description stays in the panel                                        | `@accordion` `@regression`          |
+| Cucumber BDD opens while Manual Testing stays open                                                                        | `@accordion` `@regression`          |
+| Opening Keep Clicking before the text arrives leaves that text clipped; a click after the text is in the panel reveals it | `@accordion` `@regression`          |
+| Enter opens Cucumber BDD, and Space closes it                                                                             | `@accordion` `@regression`          |
+
+The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped until a later click. The page has no fields.
+
 ## Project layout
 
 ```text
@@ -277,11 +305,13 @@ pages/                  Page objects (one class per file, kebab-case file names)
   actions-page.ts
   iframe-page.ts
   ajax-loader-page.ts
+  accordion-items-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
+specs/accordion.plan.md Accordion Items cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -324,6 +354,7 @@ npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see C
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/accordion.spec.ts                # Accordion Items (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
