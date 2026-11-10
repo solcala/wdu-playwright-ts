@@ -6,7 +6,9 @@ import { LoginPortalPage } from '@/pages/login-portal-page';
 import { ButtonClicksPage } from '@/pages/button-clicks-page';
 import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
 import { ActionsPage } from '@/pages/actions-page';
+import { IframePage } from '@/pages/iframe-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
+import { PopupAlertsPage } from '@/pages/popup-alerts-page';
 import { TodoListPage } from '@/pages/todo-list-page';
 
 type MyFixtures = {
@@ -16,7 +18,9 @@ type MyFixtures = {
   buttonClicksPage: ButtonClicksPage;
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
   actionsPage: ActionsPage;
+  iframePage: IframePage;
   ajaxLoaderPage: AjaxLoaderPage;
+  popupAlertsPage: PopupAlertsPage;
   todoListPage: TodoListPage;
 };
 
@@ -45,9 +49,17 @@ export const test = base.extend<MyFixtures>({
     const actionsPage = new ActionsPage(page);
     await use(actionsPage);
   },
+  iframePage: async ({ page }, use) => {
+    const iframePage = new IframePage(page);
+    await use(iframePage);
+  },
   ajaxLoaderPage: async ({ page }, use) => {
     const ajaxLoaderPage = new AjaxLoaderPage(page);
     await use(ajaxLoaderPage);
+  },
+  popupAlertsPage: async ({ page }, use) => {
+    const popupAlertsPage = new PopupAlertsPage(page);
+    await use(popupAlertsPage);
   },
   todoListPage: async ({ page }, use) => {
     const todoListPage = new TodoListPage(page);

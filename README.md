@@ -45,7 +45,9 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Button Clicks challenge                                      | ✅ Done                |
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
 | Actions challenge                                            | ✅ Done                |
+| IFrame challenge                                             | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
+| Popup & Alerts challenge                                     | ✅ Done                |
 | To Do List challenge                                         | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
@@ -56,7 +58,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-78 challenge tests in 8 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+92 challenge tests in 10 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -65,9 +67,9 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
 | Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     — | Pending |
+| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
-| IFrame                     | `tests/iframe.spec.ts`                  |     — | Pending |
+| IFrame                     | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
 | Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
@@ -168,6 +170,31 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
 
+### Popup & Alerts
+
+Run all nine tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/popup-alerts.spec.ts
+npx playwright test tests/popup-alerts.spec.ts --grep @smoke
+```
+
+`tests/popup-alerts.spec.ts` uses the `popupAlertsPage` fixture. The describe block is tagged `@popup-alerts`. The live path is `/Popup-Alerts/index.html`. The case list is `specs/popup-alerts.plan.md`. Scenarios:
+
+| What it checks                                                                    | Tag                    |
+| --------------------------------------------------------------------------------- | ---------------------- |
+| The alert says `I am an alert box!`, and the confirm result stays empty           | `@smoke` `@regression` |
+| OK on the confirm box shows `You pressed OK!` in green                            | `@smoke` `@regression` |
+| Cancel on the confirm box shows `You pressed Cancel!` in gray                     | `@regression`          |
+| A second choice replaces the confirm result                                       | `@regression`          |
+| Modal Popup shows its title and the `WebElement.click()` body, and Close hides it | `@smoke` `@regression` |
+| The × button hides the modal                                                      | `@regression`          |
+| The control opens the modal again                                                 | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                       | `@regression`          |
+| The Ajax Loader control opens `/Ajax-Loader/index.html`                           | `@regression`          |
+
+The alert and the confirm box are spans. The listener is registered before the click. The confirm box writes the choice into the result paragraph: OK is green, Cancel is gray. The modal is Bootstrap, not a JavaScript dialog. Escape leaves it open, and the three popup spans are not in the tab order, so those are not tests. The modal body spells it `allot`. The Ajax Loader control is a link; the loader page is covered in `tests/ajax-loader.spec.ts`.
+
 ### Actions
 
 Run all 12 tests, or only the smoke tests:
@@ -195,6 +222,27 @@ npx playwright test tests/actions.spec.ts --grep @smoke
 | Releasing the pointer over the heading keeps the hold message                                                          | `@regression`          |
 
 The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
+
+### IFrame
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/iframe.spec.ts
+npx playwright test tests/iframe.spec.ts --grep @smoke
+```
+
+`tests/iframe.spec.ts` uses the `iframePage` fixture. The live path is `/IFrame/index.html`. Every test is tagged `@iframe`. The case list is `specs/iframe.plan.md`. Scenarios:
+
+| What it checks                                                                                      | Tag                              |
+| --------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `Find Out More!` opens the welcome dialog, Close hides it, and the parent stays on the IFrame page  | `@iframe` `@smoke` `@regression` |
+| Our Products loads inside the frame, and the parent stays on the IFrame page                        | `@iframe` `@regression`          |
+| Contact Us loads the contact form inside the frame, and the parent stays on the IFrame page         | `@iframe` `@regression`          |
+| The parent brand link leaves the IFrame page for the site home                                      | `@iframe` `@regression`          |
+| The framed brand link loads the site home inside the frame, and the parent stays on the IFrame page | `@iframe` `@regression`          |
+
+`#frame` has no name or title and loads the Page Object Model home. Contact Us inside the frame is `/Contact-Us/contactus.html`; the test stops when that form is showing and does not submit it. The dialog's other dismiss controls, Escape, the product tiles (`href="#"`), and the carousel are not covered. This spec uses a 1280×1400 viewport because the frame is 1000px tall.
 
 ### Ajax Loader
 
@@ -250,13 +298,16 @@ pages/                  Page objects (one class per file, kebab-case file names)
   login-portal-page.ts
   button-clicks-page.ts
   dropdown-checkbox-radio-page.ts
+  popup-alerts-page.ts
   actions-page.ts
+  iframe-page.ts
   ajax-loader-page.ts
   todo-list-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
+specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -295,7 +346,9 @@ npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
+npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see Coverage)
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
+npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
