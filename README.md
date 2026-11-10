@@ -48,6 +48,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | IFrame challenge                                             | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
 | Popup & Alerts challenge                                     | ✅ Done                |
+| File Upload challenge                                        | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -57,7 +58,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-84 challenge tests in 9 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+92 challenge tests in 10 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -72,7 +73,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
 | Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
+| File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
 | To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
 | Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
@@ -263,6 +264,30 @@ npx playwright test tests/ajax-loader.spec.ts --grep @smoke
 
 The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
 
+### File Upload
+
+Run all eight tests, or only the smoke test:
+
+```bash
+npx playwright test tests/file-upload.spec.ts
+npx playwright test tests/file-upload.spec.ts --grep @smoke
+```
+
+`tests/file-upload.spec.ts` uses the `fileUploadPage` fixture. The describe block is tagged `@file-upload`. The live path is `/File-Upload/index.html`. The case list is `specs/file-upload.plan.md`. Scenarios:
+
+| What it checks                                                                                                     | Tag                    |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The title is `File Upload`, the file input starts empty, and Submit is enabled                                     | `@regression`          |
+| `notes.txt` alerts `Your file has now been uploaded!`, the query is `filename=notes.txt`, and the reload clears it | `@smoke` `@regression` |
+| Enter on Submit alerts `Your file has now been uploaded!` and the query is `filename=notes.txt`                    | `@regression`          |
+| Submitting with no file alerts `You need to select a file to upload!` and the query is `filename=`                 | `@regression`          |
+| A zero-byte file alerts `Your file has now been uploaded!` and the query is `filename=empty.txt`                   | `@regression`          |
+| Choosing `first.txt` and then `second.txt` submits `filename=second.txt`                                           | `@regression`          |
+| Clearing a chosen file alerts `You need to select a file to upload!` and the query is `filename=`                  | `@regression`          |
+| `quarterly report.txt` is submitted as `filename=quarterly+report.txt`                                             | `@regression`          |
+
+The check is the file input's value length, not the file size or type. The form has no action and no method, so submit is a GET of this page and the file bytes are not sent. Chromium shows the chosen name as `C:\fakepath\` plus the file name. The fixtures live in `test-data/file-upload/`. Enter on the file control opens the browser chooser, so that is not a test. The navbar is not covered.
+
 ## Project layout
 
 ```text
@@ -277,11 +302,14 @@ pages/                  Page objects (one class per file, kebab-case file names)
   actions-page.ts
   iframe-page.ts
   ajax-loader-page.ts
+  file-upload-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
+test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
+specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -324,6 +352,7 @@ npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see C
 npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
 npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser

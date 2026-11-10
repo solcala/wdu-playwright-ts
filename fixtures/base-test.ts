@@ -9,6 +9,7 @@ import { ActionsPage } from '@/pages/actions-page';
 import { IframePage } from '@/pages/iframe-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
 import { PopupAlertsPage } from '@/pages/popup-alerts-page';
+import { FileUploadPage } from '@/pages/file-upload-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -20,6 +21,7 @@ type MyFixtures = {
   iframePage: IframePage;
   ajaxLoaderPage: AjaxLoaderPage;
   popupAlertsPage: PopupAlertsPage;
+  fileUploadPage: FileUploadPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -58,6 +60,10 @@ export const test = base.extend<MyFixtures>({
   popupAlertsPage: async ({ page }, use) => {
     const popupAlertsPage = new PopupAlertsPage(page);
     await use(popupAlertsPage);
+  },
+  fileUploadPage: async ({ page }, use) => {
+    const fileUploadPage = new FileUploadPage(page);
+    await use(fileUploadPage);
   },
 });
 
