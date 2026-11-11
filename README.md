@@ -52,6 +52,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | File Upload challenge                                        | ✅ Done                |
 | To Do List challenge                                         | ✅ Done                |
 | Hidden Elements challenge                                    | ✅ Done                |
+| Scrolling challenge                                          | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -61,7 +62,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-114 challenge tests in 13 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+121 challenge tests in 14 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -82,7 +83,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                  | `tests/scrolling.spec.ts`               |     — | Pending |
+| Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
 | AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
@@ -361,6 +362,29 @@ npx playwright test tests/hidden-elements.spec.ts --grep @smoke
 
 The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
 
+### Scrolling
+
+Run all seven tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/scrolling.spec.ts
+npx playwright test tests/scrolling.spec.ts --grep @smoke
+```
+
+`tests/scrolling.spec.ts` uses the `scrollingPage` fixture. The describe block is tagged `@scrolling`. The live path is `/Scrolling/index.html`. The case list is `specs/scrolling.plan.md`. Scenarios:
+
+| What it checks                                                                                           | Tag                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Hovering the first zone replaces `Scroll to me first!` with `Well done for scrolling to me!`             | `@smoke` `@regression` |
+| Hovering the last zone replaces `Dont forget to scroll to me!` with pointer coordinates                  | `@smoke` `@regression` |
+| Hovering the left entries box changes `0 Entries` to `1 Entries`, and the right box stays at `0 Entries` | `@regression`          |
+| Hovering the right entries box changes `0 Entries` to `1 Entries`, and the left box stays at `0 Entries` | `@regression`          |
+| Scrolling the last zone into view leaves `Dont forget to scroll to me!`                                  | `@regression`          |
+| Leaving the left entries box and entering it again shows `2 Entries`                                     | `@regression`          |
+| The first zone keeps `Well done for scrolling to me!` after the pointer moves to the heading             | `@regression`          |
+
+The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
+
 ## Project layout
 
 ```text
@@ -379,6 +403,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   file-upload-page.ts
   todo-list-page.ts
   hidden-elements-page.ts
+  scrolling-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -387,6 +412,7 @@ playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
+specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -433,6 +459,7 @@ npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see C
 npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
+npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
