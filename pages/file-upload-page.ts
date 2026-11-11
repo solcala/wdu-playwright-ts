@@ -59,16 +59,19 @@ export class FileUploadPage extends BasePage {
   /**
    * Runs the submit action and accepts the alert it opens.
    * The listener is registered before the action, because the alert is gone if nothing is listening.
+   * The alert is accepted inside that wait, and the wait runs together with the trigger.
    * @param trigger - The click or keypress that submits the form
    * @returns The alert message text
    */
   private async acceptSubmitAlert(trigger: () => Promise<void>): Promise<string> {
-    const dialogPromise = this.page.waitForEvent('dialog');
-    const actionPromise = trigger();
-    const dialog = await dialogPromise;
-    const message = dialog.message();
-    await dialog.accept();
-    await actionPromise;
+    const [message] = await Promise.all([
+      this.page.waitForEvent('dialog').then(async (dialog) => {
+        const text = dialog.message();
+        await dialog.accept();
+        return text;
+      }),
+      trigger(),
+    ]);
     return message;
   }
 }

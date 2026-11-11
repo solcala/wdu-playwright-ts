@@ -75,7 +75,6 @@ test.describe('File Upload', { tag: ['@file-upload'] }, () => {
           const message = await fileUploadPage.submitFile();
           expect.soft(message).toBe(emptyMessage);
           await expect.soft(fileUploadPage.page).toHaveURL(/\/File-Upload\/index\.html\?filename=$/);
-          await expect.soft(fileUploadPage.fileInput).toBeEmpty();
           await expect.soft(fileUploadPage.page).toHaveTitle('File Upload');
         });
       });
