@@ -13,6 +13,7 @@ import { PopupAlertsPage } from '@/pages/popup-alerts-page';
 import { FileUploadPage } from '@/pages/file-upload-page';
 import { TodoListPage } from '@/pages/todo-list-page';
 import { HiddenElementsPage } from '@/pages/hidden-elements-page';
+import { DataTablesPage } from '@/pages/data-tables-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -28,6 +29,7 @@ type MyFixtures = {
   fileUploadPage: FileUploadPage;
   todoListPage: TodoListPage;
   hiddenElementsPage: HiddenElementsPage;
+  dataTablesPage: DataTablesPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -82,6 +84,10 @@ export const test = base.extend<MyFixtures>({
   hiddenElementsPage: async ({ page }, use) => {
     const hiddenElementsPage = new HiddenElementsPage(page);
     await use(hiddenElementsPage);
+  },
+  dataTablesPage: async ({ page }, use) => {
+    const dataTablesPage = new DataTablesPage(page);
+    await use(dataTablesPage);
   },
 });
 
