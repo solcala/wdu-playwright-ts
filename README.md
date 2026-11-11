@@ -47,8 +47,12 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Actions challenge                                            | ✅ Done                |
 | IFrame challenge                                             | ✅ Done                |
 | Ajax Loader challenge                                        | ✅ Done                |
+| Autocomplete challenge                                       | ✅ Done                |
 | Popup & Alerts challenge                                     | ✅ Done                |
+| File Upload challenge                                        | ✅ Done                |
+| To Do List challenge                                         | ✅ Done                |
 | Accordion Items challenge                                    | ✅ Done                |
+| Hidden Elements challenge                                    | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -58,7 +62,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-95 challenge tests in 10 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+125 challenge tests in 14 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -71,12 +75,12 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
 | IFrame                     | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
 | Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
-| Autocomplete               | `tests/autocomplete.spec.ts`            |     — | Pending |
+| Autocomplete               | `tests/autocomplete.spec.ts`            |     9 | ✅ Done |
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                | `tests/file-upload.spec.ts`             |     — | Pending |
-| To Do List                 | `tests/todo-list.spec.ts`               |     — | Pending |
+| File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
+| To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
 | Accordion Items            | `tests/accordion.spec.ts`               |    11 | ✅ Done |
-| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
+| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
 | Scrolling                  | `tests/scrolling.spec.ts`               |     — | Pending |
@@ -264,6 +268,79 @@ npx playwright test tests/ajax-loader.spec.ts --grep @smoke
 
 The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
 
+### Autocomplete
+
+Run all nine tests, or only the smoke test:
+
+```bash
+npx playwright test tests/autocomplete.spec.ts
+npx playwright test tests/autocomplete.spec.ts --grep @smoke
+```
+
+`tests/autocomplete.spec.ts` uses the `autocompletePage` fixture. The describe block is tagged `@autocomplete`. The live path is `/Autocomplete-TextField/autocomplete-textfield.html`. The case list is `specs/autocomplete.plan.md`. Scenarios:
+
+| What it checks                                                                                     | Tag                    |
+| -------------------------------------------------------------------------------------------------- | ---------------------- |
+| `Pi` shows only `Pizza`, the click puts `Pizza` in the field, and Submit sends `food-item=Pizza`   | `@smoke` `@regression` |
+| `a` shows `Asparagus`, `Avacado`, `Almond`, `Artichoke`, and `Apple`, in that order                | `@regression`          |
+| `zz` leaves the field as `zz` and the suggestion list has no rows                                  | `@regression`          |
+| `App` shows `Apple`, and Submit sends `food-item=App`                                              | `@regression`          |
+| `APP` shows `Apple` and leaves `APP` in the field                                                  | `@regression`          |
+| Arrow Down highlights `Grapes`, and Enter puts `Grapes` in the field without submitting            | `@regression`          |
+| Enter with nothing highlighted leaves `Pi` in the field, leaves `Pizza` shown, and does not submit | `@regression`          |
+| A click on the heading closes the suggestions and leaves the typed text                            | `@regression`          |
+| An empty field submits as `food-item=`                                                             | `@regression`          |
+
+The list is built in the input handler. A suggestion click, or Enter on a highlighted row, copies that catalog value into the field and closes the list. Enter does not submit the form. Submit posts the field as the `food-item` query on the same page. The catalog spells `Avacado` with one c. The navbar and the shop logo are not covered.
+
+### File Upload
+
+Run all eight tests, or only the smoke test:
+
+```bash
+npx playwright test tests/file-upload.spec.ts
+npx playwright test tests/file-upload.spec.ts --grep @smoke
+```
+
+`tests/file-upload.spec.ts` uses the `fileUploadPage` fixture. The describe block is tagged `@file-upload`. The live path is `/File-Upload/index.html`. The case list is `specs/file-upload.plan.md`. Scenarios:
+
+| What it checks                                                                                                     | Tag                    |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The title is `File Upload`, the file input starts empty, and Submit is enabled                                     | `@regression`          |
+| `notes.txt` alerts `Your file has now been uploaded!`, the query is `filename=notes.txt`, and the reload clears it | `@smoke` `@regression` |
+| Enter on Submit alerts `Your file has now been uploaded!` and the query is `filename=notes.txt`                    | `@regression`          |
+| Submitting with no file alerts `You need to select a file to upload!` and the query is `filename=`                 | `@regression`          |
+| A zero-byte file alerts `Your file has now been uploaded!` and the query is `filename=empty.txt`                   | `@regression`          |
+| Choosing `first.txt` and then `second.txt` submits `filename=second.txt`                                           | `@regression`          |
+| Clearing a chosen file alerts `You need to select a file to upload!` and the query is `filename=`                  | `@regression`          |
+| `quarterly report.txt` is submitted as `filename=quarterly+report.txt`                                             | `@regression`          |
+
+The check is the file input's value length, not the file size or type. The form has no action and no method, so submit is a GET of this page and the file bytes are not sent. Chromium shows the chosen name as `C:\fakepath\` plus the file name. The fixtures live in `test-data/file-upload/`. Enter on the file control opens the browser chooser, so that is not a test. The navbar is not covered.
+
+### To Do List
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/todo-list.spec.ts
+npx playwright test tests/todo-list.spec.ts --grep @smoke
+```
+
+`tests/todo-list.spec.ts` uses the `todoListPage` fixture. The describe block is tagged `@todo-list`. The live path is `/To-Do-List/index.html`. The case list is `specs/todo-list.plan.md`. Scenarios:
+
+| What it checks                                                                                               | Tag                    |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The list starts as `Go to potion class`, `Buy new robes`, and `Practice magic`, none struck through          | `@regression`          |
+| Enter on `Brew a potion` adds that row, clears the field, and leaves the count at 4                          | `@smoke` `@regression` |
+| Clicking `Buy new robes` strikes it through, leaves the count at 3, and leaves the other rows open           | `@smoke` `@regression` |
+| Hovering `Practice magic` opens its delete control, and the click removes that row and leaves the count at 2 | `@smoke` `@regression` |
+| Enter on an empty field adds a blank row and leaves the count at 4                                           | `@regression`          |
+| A second click on `Buy new robes` clears the strike-through and leaves the count at 3                        | `@regression`          |
+| The plus icon hides the add field, then shows it again, and the count stays 3                                | `@regression`          |
+| Enter on `Practice "magic" & potions` shows that text and leaves the count at 4                              | `@regression`          |
+
+Enter is the only way to add a row. The plus icon toggles the field and does not add one. A click toggles the `completed` class, which strikes the text through. The delete control is a span at width 0 until the row is hovered; the click fades that row out and removes it. Empty Enter is not rejected. The quotes-and-ampersand row is stored as text.
+
 ### Accordion Items
 
 Run all 11 tests, or only the smoke tests:
@@ -291,6 +368,27 @@ npx playwright test tests/accordion.spec.ts --grep @smoke
 
 The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped until a later click. The page has no fields.
 
+### Hidden Elements
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/hidden-elements.spec.ts
+npx playwright test tests/hidden-elements.spec.ts --grep @smoke
+```
+
+`tests/hidden-elements.spec.ts` uses the `hiddenElementsPage` fixture. The describe block is tagged `@hidden-elements`. The live path is `/Hidden-Elements/index.html`. The case list is `specs/hidden-elements.plan.md`. Scenarios:
+
+| What it checks                                                                                   | Tag                    |
+| ------------------------------------------------------------------------------------------------ | ---------------------- |
+| `CLICK ME!!!` is at opacity `0` and opens the Action Move & Click modal                          | `@smoke` `@regression` |
+| `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                          | `@regression`          |
+| A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden | `@regression`          |
+| Not Displayed has no layout box, and the other two sections keep the 70px height                 | `@regression`          |
+| After Close, the section is still opacity `0` and `CLICK ME!!!` opens the modal again            | `@regression`          |
+
+The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
+
 ## Project layout
 
 ```text
@@ -305,13 +403,20 @@ pages/                  Page objects (one class per file, kebab-case file names)
   actions-page.ts
   iframe-page.ts
   ajax-loader-page.ts
+  autocomplete-page.ts
+  file-upload-page.ts
+  todo-list-page.ts
   accordion-items-page.ts
+  hidden-elements-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
+test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
 specs/accordion.plan.md Accordion Items cases: outcomes, categories, and what is not covered
+specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
+specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -350,11 +455,15 @@ npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
-npx playwright test tests/popup-alerts.spec.ts           # Popup & Alerts (see Coverage)
-npx playwright test tests/actions.spec.ts                # Actions (see Coverage)
-npx playwright test tests/iframe.spec.ts                 # IFrame (see Coverage)
+npx playwright test tests/popup-alerts.spec.ts             # Popup & Alerts (see Coverage)
+npx playwright test tests/actions.spec.ts                  # Actions (see Coverage)
+npx playwright test tests/iframe.spec.ts                   # IFrame (see Coverage)
 npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
+npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
+npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
 npx playwright test tests/accordion.spec.ts                # Accordion Items (see Coverage)
+npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
