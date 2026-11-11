@@ -7,15 +7,6 @@ import { test, expect } from '@/fixtures/base-test';
  * The case list is specs/hidden-elements.plan.md.
  */
 
-/**
- * .section-title sets height to 70px. display:none drops that box. The other two rules keep it.
- */
-const sectionHeight = 70;
-/**
- * Bootstrap shows the dialog after the backdrop fade.
- * A hidden check before that fade ends still passes when the click opened the modal.
- */
-const modalFadeWindowMs = 1_000;
 const zeroOpacityModalTitle = 'Well done! the Action Move & Click can become very useful!';
 const zeroOpacityModalBody =
   'Advanced user interactions (API) has been developed to enable you to perform more complex interactions such as:';
@@ -37,7 +28,6 @@ test.describe('Hidden Elements', { tag: ['@hidden-elements'] }, () => {
       await expect(hiddenElementsPage.zeroOpacityModal).toBeVisible();
       await expect.soft(hiddenElementsPage.zeroOpacityModalTitle).toHaveText(zeroOpacityModalTitle);
       await expect.soft(hiddenElementsPage.zeroOpacityModal).toContainText(zeroOpacityModalBody);
-      await expect.soft(hiddenElementsPage.zeroOpacitySection).toHaveCSS('opacity', '0');
     });
   });
 
@@ -62,13 +52,13 @@ test.describe('Hidden Elements', { tag: ['@hidden-elements'] }, () => {
 
     await test.step('a pointer click in that section misses the control', async () => {
       const hit = await hiddenElementsPage.clickVisibilityHiddenSection();
+      /**
+       * Bootstrap adds modal-open to body on the click that opens a modal, before the backdrop fade.
+       * toBeHidden() would pass on the first poll while that dialog is still hidden.
+       */
+      await expect(hiddenElementsPage.body).not.toHaveClass(/modal-open/);
       expect(hit.id).toBe('');
       expect(hit.hasThumbnailClass).toBe(true);
-      /**
-       * The click listener has already run. The modal check covers the backdrop fade.
-       * toBeHidden() would pass on the first poll, while Bootstrap still has the dialog hidden.
-       */
-      expect(await hiddenElementsPage.visibilityHiddenModalOpened(modalFadeWindowMs)).toBe(false);
       await expect.soft(hiddenElementsPage.notDisplayedModal).toBeHidden();
       await expect.soft(hiddenElementsPage.zeroOpacityModal).toBeHidden();
     });
@@ -80,13 +70,9 @@ test.describe('Hidden Elements', { tag: ['@hidden-elements'] }, () => {
     async ({ hiddenElementsPage }) => {
       await test.step('only the displayed sections keep the 70px box', async () => {
         const notDisplayed = await hiddenElementsPage.notDisplayedSection.boundingBox();
-        const visibilityHidden = await hiddenElementsPage.visibilityHiddenSection.boundingBox();
-        const zeroOpacity = await hiddenElementsPage.zeroOpacitySection.boundingBox();
         expect.soft(notDisplayed).toBeNull();
-        expect.soft(visibilityHidden).not.toBeNull();
-        expect.soft(visibilityHidden?.height).toBe(sectionHeight);
-        expect.soft(zeroOpacity).not.toBeNull();
-        expect.soft(zeroOpacity?.height).toBe(sectionHeight);
+        await expect.soft(hiddenElementsPage.visibilityHiddenSection).toHaveCSS('height', '70px');
+        await expect.soft(hiddenElementsPage.zeroOpacitySection).toHaveCSS('height', '70px');
       });
     },
   );

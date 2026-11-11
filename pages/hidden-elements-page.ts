@@ -1,4 +1,4 @@
-import { errors, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
 type PointerClick = {
@@ -12,6 +12,7 @@ type ClickRecordWindow = Window & {
 
 export class HiddenElementsPage extends BasePage {
   readonly path = '/Hidden-Elements/index.html';
+  readonly body: Locator;
   readonly notDisplayedHeading: Locator;
   readonly notDisplayedSection: Locator;
   readonly notDisplayedControl: Locator;
@@ -28,6 +29,10 @@ export class HiddenElementsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
+    /**
+     * Bootstrap adds modal-open here when a modal opens. Body has no accessible name.
+     */
+    this.body = page.locator('body');
     this.notDisplayedHeading = page.getByRole('heading', { name: 'Not Displayed', exact: true });
     /**
      * The section has no accessible name. The id is the display:none rule.
@@ -128,23 +133,5 @@ export class HiddenElementsPage extends BasePage {
       }
       return hit;
     });
-  }
-
-  /**
-   * Waits to see whether the visibility-hidden modal opens.
-   * Bootstrap keeps the dialog hidden until the backdrop fade ends, so a check on the first poll cannot fail.
-   * @param timeout - How long to wait for the modal to become visible
-   * @returns True when the modal becomes visible inside that window
-   */
-  async visibilityHiddenModalOpened(timeout: number): Promise<boolean> {
-    try {
-      await this.visibilityHiddenModal.waitFor({ state: 'visible', timeout });
-      return true;
-    } catch (error) {
-      if (error instanceof errors.TimeoutError) {
-        return false;
-      }
-      throw error;
-    }
   }
 }

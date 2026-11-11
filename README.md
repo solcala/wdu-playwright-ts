@@ -353,7 +353,7 @@ npx playwright test tests/hidden-elements.spec.ts --grep @smoke
 
 | What it checks                                                                                   | Tag                    |
 | ------------------------------------------------------------------------------------------------ | ---------------------- |
-| `CLICK ME!!!` opens the Action Move & Click modal, and the section stays at opacity `0`          | `@smoke` `@regression` |
+| `CLICK ME!!!` is at opacity `0` and opens the Action Move & Click modal                          | `@smoke` `@regression` |
 | `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                          | `@regression`          |
 | A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden | `@regression`          |
 | Not Displayed has no layout box, and the other two sections keep the 70px height                 | `@regression`          |
