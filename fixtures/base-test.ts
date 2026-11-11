@@ -8,7 +8,10 @@ import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page'
 import { ActionsPage } from '@/pages/actions-page';
 import { IframePage } from '@/pages/iframe-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
+import { AutocompletePage } from '@/pages/autocomplete-page';
 import { PopupAlertsPage } from '@/pages/popup-alerts-page';
+import { FileUploadPage } from '@/pages/file-upload-page';
+import { TodoListPage } from '@/pages/todo-list-page';
 import { HiddenElementsPage } from '@/pages/hidden-elements-page';
 
 type MyFixtures = {
@@ -20,7 +23,10 @@ type MyFixtures = {
   actionsPage: ActionsPage;
   iframePage: IframePage;
   ajaxLoaderPage: AjaxLoaderPage;
+  autocompletePage: AutocompletePage;
   popupAlertsPage: PopupAlertsPage;
+  fileUploadPage: FileUploadPage;
+  todoListPage: TodoListPage;
   hiddenElementsPage: HiddenElementsPage;
 };
 
@@ -57,9 +63,21 @@ export const test = base.extend<MyFixtures>({
     const ajaxLoaderPage = new AjaxLoaderPage(page);
     await use(ajaxLoaderPage);
   },
+  autocompletePage: async ({ page }, use) => {
+    const autocompletePage = new AutocompletePage(page);
+    await use(autocompletePage);
+  },
   popupAlertsPage: async ({ page }, use) => {
     const popupAlertsPage = new PopupAlertsPage(page);
     await use(popupAlertsPage);
+  },
+  fileUploadPage: async ({ page }, use) => {
+    const fileUploadPage = new FileUploadPage(page);
+    await use(fileUploadPage);
+  },
+  todoListPage: async ({ page }, use) => {
+    const todoListPage = new TodoListPage(page);
+    await use(todoListPage);
   },
   hiddenElementsPage: async ({ page }, use) => {
     const hiddenElementsPage = new HiddenElementsPage(page);
