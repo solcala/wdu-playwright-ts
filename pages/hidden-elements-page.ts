@@ -1,9 +1,13 @@
-import { Locator, Page } from '@playwright/test';
+import { errors, Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
-type PointerTarget = {
+type PointerClick = {
   id: string;
-  className: string;
+  hasThumbnailClass: boolean;
+};
+
+type ClickRecordWindow = Window & {
+  visibilityHiddenClick?: PointerClick;
 };
 
 export class HiddenElementsPage extends BasePage {
@@ -74,10 +78,24 @@ export class HiddenElementsPage extends BasePage {
   /**
    * Clicks the center of the visibility-hidden section.
    * The section is not a hit target, so locator.click would wait until it is visible.
-   * The pointer goes to the element underneath the section's box.
-   * @returns The id and class of the element under that point before the click
+   * visibility:hidden still has a layout box, so the wait is for that box, not Playwright's visible state.
+   * The listener is registered before the pointer click, because the event is gone if nothing is listening.
+   * @returns The id of the element that received the click, and whether that element has the thumbnail class
    */
-  async clickVisibilityHiddenSection(): Promise<PointerTarget> {
+  async clickVisibilityHiddenSection(): Promise<PointerClick> {
+    await this.visibilityHiddenSection.waitFor({ state: 'attached' });
+    /**
+     * The id is the visibility:hidden section. Playwright's visible state does not match this rule.
+     */
+    await this.page.waitForFunction(() => {
+      const section = document.getElementById('visibility-hidden');
+      if (!section) {
+        return false;
+      }
+      const box = section.getBoundingClientRect();
+      return box.width > 0 && box.height > 0;
+    });
+
     const box = await this.visibilityHiddenSection.boundingBox();
     if (!box) {
       throw new Error('The visibility-hidden section has no layout box');
@@ -85,17 +103,48 @@ export class HiddenElementsPage extends BasePage {
 
     const x = box.x + box.width / 2;
     const y = box.y + box.height / 2;
-    const hit = await this.page.evaluate(
-      ({ x, y }) => {
-        const element = document.elementFromPoint(x, y);
-        if (!(element instanceof HTMLElement)) {
-          return { id: '', className: '' };
-        }
-        return { id: element.id, className: element.className };
-      },
-      { x, y },
-    );
+    await this.page.evaluate(() => {
+      const view = window as ClickRecordWindow;
+      document.addEventListener(
+        'click',
+        (event) => {
+          const element = event.target instanceof HTMLElement ? event.target : null;
+          view.visibilityHiddenClick = {
+            id: element?.id ?? '',
+            hasThumbnailClass: element?.classList.contains('thumbnail') ?? false,
+          };
+        },
+        { capture: true, once: true },
+      );
+    });
     await this.page.mouse.click(x, y);
-    return hit;
+    await this.page.waitForFunction(() => (window as ClickRecordWindow).visibilityHiddenClick !== undefined);
+    return this.page.evaluate(() => {
+      const view = window as ClickRecordWindow;
+      const hit = view.visibilityHiddenClick;
+      delete view.visibilityHiddenClick;
+      if (!hit) {
+        throw new Error('The click listener did not run');
+      }
+      return hit;
+    });
+  }
+
+  /**
+   * Waits to see whether the visibility-hidden modal opens.
+   * Bootstrap keeps the dialog hidden until the backdrop fade ends, so a check on the first poll cannot fail.
+   * @param timeout - How long to wait for the modal to become visible
+   * @returns True when the modal becomes visible inside that window
+   */
+  async visibilityHiddenModalOpened(timeout: number): Promise<boolean> {
+    try {
+      await this.visibilityHiddenModal.waitFor({ state: 'visible', timeout });
+      return true;
+    } catch (error) {
+      if (error instanceof errors.TimeoutError) {
+        return false;
+      }
+      throw error;
+    }
   }
 }

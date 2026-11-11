@@ -351,13 +351,13 @@ npx playwright test tests/hidden-elements.spec.ts --grep @smoke
 
 `tests/hidden-elements.spec.ts` uses the `hiddenElementsPage` fixture. The describe block is tagged `@hidden-elements`. The live path is `/Hidden-Elements/index.html`. The case list is `specs/hidden-elements.plan.md`. Scenarios:
 
-| What it checks                                                                                                 | Tag                    |
-| -------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `CLICK ME!!!` opens the Action Move & Click modal, the section stays at opacity `0`, and Close hides the modal | `@smoke` `@regression` |
-| `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                                        | `@regression`          |
-| A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden               | `@regression`          |
-| Not Displayed has no layout box, and the other two sections keep the 70px height                               | `@regression`          |
-| After Close, the section is still opacity `0` and `CLICK ME!!!` opens the modal again                          | `@regression`          |
+| What it checks                                                                                   | Tag                    |
+| ------------------------------------------------------------------------------------------------ | ---------------------- |
+| `CLICK ME!!!` opens the Action Move & Click modal, and the section stays at opacity `0`          | `@smoke` `@regression` |
+| `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                          | `@regression`          |
+| A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden | `@regression`          |
+| Not Displayed has no layout box, and the other two sections keep the 70px height                 | `@regression`          |
+| After Close, the section is still opacity `0` and `CLICK ME!!!` opens the modal again            | `@regression`          |
 
 The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
 
