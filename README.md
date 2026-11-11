@@ -51,6 +51,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Popup & Alerts challenge                                     | ✅ Done                |
 | File Upload challenge                                        | ✅ Done                |
 | To Do List challenge                                         | ✅ Done                |
+| Hidden Elements challenge                                    | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -60,7 +61,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-109 challenge tests in 12 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+114 challenge tests in 13 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -78,7 +79,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
 | To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
 | Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
-| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     — | Pending |
+| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
 | Scrolling                  | `tests/scrolling.spec.ts`               |     — | Pending |
@@ -339,6 +340,27 @@ npx playwright test tests/todo-list.spec.ts --grep @smoke
 
 Enter is the only way to add a row. The plus icon toggles the field and does not add one. A click toggles the `completed` class, which strikes the text through. The delete control is a span at width 0 until the row is hovered; the click fades that row out and removes it. Empty Enter is not rejected. The quotes-and-ampersand row is stored as text.
 
+### Hidden Elements
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/hidden-elements.spec.ts
+npx playwright test tests/hidden-elements.spec.ts --grep @smoke
+```
+
+`tests/hidden-elements.spec.ts` uses the `hiddenElementsPage` fixture. The describe block is tagged `@hidden-elements`. The live path is `/Hidden-Elements/index.html`. The case list is `specs/hidden-elements.plan.md`. Scenarios:
+
+| What it checks                                                                                   | Tag                    |
+| ------------------------------------------------------------------------------------------------ | ---------------------- |
+| `CLICK ME!!!` is at opacity `0` and opens the Action Move & Click modal                          | `@smoke` `@regression` |
+| `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                          | `@regression`          |
+| A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden | `@regression`          |
+| Not Displayed has no layout box, and the other two sections keep the 70px height                 | `@regression`          |
+| After Close, the section is still opacity `0` and `CLICK ME!!!` opens the modal again            | `@regression`          |
+
+The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
+
 ## Project layout
 
 ```text
@@ -356,6 +378,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   autocomplete-page.ts
   file-upload-page.ts
   todo-list-page.ts
+  hidden-elements-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -363,6 +386,7 @@ test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
+specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -408,6 +432,7 @@ npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Co
 npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
 npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
+npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser

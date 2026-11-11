@@ -12,6 +12,7 @@ import { AutocompletePage } from '@/pages/autocomplete-page';
 import { PopupAlertsPage } from '@/pages/popup-alerts-page';
 import { FileUploadPage } from '@/pages/file-upload-page';
 import { TodoListPage } from '@/pages/todo-list-page';
+import { HiddenElementsPage } from '@/pages/hidden-elements-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -26,6 +27,7 @@ type MyFixtures = {
   popupAlertsPage: PopupAlertsPage;
   fileUploadPage: FileUploadPage;
   todoListPage: TodoListPage;
+  hiddenElementsPage: HiddenElementsPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -76,6 +78,10 @@ export const test = base.extend<MyFixtures>({
   todoListPage: async ({ page }, use) => {
     const todoListPage = new TodoListPage(page);
     await use(todoListPage);
+  },
+  hiddenElementsPage: async ({ page }, use) => {
+    const hiddenElementsPage = new HiddenElementsPage(page);
+    await use(hiddenElementsPage);
   },
 });
 
