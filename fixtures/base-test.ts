@@ -10,6 +10,7 @@ import { IframePage } from '@/pages/iframe-page';
 import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
 import { AutocompletePage } from '@/pages/autocomplete-page';
 import { PopupAlertsPage } from '@/pages/popup-alerts-page';
+import { FileUploadPage } from '@/pages/file-upload-page';
 import { TodoListPage } from '@/pages/todo-list-page';
 
 type MyFixtures = {
@@ -23,6 +24,7 @@ type MyFixtures = {
   ajaxLoaderPage: AjaxLoaderPage;
   autocompletePage: AutocompletePage;
   popupAlertsPage: PopupAlertsPage;
+  fileUploadPage: FileUploadPage;
   todoListPage: TodoListPage;
 };
 
@@ -66,6 +68,10 @@ export const test = base.extend<MyFixtures>({
   popupAlertsPage: async ({ page }, use) => {
     const popupAlertsPage = new PopupAlertsPage(page);
     await use(popupAlertsPage);
+  },
+  fileUploadPage: async ({ page }, use) => {
+    const fileUploadPage = new FileUploadPage(page);
+    await use(fileUploadPage);
   },
   todoListPage: async ({ page }, use) => {
     const todoListPage = new TodoListPage(page);
