@@ -54,6 +54,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Accordion Items challenge                                    | ✅ Done                |
 | Hidden Elements challenge                                    | ✅ Done                |
 | Scrolling challenge                                          | ✅ Done                |
+| Page Object Model challenge                                  | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -63,7 +64,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-132 challenge tests in 15 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+142 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -83,7 +84,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Accordion Items            | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
-| Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
+| Page Object Model          | `tests/page-object-model.spec.ts`       |    10 | ✅ Done |
 | Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
 | AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
 
@@ -413,6 +414,32 @@ npx playwright test tests/scrolling.spec.ts --grep @smoke
 
 The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
 
+### Page Object Model
+
+Run all 10 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/page-object-model.spec.ts
+npx playwright test tests/page-object-model.spec.ts --grep @smoke
+```
+
+`tests/page-object-model.spec.ts` uses the `pageObjectModelPage` fixture. The describe block is tagged `@page-object-model`. The home path is `/Page-Object-Model/index.html`. The case list is `specs/page-object-model.plan.md`. Scenarios:
+
+| What it checks                                                                                                   | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `Find Out More!` shows the welcome dialog, including the goods sentence, and Close hides it                      | `@smoke` `@regression` |
+| Special Offers shows `NEWCUSTOMER773322`, the 30% heading, and the £50 terms, at `products.html#`                | `@smoke` `@regression` |
+| Our Products loads the catalogue, titled `WebDriver (New Approach To Learning)`, with Special Offers and Cameras | `@regression`          |
+| Cameras shows that same offer, including `NEWCUSTOMER773322`                                                     | `@regression`          |
+| The next control walks the slides and wraps from `../img/nintendo.svg` back to `../img/amp.svg`                  | `@regression`          |
+| `Find Out More` inside the welcome dialog hides it and leaves `/Page-Object-Model/index.html`                    | `@regression`          |
+| Proceed hides the offer and leaves Special Offers on the catalogue                                               | `@regression`          |
+| Enter on `Find Out More!` shows the welcome dialog                                                               | `@regression`          |
+| Home from the catalogue loads `/Page-Object-Model/index.html`                                                    | `@regression`          |
+| Contact Us loads `/Contact-Us/contactus.html` with the heading `CONTACT US`                                      | `@regression`          |
+
+The homepage card `PAGE OBJECT MODEL` opens `Page-Object-Model/index.html`. The product tiles share one dialog, and that dialog's copy is in the products document while it is hidden. The checks wait until the heading or the coupon is visible, and until a dismiss hides it again. Cameras stands for the other tiles, which open the same dialog. The dialog's `Find Out More` button and Proceed only dismiss. The carousel advances on a timer of about five seconds, so the next-slide test stops that timer before it reads the current image. The first two slide images share an id. Enter and Space both open the welcome dialog; Space is the same button activation. The contact form is not submitted. Escape leaves these dialogs open. × and the backdrop hide them, the same as Close.
+
 ## Project layout
 
 ```text
@@ -433,6 +460,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   accordion-items-page.ts
   hidden-elements-page.ts
   scrolling-page.ts
+  page-object-model-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -443,6 +471,7 @@ specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and w
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
+specs/page-object-model.plan.md Page Object Model cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -491,6 +520,7 @@ npx playwright test tests/todo-list.spec.ts                # To Do List (see Cov
 npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
+npx playwright test tests/page-object-model.spec.ts        # Page Object Model (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
