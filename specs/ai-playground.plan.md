@@ -81,7 +81,7 @@ A group suffix (`tests/ai-playground-<group>.spec.ts`) is a second name. The rec
 - The page object keeps the title. One class, `AiTestingPlaygroundPage`, in `pages/ai-testing-playground-page.ts`, fixture `aiTestingPlaygroundPage`, `path` `/AI-Playground/index.html`. Imports use `@/`.
 - The spec file carries the group, because this page is split across pull requests. The file is `tests/ai-playground-<group>.spec.ts`. The `ai-playground` prefix is the name of the split. The class name stays the page title.
 - Rule 8 still holds for the file that exists. The outer `describe` is tagged with the spec name, `@ai-playground-<group>`, and with `@ai-playground`, so `npx playwright test --grep @ai-playground` runs every playground spec. `@regression` is on every test. Each group's smoke subset is the one test named in that group, and that test carries `@smoke` and `@regression`.
-- The coverage row in `README.md` still lists `tests/ai-testing-playground.spec.ts` as pending. That row stays until a group pull request replaces it with the spec that pull request adds. This roadmap does not mark the playground done.
+- The coverage table still has one pending row for `tests/ai-testing-playground.spec.ts`. This pull request leaves that row. A later group pull request adds a done row for the spec it adds, and it keeps the rest of the playground pending: one pending row for the groups that have not landed, or one pending row per remaining group. Finishing Basics A leaves the page incomplete. Challenges 26 and 27 stay pending until their own pull requests.
 - Challenges 26 and 27 are other pages. Their specs follow Naming from the title of the page they open, once that pull request has fetched it. They do not use the `ai-playground-` prefix, and they are not tagged `@ai-playground`. The headings on this page are `Booking Portal` and `Accessibility Suite`. The starting file names are `tests/booking-portal.spec.ts` and `tests/accessibility-suite.spec.ts`. If the destination title differs, that pull request uses the destination title.
 
 ## Page object
@@ -92,7 +92,7 @@ The class returns locators and action results. It does not import or call `test`
 
 The Basics A pull request adds the class and the `aiTestingPlaygroundPage` fixture in `fixtures/base-test.ts` (rule 5). Each later playground pull request adds one section to the same class and leaves the fixture file as it is. Specs take the page from the fixture.
 
-Waits stay in the spec, and each wait names the condition (rule 6). The toast, the loader, the moving button, the race, and the mutation list are web-first assertions on the text or the element that shows the outcome. Dialogs use `page.waitForEvent('dialog')` before the click that opens the dialog. The new tab uses `page.waitForEvent('popup')` before the click that opens it. None of these groups use `waitForTimeout`.
+Waits stay in the spec, and each wait names the condition (rule 6): a web-first `expect`, `waitForURL`, `waitForResponse`, or `locator.waitFor()`. The toast, the loader, the moving button, the race, and the mutation list are web-first assertions on the text or the element that shows the outcome. Dialogs use `page.waitForEvent('dialog')` before the click that opens the dialog. That is the event exception rule 6 names. The Advanced spec stays on a wait that list already includes. A call to `waitForEvent('popup')` waits for a separate rules pull request that adds `popup` beside `dialog`, because the new page is gone if nothing is listening. None of these groups use `waitForTimeout`.
 
 ## What each group pull request writes
 
@@ -101,7 +101,7 @@ Groups 1–7 each ship:
 - `specs/ai-playground-<group>.plan.md`, with positive, negative, and edge cases ordered by ROI. The shape matches the plans already in `specs/` (case, category, priority, tags, what it checks, why this case). This roadmap does not list those cases.
 - `tests/ai-playground-<group>.spec.ts`, one behavior per test.
 - That group's section on `AiTestingPlaygroundPage`.
-- The README coverage update for the spec that pull request adds, marked done in that same pull request.
+- A README coverage update in that same pull request: the new spec marked done, and a pending row still covering every playground group that has not landed.
 
 Suggested order is the order below. Basics A is first because it adds the class and the fixture.
 
@@ -185,9 +185,9 @@ Detailed plan, written in that pull request: `specs/ai-playground-advanced.plan.
 
 Tags: the outer `describe` is `{ tag: ['@ai-playground', '@ai-playground-advanced'] }`. Every test is `@regression`. The smoke subset is one test, the API Intercept path that returns the mocked payload, and that test is also `@regression`.
 
-Page object: the Advanced section of the same `AiTestingPlaygroundPage`. The route is installed in the spec before the click. The page object exposes the control and returns the popup page from the action when the spec needs it. No assertions in the page object.
+Page object: the Advanced section of the same `AiTestingPlaygroundPage`. The route is installed in the spec before the click. The page object exposes the control. The spec waits with a condition rule 6 already allows, then reads the new tab. No assertions in the page object.
 
-Risk: the GET is in flight as soon as the control is clicked, and the confirmation page exists only as the popup that click opens, so a route or a `popup` listener registered late never sees it.
+Risk: the GET is in flight as soon as the control is clicked, and the confirmation page exists only as the tab that click opens, so a route installed after the click, or a read of the tab before it exists, misses the page.
 
 ## 7. Capstone
 
