@@ -10,6 +10,11 @@ type WarningClickWindow = Window & {
   warningClick?: WarningClick;
 };
 
+type EnterMarkWindow = Window & {
+  enterMark?: string;
+  markAfterEnter?: string;
+};
+
 export class DataTablesPage extends BasePage {
   readonly path = '/Data-Table/index.html';
   readonly firstNamesTable: Locator;
@@ -101,6 +106,48 @@ export class DataTablesPage extends BasePage {
     await this.firstNameField.fill(firstName);
     await this.lastNameField.fill(lastName);
     await this.firstNameField.press('Enter');
+  }
+
+  /**
+   * Marks this document so a later check can tell it from a reload.
+   * beforeunload clears the mark when a navigation starts, which is before the new page loads.
+   * The mark is recorded again when Enter finishes, and only if it is still there.
+   * @returns The mark stored on this document
+   */
+  async markDocument(): Promise<string> {
+    const mark = 'data-tables-enter';
+    await this.page.evaluate((value) => {
+      const view = window as EnterMarkWindow;
+      view.enterMark = value;
+      delete view.markAfterEnter;
+      window.addEventListener(
+        'beforeunload',
+        () => {
+          delete view.enterMark;
+        },
+        { once: true },
+      );
+      const onKeyUp = (event: KeyboardEvent) => {
+        if (event.key !== 'Enter') {
+          return;
+        }
+        document.removeEventListener('keyup', onKeyUp, true);
+        if (view.enterMark === value) {
+          view.markAfterEnter = value;
+        }
+      };
+      document.addEventListener('keyup', onKeyUp, true);
+    }, mark);
+    return mark;
+  }
+
+  /**
+   * Returns the mark recorded when Enter finished on this document.
+   * A reload has none, because the mark was cleared when the navigation started.
+   * @returns The mark from markDocument, or an empty string when Enter did not finish here
+   */
+  async documentMark(): Promise<string> {
+    return this.page.evaluate(() => (window as EnterMarkWindow).markAfterEnter ?? '');
   }
 
   /**
