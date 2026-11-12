@@ -431,7 +431,7 @@ npx playwright test tests/page-object-model.spec.ts --grep @smoke
 | Special Offers shows `NEWCUSTOMER773322`, the 30% heading, and the £50 terms, at `products.html#`                | `@smoke` `@regression` |
 | Our Products loads the catalogue, titled `WebDriver (New Approach To Learning)`, with Special Offers and Cameras | `@regression`          |
 | Cameras shows that same offer, including `NEWCUSTOMER773322`                                                     | `@regression`          |
-| The next control shows the following slide, wrapping after `../img/nintendo.svg`                                 | `@regression`          |
+| The next control walks the slides and wraps from `../img/nintendo.svg` back to `../img/amp.svg`                  | `@regression`          |
 | `Find Out More` inside the welcome dialog hides it and leaves `/Page-Object-Model/index.html`                    | `@regression`          |
 | Proceed hides the offer and leaves Special Offers on the catalogue                                               | `@regression`          |
 | Enter on `Find Out More!` shows the welcome dialog                                                               | `@regression`          |

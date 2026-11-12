@@ -66,11 +66,19 @@ test.describe('Page Object Model', { tag: ['@page-object-model'] }, () => {
   });
 
   test('the next control shows the following slide', { tag: ['@regression'] }, async ({ pageObjectModelPage }) => {
-    await test.step('the next control advances one slide', async () => {
+    await test.step('the next control advances through the slides and wraps', async () => {
       await pageObjectModelPage.pauseCarousel();
-      const current = await pageObjectModelPage.activeSlideSource();
+      const first = await pageObjectModelPage.activeSlideSource();
       await pageObjectModelPage.showNextSlide();
-      await expect(pageObjectModelPage.activeSlideImage).toHaveAttribute('src', pageObjectModelPage.followingSlideSource(current));
+      await expect(pageObjectModelPage.activeSlideImage).toHaveAttribute('src', pageObjectModelPage.followingSlideSource(first));
+
+      const second = await pageObjectModelPage.activeSlideSource();
+      await pageObjectModelPage.showNextSlide();
+      await expect(pageObjectModelPage.activeSlideImage).toHaveAttribute('src', pageObjectModelPage.followingSlideSource(second));
+
+      const third = await pageObjectModelPage.activeSlideSource();
+      await pageObjectModelPage.showNextSlide();
+      await expect(pageObjectModelPage.activeSlideImage).toHaveAttribute('src', pageObjectModelPage.followingSlideSource(third));
     });
   });
 
