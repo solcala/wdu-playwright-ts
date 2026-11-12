@@ -2,7 +2,7 @@
 
 Explored `https://webdriveruniversity.com/AI-Playground/index.html` (title `AI Testing Playground | WebDriver University`) in Chromium at the suite's Desktop Chrome viewport, 1280×720. The heading is `AI Testing Playground`. The path is `/AI-Playground/index.html`. This plan is challenges 1–5. The split is `specs/ai-playground.plan.md` on the roadmap branch. This file does not copy that roadmap.
 
-The describe block is tagged `@ai-playground` and `@ai-playground-basics-a`. Every test is `@regression`. `@smoke` is only the Flaky Loader line `Content loaded successfully!`.
+The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-basics-a`. Every test is `@regression`. `@smoke` is only the Flaky Loader line `Content loaded successfully!`.
 
 ## What the page does
 

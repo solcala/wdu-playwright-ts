@@ -66,27 +66,27 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 154 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge                      | Spec                                    | Tests | Status  |
-| ------------------------------ | --------------------------------------- | ----: | ------- |
-| Home page                      | `tests/home.spec.ts`                    |     1 | ✅ Done |
-| Contact Us                     | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
-| Login Portal                   | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
-| Button Clicks                  | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
-| Dropdown, Checkbox & Radio     | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts                 | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
-| Actions                        | `tests/actions.spec.ts`                 |    12 | ✅ Done |
-| IFrame                         | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
-| Ajax Loader                    | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
-| Autocomplete                   | `tests/autocomplete.spec.ts`            |     9 | ✅ Done |
-| Datepicker                     | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                    | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
-| To Do List                     | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
-| Accordion Items                | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
-| Hidden Elements                | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
-| Data Tables                    | `tests/data-tables.spec.ts`             |     — | Pending |
-| Page Object Model              | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                      | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
-| AI Testing Playground basics A | `tests/ai-playground-basics-a.spec.ts`  |    22 | ✅ Done |
+| Challenge                      | Spec                                           | Tests | Status  |
+| ------------------------------ | ---------------------------------------------- | ----: | ------- |
+| Home page                      | `tests/home.spec.ts`                           |     1 | ✅ Done |
+| Contact Us                     | `tests/contact-us.spec.ts`                     |    15 | ✅ Done |
+| Login Portal                   | `tests/login-portal.spec.ts`                   |     6 | ✅ Done |
+| Button Clicks                  | `tests/button-clicks.spec.ts`                  |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio     | `tests/dropdown-checkbox-radio.spec.ts`        |    26 | ✅ Done |
+| Popup & Alerts                 | `tests/popup-alerts.spec.ts`                   |     9 | ✅ Done |
+| Actions                        | `tests/actions.spec.ts`                        |    12 | ✅ Done |
+| IFrame                         | `tests/iframe.spec.ts`                         |     5 | ✅ Done |
+| Ajax Loader                    | `tests/ajax-loader.spec.ts`                    |     4 | ✅ Done |
+| Autocomplete                   | `tests/autocomplete.spec.ts`                   |     9 | ✅ Done |
+| Datepicker                     | `tests/datepicker.spec.ts`                     |     — | Pending |
+| File Upload                    | `tests/file-upload.spec.ts`                    |     8 | ✅ Done |
+| To Do List                     | `tests/todo-list.spec.ts`                      |     8 | ✅ Done |
+| Accordion Items                | `tests/accordion-items.spec.ts`                |    11 | ✅ Done |
+| Hidden Elements                | `tests/hidden-elements.spec.ts`                |     5 | ✅ Done |
+| Data Tables                    | `tests/data-tables.spec.ts`                    |     — | Pending |
+| Page Object Model              | `tests/page-object-model.spec.ts`              |     — | Pending |
+| Scrolling                      | `tests/scrolling.spec.ts`                      |     7 | ✅ Done |
+| AI Testing Playground basics A | `tests/ai-testing-playground-basics-a.spec.ts` |    22 | ✅ Done |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
@@ -419,11 +419,11 @@ The first zone is already in view. The last zone starts below the 720px viewport
 Run all 22 tests, or only the smoke test:
 
 ```bash
-npx playwright test tests/ai-playground-basics-a.spec.ts
-npx playwright test tests/ai-playground-basics-a.spec.ts --grep @smoke
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts --grep @smoke
 ```
 
-`tests/ai-playground-basics-a.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-playground` and `@ai-playground-basics-a`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-playground-basics-a.plan.md`. This spec is challenges 1–5. Scenarios:
+`tests/ai-testing-playground-basics-a.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-basics-a`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-testing-playground-basics-a.plan.md`. This spec is challenges 1–5. Scenarios:
 
 | What it checks                                                                                                         | Tag                    |
 | ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
@@ -483,7 +483,7 @@ specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and w
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
-specs/ai-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
+specs/ai-testing-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -532,7 +532,7 @@ npx playwright test tests/todo-list.spec.ts                # To Do List (see Cov
 npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
-npx playwright test tests/ai-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser

@@ -6,7 +6,7 @@ import { test, expect } from '@/fixtures/base-test';
  * The login classes change on each load. Any non-empty username and password, after trim, is accepted.
  * The loader waits 3 to 8 seconds. The toast fades with opacity and stays in the page.
  * The re-enable button disables on click and is enabled again about 3 seconds later.
- * The case list is specs/ai-playground-basics-a.plan.md.
+ * The case list is specs/ai-testing-playground-basics-a.plan.md.
  */
 
 /**
@@ -19,7 +19,7 @@ const toastShownClass = /(?:^|\s)show(?:\s|$)/;
 
 const reEnablingStatus = /^Re-enabling in [123]s…$/;
 
-test.describe('AI Testing Playground', { tag: ['@ai-playground', '@ai-playground-basics-a'] }, () => {
+test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-testing-playground-basics-a'] }, () => {
   test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
     await aiTestingPlaygroundPage.navigateTo();
   });
