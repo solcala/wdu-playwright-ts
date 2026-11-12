@@ -79,7 +79,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
 | File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
 | To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
-| Accordion Items            | `tests/accordion.spec.ts`               |    11 | ✅ Done |
+| Accordion Items            | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
@@ -346,25 +346,25 @@ Enter is the only way to add a row. The plus icon toggles the field and does not
 Run all 11 tests, or only the smoke tests:
 
 ```bash
-npx playwright test tests/accordion.spec.ts
-npx playwright test tests/accordion.spec.ts --grep @smoke
+npx playwright test tests/accordion-items.spec.ts
+npx playwright test tests/accordion-items.spec.ts --grep @smoke
 ```
 
-`tests/accordion.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. Every test is tagged `@accordion`. The case list is `specs/accordion.plan.md`. Scenarios:
+`tests/accordion-items.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. The describe block is tagged `@accordion-items`. The case list is `specs/accordion-items.plan.md`. Scenarios:
 
-| What it checks                                                                                                            | Tag                                 |
-| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| Manual Testing opens its description, and the other panels stay closed                                                    | `@accordion` `@smoke` `@regression` |
-| Cucumber BDD opens its description                                                                                        | `@accordion` `@regression`          |
-| Automation Testing opens its description                                                                                  | `@accordion` `@regression`          |
-| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                | `@accordion` `@smoke` `@regression` |
-| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                           | `@accordion` `@regression`          |
-| Hovering Cucumber BDD leaves that panel closed                                                                            | `@accordion` `@regression`          |
-| Clicking the loading line leaves the delayed panel closed                                                                 | `@accordion` `@regression`          |
-| A second click on Manual Testing closes it, and the description stays in the panel                                        | `@accordion` `@regression`          |
-| Cucumber BDD opens while Manual Testing stays open                                                                        | `@accordion` `@regression`          |
-| Opening Keep Clicking before the text arrives leaves that text clipped; a click after the text is in the panel reveals it | `@accordion` `@regression`          |
-| Enter opens Cucumber BDD, and Space closes it                                                                             | `@accordion` `@regression`          |
+| What it checks                                                                                                            | Tag                                       |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Manual Testing opens its description, and the other panels stay closed                                                    | `@accordion-items` `@smoke` `@regression` |
+| Cucumber BDD opens its description                                                                                        | `@accordion-items` `@regression`          |
+| Automation Testing opens its description                                                                                  | `@accordion-items` `@regression`          |
+| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                | `@accordion-items` `@smoke` `@regression` |
+| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                           | `@accordion-items` `@regression`          |
+| Hovering Cucumber BDD leaves that panel closed                                                                            | `@accordion-items` `@regression`          |
+| Clicking the loading line leaves the delayed panel closed                                                                 | `@accordion-items` `@regression`          |
+| A second click on Manual Testing closes it, and the description stays in the panel                                        | `@accordion-items` `@regression`          |
+| Cucumber BDD opens while Manual Testing stays open                                                                        | `@accordion-items` `@regression`          |
+| Opening Keep Clicking before the text arrives leaves that text clipped; a click after the text is in the panel reveals it | `@accordion-items` `@regression`          |
+| Enter opens Cucumber BDD, and Space closes it                                                                             | `@accordion-items` `@regression`          |
 
 The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped until a later click. The page has no fields.
 
@@ -414,7 +414,7 @@ tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the
 test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
-specs/accordion.plan.md Accordion Items cases: outcomes, categories, and what is not covered
+specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and what is not covered
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
@@ -462,7 +462,7 @@ npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Co
 npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
 npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
-npx playwright test tests/accordion.spec.ts                # Accordion Items (see Coverage)
+npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke

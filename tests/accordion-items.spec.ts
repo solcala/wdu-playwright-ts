@@ -5,14 +5,19 @@ import { test, expect } from '@/fixtures/base-test';
  * A click sets that panel's max-height to its scroll height, or clears it. Panels do not close each other.
  * The clipped text still has a box, so toBeVisible does not say whether a panel is open. The open check is max-height.
  * The button also toggles the active class. The closed accessible name ends in a plus, and the open name ends in a minus.
+ * `.accordion:hover` sets the header background to #f45950 and does not open the panel.
  * Keep Clicking starts empty. After 10 seconds the panel text is "This text has appeared after 5 seconds!"
  * and the loading line changes from "LOADING.. PLEASE WAIT.." to "LOADING COMPLETE."
+ * A click on that line changes no class, style, or text.
  * The button says 5 seconds. The timer is 10. A click before the text arrives stores a max-height of 0,
  * so the text stays clipped until a click that runs after the text is already in the panel.
- * The case list is specs/accordion.plan.md.
+ * The case list is specs/accordion-items.plan.md.
  */
 
 const openClass = /(?:^|\s)active(?:\s|$)/;
+
+// `.accordion:hover` sets the header background to #f45950.
+const hoverBackground = 'rgb(244, 89, 80)';
 
 /**
  * The page uses a 10 second timer. The default assertion timeout is 5 seconds, so the wait for the loading line is longer.
@@ -29,12 +34,12 @@ const cucumberText =
 const automationText =
   'Automation testing has been steadily grown in popularity these past few years thanks to the time/ cost savings and efficiency that it offers. Companies throughout the world have or plan to use automation testing to rapidly speed up their test capabilities. Automation test engineers are in great demand and offer an average salary of £45,000+ (2018). Now is a great time to learn about automation test engineering and this course has been carefully developed to slowly introduce you from the basics, all the way to building advanced frameworks.';
 
-test.describe('Accordion Items', () => {
+test.describe('Accordion Items', { tag: ['@accordion-items'] }, () => {
   test.beforeEach(async ({ accordionItemsPage }) => {
     await accordionItemsPage.navigateTo();
   });
 
-  test('manual testing opens its description', { tag: ['@accordion', '@smoke', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('manual testing opens its description', { tag: ['@smoke', '@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Manual Testing starts closed', async () => {
       await expect(accordionItemsPage.manualTestingPanel).toHaveCSS('max-height', '0px');
       await expect.soft(accordionItemsPage.manualTestingButton).not.toHaveClass(openClass);
@@ -51,7 +56,7 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('cucumber bdd opens its description', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('cucumber bdd opens its description', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Cucumber BDD opens its description', async () => {
       await expect(accordionItemsPage.cucumberBddPanel).toHaveCSS('max-height', '0px');
       await accordionItemsPage.clickCucumberBdd();
@@ -61,7 +66,7 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('automation testing opens its description', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('automation testing opens its description', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Automation Testing opens its description', async () => {
       await expect(accordionItemsPage.automationTestingPanel).toHaveCSS('max-height', '0px');
       await accordionItemsPage.clickAutomationTesting();
@@ -71,26 +76,22 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test(
-    'the delayed text shows after loading completes',
-    { tag: ['@accordion', '@smoke', '@regression'] },
-    async ({ accordionItemsPage }) => {
-      await test.step('the loading line finishes and the panel is still closed', async () => {
-        await expect(accordionItemsPage.loadingMessage).toHaveText(loadingComplete, { timeout: loadingCompleteTimeout });
-        await expect(accordionItemsPage.keepClickingPanel).toHaveCSS('max-height', '0px');
-        await expect(accordionItemsPage.keepClickingPanel).toHaveText(delayedText);
-      });
+  test('the delayed text shows after loading completes', { tag: ['@smoke', '@regression'] }, async ({ accordionItemsPage }) => {
+    await test.step('the loading line finishes and the panel is still closed', async () => {
+      await expect(accordionItemsPage.loadingMessage).toHaveText(loadingComplete, { timeout: loadingCompleteTimeout });
+      await expect(accordionItemsPage.keepClickingPanel).toHaveCSS('max-height', '0px');
+      await expect(accordionItemsPage.keepClickingPanel).toHaveText(delayedText);
+    });
 
-      await test.step('Keep Clicking reveals the text', async () => {
-        await accordionItemsPage.clickKeepClicking();
-        await expect(accordionItemsPage.keepClickingPanel).not.toHaveCSS('max-height', '0px');
-        await expect.soft(accordionItemsPage.keepClickingButton).toHaveClass(openClass);
-        await expect.soft(accordionItemsPage.keepClickingPanel).toHaveText(delayedText);
-      });
-    },
-  );
+    await test.step('Keep Clicking reveals the text', async () => {
+      await accordionItemsPage.clickKeepClicking();
+      await expect(accordionItemsPage.keepClickingPanel).not.toHaveCSS('max-height', '0px');
+      await expect.soft(accordionItemsPage.keepClickingButton).toHaveClass(openClass);
+      await expect.soft(accordionItemsPage.keepClickingPanel).toHaveText(delayedText);
+    });
+  });
 
-  test('the delayed text is absent while loading', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('the delayed text is absent while loading', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('the page is still on the loading line', async () => {
       await expect(accordionItemsPage.loadingMessage).toHaveText(loadingWait);
       await expect.soft(accordionItemsPage.keepClickingPanel).toHaveText('');
@@ -99,28 +100,25 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('hovering a header leaves the panel closed', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('hovering a header leaves the panel closed', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('hover leaves Cucumber BDD closed', async () => {
       await accordionItemsPage.hoverCucumberBdd();
+      await expect(accordionItemsPage.cucumberBddButton).toHaveCSS('background-color', hoverBackground);
       await expect(accordionItemsPage.cucumberBddPanel).toHaveCSS('max-height', '0px');
       await expect.soft(accordionItemsPage.cucumberBddButton).not.toHaveClass(openClass);
     });
   });
 
-  test(
-    'clicking the loading message leaves the delayed panel closed',
-    { tag: ['@accordion', '@regression'] },
-    async ({ accordionItemsPage }) => {
-      await test.step('the loading line is not a header', async () => {
-        await accordionItemsPage.clickLoadingMessage();
-        await expect(accordionItemsPage.keepClickingPanel).toHaveCSS('max-height', '0px');
-        await expect.soft(accordionItemsPage.keepClickingButton).not.toHaveClass(openClass);
-        await expect.soft(accordionItemsPage.loadingMessage).toHaveText(loadingWait);
-      });
-    },
-  );
+  test('clicking the loading message leaves the delayed panel closed', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
+    await test.step('the loading line is not a header', async () => {
+      await accordionItemsPage.clickLoadingMessage();
+      await expect(accordionItemsPage.keepClickingPanel).toHaveCSS('max-height', '0px');
+      await expect.soft(accordionItemsPage.keepClickingButton).not.toHaveClass(openClass);
+      await expect.soft(accordionItemsPage.loadingMessage).toHaveText(loadingWait);
+    });
+  });
 
-  test('a second click closes the panel', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('a second click closes the panel', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Manual Testing opens', async () => {
       await accordionItemsPage.clickManualTesting();
       await expect(accordionItemsPage.manualTestingPanel).not.toHaveCSS('max-height', '0px');
@@ -134,7 +132,7 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('a second panel stays open beside the first', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('a second panel stays open beside the first', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Manual Testing opens', async () => {
       await accordionItemsPage.clickManualTesting();
       await expect(accordionItemsPage.manualTestingPanel).not.toHaveCSS('max-height', '0px');
@@ -149,7 +147,7 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('an early open leaves the delayed text clipped', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('an early open leaves the delayed text clipped', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('open Keep Clicking while the panel is empty', async () => {
       await expect(accordionItemsPage.loadingMessage).toHaveText(loadingWait);
       await accordionItemsPage.clickKeepClicking();
@@ -178,7 +176,7 @@ test.describe('Accordion Items', () => {
     });
   });
 
-  test('the keyboard toggles Cucumber BDD', { tag: ['@accordion', '@regression'] }, async ({ accordionItemsPage }) => {
+  test('the keyboard toggles Cucumber BDD', { tag: ['@regression'] }, async ({ accordionItemsPage }) => {
     await test.step('Enter opens the panel', async () => {
       await expect(accordionItemsPage.cucumberBddPanel).toHaveCSS('max-height', '0px');
       await accordionItemsPage.pressEnterOnCucumberBdd();
