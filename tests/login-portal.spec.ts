@@ -70,6 +70,19 @@ test.describe('Login Portal', { tag: ['@login-portal'] }, () => {
           expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
         });
       });
+
+      // A wrong username still reaches `validate()` and takes the else branch.
+      test('wrong username shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation failed';
+
+        await test.step('fill a wrong username', async () => {
+          await loginPortalPage.fillCredentials('wrong-username', 'webdriver123');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
+      });
     });
 
     test.describe('Edge cases', () => {
