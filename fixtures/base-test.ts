@@ -15,6 +15,7 @@ import { TodoListPage } from '@/pages/todo-list-page';
 import { HiddenElementsPage } from '@/pages/hidden-elements-page';
 import { AccordionItemsPage } from '@/pages/accordion-items-page';
 import { ScrollingPage } from '@/pages/scrolling-page';
+import { DataTablesPage } from '@/pages/data-tables-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -32,6 +33,7 @@ type MyFixtures = {
   hiddenElementsPage: HiddenElementsPage;
   accordionItemsPage: AccordionItemsPage;
   scrollingPage: ScrollingPage;
+  dataTablesPage: DataTablesPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -94,6 +96,10 @@ export const test = base.extend<MyFixtures>({
   scrollingPage: async ({ page }, use) => {
     const scrollingPage = new ScrollingPage(page);
     await use(scrollingPage);
+  },
+  dataTablesPage: async ({ page }, use) => {
+    const dataTablesPage = new DataTablesPage(page);
+    await use(dataTablesPage);
   },
 });
 
