@@ -13,6 +13,8 @@ import { PopupAlertsPage } from '@/pages/popup-alerts-page';
 import { FileUploadPage } from '@/pages/file-upload-page';
 import { TodoListPage } from '@/pages/todo-list-page';
 import { HiddenElementsPage } from '@/pages/hidden-elements-page';
+import { AccordionItemsPage } from '@/pages/accordion-items-page';
+import { ScrollingPage } from '@/pages/scrolling-page';
 import { DataTablesPage } from '@/pages/data-tables-page';
 
 type MyFixtures = {
@@ -29,6 +31,8 @@ type MyFixtures = {
   fileUploadPage: FileUploadPage;
   todoListPage: TodoListPage;
   hiddenElementsPage: HiddenElementsPage;
+  accordionItemsPage: AccordionItemsPage;
+  scrollingPage: ScrollingPage;
   dataTablesPage: DataTablesPage;
 };
 
@@ -84,6 +88,14 @@ export const test = base.extend<MyFixtures>({
   hiddenElementsPage: async ({ page }, use) => {
     const hiddenElementsPage = new HiddenElementsPage(page);
     await use(hiddenElementsPage);
+  },
+  accordionItemsPage: async ({ page }, use) => {
+    const accordionItemsPage = new AccordionItemsPage(page);
+    await use(accordionItemsPage);
+  },
+  scrollingPage: async ({ page }, use) => {
+    const scrollingPage = new ScrollingPage(page);
+    await use(scrollingPage);
   },
   dataTablesPage: async ({ page }, use) => {
     const dataTablesPage = new DataTablesPage(page);

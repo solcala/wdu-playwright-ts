@@ -51,8 +51,10 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Popup & Alerts challenge                                     | ✅ Done                |
 | File Upload challenge                                        | ✅ Done                |
 | To Do List challenge                                         | ✅ Done                |
+| Accordion Items challenge                                    | ✅ Done                |
 | Hidden Elements challenge                                    | ✅ Done                |
 | Data Tables challenge                                        | ✅ Done                |
+| Scrolling challenge                                          | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -62,7 +64,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-122 challenge tests in 14 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+140 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -79,11 +81,11 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
 | File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
 | To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
-| Accordion Items            | `tests/accordion-items.spec.ts`         |     — | Pending |
+| Accordion Items            | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
 | Data Tables                | `tests/data-tables.spec.ts`             |     8 | ✅ Done |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                  | `tests/scrolling.spec.ts`               |     — | Pending |
+| Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
 | AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
@@ -341,6 +343,33 @@ npx playwright test tests/todo-list.spec.ts --grep @smoke
 
 Enter is the only way to add a row. The plus icon toggles the field and does not add one. A click toggles the `completed` class, which strikes the text through. The delete control is a span at width 0 until the row is hovered; the click fades that row out and removes it. Empty Enter is not rejected. The quotes-and-ampersand row is stored as text.
 
+### Accordion Items
+
+Run all 11 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/accordion-items.spec.ts
+npx playwright test tests/accordion-items.spec.ts --grep @smoke
+```
+
+`tests/accordion-items.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. The describe block is tagged `@accordion-items`. The case list is `specs/accordion-items.plan.md`. Scenarios:
+
+| What it checks                                                                                                                                                | Tag                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Manual Testing opens its description, and the other panels stay closed                                                                                        | `@accordion-items` `@smoke` `@regression` |
+| Cucumber BDD opens its description                                                                                                                            | `@accordion-items` `@regression`          |
+| Automation Testing opens its description                                                                                                                      | `@accordion-items` `@regression`          |
+| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                                                    | `@accordion-items` `@smoke` `@regression` |
+| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                                                               | `@accordion-items` `@regression`          |
+| Hovering Cucumber BDD leaves that panel closed                                                                                                                | `@accordion-items` `@regression`          |
+| Clicking the loading line leaves the delayed panel closed                                                                                                     | `@accordion-items` `@regression`          |
+| A second click on Manual Testing closes it, and the description stays in the panel                                                                            | `@accordion-items` `@regression`          |
+| Cucumber BDD opens while Manual Testing stays open                                                                                                            | `@accordion-items` `@regression`          |
+| Opening Keep Clicking before the text arrives leaves that text clipped; the first click after loading closes the panel, and the second click reveals the text | `@accordion-items` `@regression`          |
+| Enter opens Cucumber BDD, and Space closes it                                                                                                                 | `@accordion-items` `@regression`          |
+
+The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped. The first click after loading closes the panel, and the second click reveals the text. The page has no fields.
+
 ### Hidden Elements
 
 Run all five tests, or only the smoke test:
@@ -386,6 +415,29 @@ npx playwright test tests/data-tables.spec.ts --grep @smoke
 
 The name tables are `#t01` and `#t02`. They share the headers Firstname, Lastname, and Age, and Jackson is in both, so each row is read from its own table. The Table section has no id. Warning has the class `disabled` and `pointer-events: none`, and the disabled property is false. It sits below the fold at 1280×720. Tab from Danger reaches it, and Space still clicks it. Button-1 starts with `active`, and a click on Button-2 does not move that class. The name form has no submit button. Reset is outside the form. The breadcrumb, badges, pagination, and lists are not covered.
 
+### Scrolling
+
+Run all seven tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/scrolling.spec.ts
+npx playwright test tests/scrolling.spec.ts --grep @smoke
+```
+
+`tests/scrolling.spec.ts` uses the `scrollingPage` fixture. The describe block is tagged `@scrolling`. The live path is `/Scrolling/index.html`. The case list is `specs/scrolling.plan.md`. Scenarios:
+
+| What it checks                                                                                           | Tag                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Hovering the first zone replaces `Scroll to me first!` with `Well done for scrolling to me!`             | `@smoke` `@regression` |
+| Hovering the last zone replaces `Dont forget to scroll to me!` with pointer coordinates                  | `@smoke` `@regression` |
+| Hovering the left entries box changes `0 Entries` to `1 Entries`, and the right box stays at `0 Entries` | `@regression`          |
+| Hovering the right entries box changes `0 Entries` to `1 Entries`, and the left box stays at `0 Entries` | `@regression`          |
+| Scrolling the last zone into view leaves `Dont forget to scroll to me!`                                  | `@regression`          |
+| Leaving the left entries box and entering it again shows `2 Entries`                                     | `@regression`          |
+| The first zone keeps `Well done for scrolling to me!` after the pointer moves to the left entries box    | `@regression`          |
+
+The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
+
 ## Project layout
 
 ```text
@@ -403,17 +455,21 @@ pages/                  Page objects (one class per file, kebab-case file names)
   autocomplete-page.ts
   file-upload-page.ts
   todo-list-page.ts
+  accordion-items-page.ts
   hidden-elements-page.ts
   data-tables-page.ts
+  scrolling-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
 test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
 specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
+specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and what is not covered
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 specs/data-tables.plan.md  Data Tables cases: outcomes, categories, and what is not covered
+specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -459,8 +515,10 @@ npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Co
 npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
 npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
+npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test tests/data-tables.spec.ts              # Data Tables (see Coverage)
+npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
