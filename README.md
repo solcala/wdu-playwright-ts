@@ -352,21 +352,21 @@ npx playwright test tests/accordion-items.spec.ts --grep @smoke
 
 `tests/accordion-items.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. The describe block is tagged `@accordion-items`. The case list is `specs/accordion-items.plan.md`. Scenarios:
 
-| What it checks                                                                                                            | Tag                                       |
-| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Manual Testing opens its description, and the other panels stay closed                                                    | `@accordion-items` `@smoke` `@regression` |
-| Cucumber BDD opens its description                                                                                        | `@accordion-items` `@regression`          |
-| Automation Testing opens its description                                                                                  | `@accordion-items` `@regression`          |
-| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                | `@accordion-items` `@smoke` `@regression` |
-| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                           | `@accordion-items` `@regression`          |
-| Hovering Cucumber BDD leaves that panel closed                                                                            | `@accordion-items` `@regression`          |
-| Clicking the loading line leaves the delayed panel closed                                                                 | `@accordion-items` `@regression`          |
-| A second click on Manual Testing closes it, and the description stays in the panel                                        | `@accordion-items` `@regression`          |
-| Cucumber BDD opens while Manual Testing stays open                                                                        | `@accordion-items` `@regression`          |
-| Opening Keep Clicking before the text arrives leaves that text clipped; a click after the text is in the panel reveals it | `@accordion-items` `@regression`          |
-| Enter opens Cucumber BDD, and Space closes it                                                                             | `@accordion-items` `@regression`          |
+| What it checks                                                                                                                                                | Tag                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Manual Testing opens its description, and the other panels stay closed                                                                                        | `@accordion-items` `@smoke` `@regression` |
+| Cucumber BDD opens its description                                                                                                                            | `@accordion-items` `@regression`          |
+| Automation Testing opens its description                                                                                                                      | `@accordion-items` `@regression`          |
+| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                                                    | `@accordion-items` `@smoke` `@regression` |
+| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                                                               | `@accordion-items` `@regression`          |
+| Hovering Cucumber BDD leaves that panel closed                                                                                                                | `@accordion-items` `@regression`          |
+| Clicking the loading line leaves the delayed panel closed                                                                                                     | `@accordion-items` `@regression`          |
+| A second click on Manual Testing closes it, and the description stays in the panel                                                                            | `@accordion-items` `@regression`          |
+| Cucumber BDD opens while Manual Testing stays open                                                                                                            | `@accordion-items` `@regression`          |
+| Opening Keep Clicking before the text arrives leaves that text clipped; the first click after loading closes the panel, and the second click reveals the text | `@accordion-items` `@regression`          |
+| Enter opens Cucumber BDD, and Space closes it                                                                                                                 | `@accordion-items` `@regression`          |
 
-The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped until a later click. The page has no fields.
+The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped. The first click after loading closes the panel, and the second click reveals the text. The page has no fields.
 
 ### Hidden Elements
 
