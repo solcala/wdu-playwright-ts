@@ -103,7 +103,21 @@ Groups 1–7 each ship:
 - That group's section on `AiTestingPlaygroundPage`.
 - A README coverage update in that same pull request: the new spec marked done, and a pending row still covering every playground group that has not landed.
 
-Suggested order is the order below. Basics A is first because it adds the class and the fixture.
+Suggested order is the order below. The test-data factory is its own pull request and lands before the groups that fill forms. Basics A is the first of those groups: it adds the class and the fixture, and Multi-Step Form is the first form. Basics B (Conditional Validation) and Capstone (Shop & Checkout) use the same builders.
+
+## Test data with Faker
+
+`@faker-js/faker`. That pull request adds `support/test-data.ts` and the dependency. It adds no spec, no page object, and no fixture.
+
+Goal: replace hard-coded form data with generated, realistic data for forms such as Multi-Step Form, Conditional Validation, Shop & Checkout, and Contact Us.
+
+Approach: a small `support/test-data.ts` factory with typed builders, for example `buildContact()` and `buildCheckoutAddress()` with a UK postcode. An env var sets a fixed seed so a failure can be replayed. Log the seed when a test fails. Negative tests keep known-invalid values explicit.
+
+Where it applies: new AI Playground groups first. Contact Us and Login move onto the same builders in a separate small pull request.
+
+Rules: no assertions in the builders. Form data stays out of page objects. `support/` does not import or call `test` or `expect` (rule 1).
+
+Risk: random data can create flaky edge cases; use a seed and constrained generators.
 
 ## 1. Basics A
 
