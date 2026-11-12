@@ -1,0 +1,62 @@
+# Accordion Items
+
+Explored `https://webdriveruniversity.com/Accordion/index.html` (title `Accordion Items`) in Chromium at the suite's Desktop Chrome viewport, 1280×720, through the existing bot-wall path. The heading is `Click on One of the Accordian Items Below!`. There are no fields and no dialogs.
+
+The four headers are buttons. Each click listener toggles the `active` class and sets the next element's `max-height` to its scroll height, or clears it. Nothing closes the other panels. A closed panel's CSS is `max-height: 0` and `overflow: hidden`. The text inside still has its own box, so Playwright reports it visible while it is clipped. The open check is the panel's computed `max-height`, not `toBeVisible`.
+
+The closed button's accessible name ends with the CSS `::after` plus (`Manual Testing +`). The open name ends with a minus (`Manual Testing −`). The visible label is the stable part.
+
+`#timeout` starts empty. `setTimeout(..., 10000)` writes `This text has appeared after 5 seconds!` into that panel and sets `#hidden-text` to `LOADING COMPLETE.` The button says 5 seconds. The timer is 10. The loading line starts as `LOADING.. PLEASE WAIT..` and is not inside a panel. A click while `#timeout` is empty stores `max-height: 0px`. The later text does not change that value, so it stays clipped until a click that runs after the text is already in the panel. The click in between closes the button, because it is already `active`.
+
+| Header                                             | Panel                             | Text                                                            |
+| -------------------------------------------------- | --------------------------------- | --------------------------------------------------------------- |
+| Manual Testing (`#manual-testing-accordion`)       | `#manual-testing-description`     | The manual-testing paragraph                                    |
+| Cucumber BDD (`#cucumber-accordion`)               | `#cucumber-testing-description`   | The Cucumber paragraph, with `‘Feature Files’` in curly quotes  |
+| Automation Testing (`#automation-accordion`)       | `#automation-testing-description` | The automation paragraph, including `£45,000+` and `time/ cost` |
+| Keep Clicking! - Text will Appear After 5 Seconds! | `#timeout`                        | Empty, then `This text has appeared after 5 seconds!`           |
+
+## Positive
+
+Ordered by ROI. `@smoke` is only the two outcomes that define the page: one description opens, and the delayed text appears. Those tests carry `@accordion-items`, `@smoke`, and `@regression`.
+
+| Case                                           | Expected outcome                                                                                                                                        | Priority | Why this one                                                                                             | Tags                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Manual Testing opens its description           | The panel starts at `max-height: 0px`. The click opens it, adds `active`, and shows the manual-testing paragraph. The other three panels stay at `0px`. | Critical | The first header, and the smallest check that a click opens one panel and leaves the others closed.      | `@accordion-items` `@smoke` `@regression` |
+| The delayed text shows after loading completes | The loading line becomes `LOADING COMPLETE.` The panel holds the sentence and is still closed. The click then opens it.                                 | Critical | The behavior this challenge adds on top of a plain accordion. The wait is the loading line, not a sleep. | `@accordion-items` `@smoke` `@regression` |
+| Cucumber BDD opens its description             | The click opens `#cucumber-testing-description` and shows that paragraph, including the curly quotes around `Feature Files`.                            | High     | A different next sibling. A wiring mistake on this button would not fail the Manual Testing test.        | `@accordion-items` `@regression`          |
+| Automation Testing opens its description       | The click opens `#automation-testing-description` and shows that paragraph, including `£45,000+`.                                                       | High     | The third description. Same reason as Cucumber BDD: its own panel and its own copy.                      | `@accordion-items` `@regression`          |
+
+## Negative
+
+| Case                                                 | Expected outcome                                                                                                | Priority | Why this one                                                                                                            | Tags                             |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| The delayed text is absent while loading             | Right after load the line is `LOADING.. PLEASE WAIT..`, `#timeout` is empty, and Keep Clicking is not `active`. | High     | Reading the sentence before the timer is the failure this page is built for. The test does not wait out the 10 seconds. | `@accordion-items` `@regression` |
+| Hovering a header leaves the panel closed            | The Cucumber BDD background becomes `#f45950`. The panel stays `max-height: 0px` and does not gain `active`.    | Medium   | The headers look like they might open on hover. The listener is `click` only.                                           | `@accordion-items` `@regression` |
+| Clicking the loading message leaves the panel closed | A click on `LOADING.. PLEASE WAIT..` leaves `#timeout` at `max-height: 0px` and leaves Keep Clicking inactive.  | Medium   | The loading line sits under the headers and is the other thing a user might click. It is not a header.                  | `@accordion-items` `@regression` |
+
+The loading line does not change class, style, or text on click or hover, so the closed check after that click matches the state from load and has no visible effect to assert first.
+
+## Edge
+
+| Case                                          | Expected outcome                                                                                                                                                                                                                                                | Priority | Why this one                                                                                                                         | Tags                             |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| A second click closes the panel               | Manual Testing opens, then the same click closes it. The paragraph is still in the panel. `active` is gone and `max-height` is `0px`.                                                                                                                           | High     | The handler toggles. The open test would still pass if a second click left the panel open.                                           | `@accordion-items` `@regression` |
+| A second panel stays open beside the first    | Manual Testing stays open after Cucumber BDD opens. Automation Testing and Keep Clicking stay closed.                                                                                                                                                           | High     | This is not an exclusive accordion. The single-open test would still pass if a later click closed the first panel.                   | `@accordion-items` `@regression` |
+| An early open leaves the delayed text clipped | A click while `#timeout` is empty adds `active` and stores `max-height: 0px`. After `LOADING COMPLETE.` the sentence is in the panel and it is still `0px`. The next click removes `active` and still does not reveal it. The click after that opens the panel. | High     | The height is captured at click time. The success test only clicks after the text exists, so it would miss a panel that never grows. | `@accordion-items` `@regression` |
+| The keyboard toggles Cucumber BDD             | Enter opens the panel and shows its paragraph. Space closes it. The paragraph stays in the panel.                                                                                                                                                               | Medium   | The headers are real buttons, so Enter and Space fire the same click listener.                                                       | `@accordion-items` `@regression` |
+
+## N/A
+
+| Category                                    | Reason                                                                                                                                                                 |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Invalid, empty, or whitespace input         | N/A. There are no fields and no form. Nothing to reject.                                                                                                               |
+| Disabled or read-only controls              | N/A. None of the four buttons is disabled.                                                                                                                             |
+| A failed request or a missing response      | N/A. The delay is `setTimeout`. The page does not call `fetch` or XHR for this text.                                                                                   |
+| Alerts, confirms, or Escape                 | N/A. There is no dialog. Escape has nothing to dismiss.                                                                                                                |
+| An exclusive accordion, one panel at a time | N/A as a requirement. The page does not close siblings. The two-open test is the behavior that is there.                                                               |
+| A clock assertion for 5 seconds             | N/A. The button says 5 seconds and the timer is 10. The tests wait until the loading line reads `LOADING COMPLETE.`, which is the condition the page actually changes. |
+| Double-click as its own outcome             | N/A. A double click is two `click` events on the same toggle. The second-click test is that second event. Repeating it as `dblclick` would only add timing.            |
+| Background color                            | The open state under test is `max-height` and the `active` class. Hover and active backgrounds are not a separate outcome.                                             |
+| `toBeHidden` on a closed description        | The clipped paragraph still has a non-zero box, so it reports visible. That check would pass while the panel is closed.                                                |
+| Navbar and the brand link                   | Site chrome, not an accordion outcome.                                                                                                                                 |
+| Mobile widths                               | The suite runs Desktop Chrome only. Another viewport would mean a config change.                                                                                       |
