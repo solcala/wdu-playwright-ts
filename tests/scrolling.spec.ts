@@ -77,6 +77,7 @@ test.describe('Scrolling', { tag: ['@scrolling'] }, () => {
     await test.step('scrolling it into view leaves the text', async () => {
       await scrollingPage.scrollLastZoneIntoView();
       await expect(scrollingPage.lastZone).toBeInViewport();
+      await expect.poll(() => scrollingPage.verticalScrollOffset()).toBeGreaterThan(0);
       await expect(scrollingPage.lastZoneLabel).toHaveText(lastZoneStart);
     });
   });
@@ -88,12 +89,8 @@ test.describe('Scrolling', { tag: ['@scrolling'] }, () => {
       await expect(scrollingPage.leftEntriesCount).toHaveText('1 Entries');
     });
 
-    await test.step('leaving does not clear the count', async () => {
-      await scrollingPage.hoverPageHeading();
-      await expect(scrollingPage.leftEntriesCount).toHaveText('1 Entries');
-    });
-
     await test.step('entering again counts two', async () => {
+      await scrollingPage.hoverPageHeading();
       await scrollingPage.hoverLeftEntries();
       await expect(scrollingPage.leftEntriesCount).toHaveText('2 Entries');
       await expect.soft(scrollingPage.rightEntriesCount).toHaveText('0 Entries');
@@ -106,8 +103,9 @@ test.describe('Scrolling', { tag: ['@scrolling'] }, () => {
       await expect(scrollingPage.firstZone).toHaveText(firstZoneSuccess);
     });
 
-    await test.step('moving the pointer to the heading leaves the message', async () => {
-      await scrollingPage.hoverPageHeading();
+    await test.step('moving the pointer to the left entries box leaves the message', async () => {
+      await scrollingPage.hoverLeftEntries();
+      await expect(scrollingPage.leftEntriesCount).toHaveText('1 Entries');
       await expect(scrollingPage.firstZone).toHaveText(firstZoneSuccess);
       await expect.soft(scrollingPage.firstZone).toHaveCSS('font-size', '24px');
     });

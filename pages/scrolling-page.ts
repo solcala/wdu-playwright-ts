@@ -70,6 +70,14 @@ export class ScrollingPage extends BasePage {
   }
 
   /**
+   * Returns how far the window has scrolled down.
+   * @returns The current window.scrollY in pixels
+   */
+  async verticalScrollOffset(): Promise<number> {
+    return this.page.evaluate(() => window.scrollY);
+  }
+
+  /**
    * Moves the pointer onto the last zone. That replaces its text with the pointer position.
    */
   async hoverLastZone(): Promise<void> {

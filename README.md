@@ -409,7 +409,7 @@ npx playwright test tests/scrolling.spec.ts --grep @smoke
 | Hovering the right entries box changes `0 Entries` to `1 Entries`, and the left box stays at `0 Entries` | `@regression`          |
 | Scrolling the last zone into view leaves `Dont forget to scroll to me!`                                  | `@regression`          |
 | Leaving the left entries box and entering it again shows `2 Entries`                                     | `@regression`          |
-| The first zone keeps `Well done for scrolling to me!` after the pointer moves to the heading             | `@regression`          |
+| The first zone keeps `Well done for scrolling to me!` after the pointer moves to the left entries box    | `@regression`          |
 
 The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
 
