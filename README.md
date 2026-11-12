@@ -54,6 +54,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Accordion Items challenge                                    | ✅ Done                |
 | Hidden Elements challenge                                    | ✅ Done                |
 | Scrolling challenge                                          | ✅ Done                |
+| AI Testing Playground basics A                               | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -63,29 +64,29 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-132 challenge tests in 15 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+154 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge                  | Spec                                    | Tests | Status  |
-| -------------------------- | --------------------------------------- | ----: | ------- |
-| Home page                  | `tests/home.spec.ts`                    |     1 | ✅ Done |
-| Contact Us                 | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
-| Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
-| Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
-| Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
-| Actions                    | `tests/actions.spec.ts`                 |    12 | ✅ Done |
-| IFrame                     | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
-| Ajax Loader                | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
-| Autocomplete               | `tests/autocomplete.spec.ts`            |     9 | ✅ Done |
-| Datepicker                 | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
-| To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
-| Accordion Items            | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
-| Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
-| Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
-| Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
-| AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
+| Challenge                      | Spec                                    | Tests | Status  |
+| ------------------------------ | --------------------------------------- | ----: | ------- |
+| Home page                      | `tests/home.spec.ts`                    |     1 | ✅ Done |
+| Contact Us                     | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
+| Login Portal                   | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
+| Button Clicks                  | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio     | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
+| Popup & Alerts                 | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
+| Actions                        | `tests/actions.spec.ts`                 |    12 | ✅ Done |
+| IFrame                         | `tests/iframe.spec.ts`                  |     5 | ✅ Done |
+| Ajax Loader                    | `tests/ajax-loader.spec.ts`             |     4 | ✅ Done |
+| Autocomplete                   | `tests/autocomplete.spec.ts`            |     9 | ✅ Done |
+| Datepicker                     | `tests/datepicker.spec.ts`              |     — | Pending |
+| File Upload                    | `tests/file-upload.spec.ts`             |     8 | ✅ Done |
+| To Do List                     | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
+| Accordion Items                | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
+| Hidden Elements                | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
+| Data Tables                    | `tests/data-tables.spec.ts`             |     — | Pending |
+| Page Object Model              | `tests/page-object-model.spec.ts`       |     — | Pending |
+| Scrolling                      | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
+| AI Testing Playground basics A | `tests/ai-playground-basics-a.spec.ts`  |    22 | ✅ Done |
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
@@ -413,6 +414,44 @@ npx playwright test tests/scrolling.spec.ts --grep @smoke
 
 The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
 
+### AI Testing Playground basics A
+
+Run all 22 tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ai-playground-basics-a.spec.ts
+npx playwright test tests/ai-playground-basics-a.spec.ts --grep @smoke
+```
+
+`tests/ai-playground-basics-a.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-playground` and `@ai-playground-basics-a`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-playground-basics-a.plan.md`. This spec is challenges 1–5. Scenarios:
+
+| What it checks                                                                                                         | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `ada` / `secret` shows `Login successful`, and `Invalid credentials` stays hidden                                      | `@regression`          |
+| An empty login shows `Invalid credentials`, and the success line stays hidden                                          | `@regression`          |
+| A username with an empty password shows `Invalid credentials`                                                          | `@regression`          |
+| Whitespace-only fields show `Invalid credentials`                                                                      | `@regression`          |
+| `  ada  ` / `  secret  ` shows `Login successful`, and the fields keep the spaces                                      | `@regression`          |
+| Load Content shows `Content loaded successfully!`, hides `Loading...`, and shows `Click Me Now`                        | `@smoke` `@regression` |
+| Before the click, the success line is in the page and hidden, and the loading line is hidden                           | `@regression`          |
+| `Click Me Now` shows `Flaky button clicked!` at opacity `1`, then opacity `0`                                          | `@regression`          |
+| A full name, email, United Kingdom, an empty phone, empty comments, and the terms reach `Form submitted successfully.` | `@regression`          |
+| An empty first step shows both errors and stays on `Step 1 of 3`                                                       | `@regression`          |
+| `Jane` with a valid email shows the name error and stays on step 1                                                     | `@regression`          |
+| `jane@example` shows the email error and stays on step 1                                                               | `@regression`          |
+| Next without a country shows `Country is required` and stays on step 2                                                 | `@regression`          |
+| Submit without the terms shows `You must accept the terms` and stays on step 3                                         | `@regression`          |
+| Replacing `jane@example` with `jane@example.com` opens step 2                                                          | `@regression`          |
+| Back from the country step returns to step 1 and keeps the name and email                                              | `@regression`          |
+| Germany and `abc` open step 3                                                                                          | `@regression`          |
+| Before Trigger Toast, the toast opacity is `0` and the text is `Notification triggered`                                | `@regression`          |
+| Trigger Toast reaches opacity `1` with `Action completed`, then opacity `0`, and the text stays                        | `@regression`          |
+| After the toast fades, a second trigger reaches opacity `1` with `Action completed`                                    | `@regression`          |
+| Click Me disables the button, then enables it and shows `Ready`                                                        | `@regression`          |
+| After `Ready`, a second click disables the button again                                                                | `@regression`          |
+
+The login controls are rebuilt with new classes on each load. The tests use the card's test id and the Username, Password, and Login roles. Any non-empty pair, after trim, is accepted. There is no password check. The loader waits 3 to 8 seconds, so the smoke test waits until the success line is visible. That sentence is in the page while it is hidden, so the check is visibility. The toast stays in the page and fades with opacity. `toBeVisible()` ignores opacity. The re-enable button starts enabled, disables on click, and shows `Ready` about three seconds later. Challenges 6–27 are later specs.
+
 ## Project layout
 
 ```text
@@ -433,6 +472,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   accordion-items-page.ts
   hidden-elements-page.ts
   scrolling-page.ts
+  ai-testing-playground-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
@@ -443,6 +483,7 @@ specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and w
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
 specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
+specs/ai-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -491,6 +532,7 @@ npx playwright test tests/todo-list.spec.ts                # To Do List (see Cov
 npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
 npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
+npx playwright test tests/ai-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
