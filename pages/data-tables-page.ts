@@ -146,15 +146,22 @@ export class DataTablesPage extends BasePage {
   }
 
   /**
-   * Focuses Warning and presses Space or Enter. That clicks the button itself.
+   * Focuses Danger and presses Tab. The next control is Warning when Warning is in the tab order.
+   */
+  async tabFromDanger(): Promise<void> {
+    await this.dangerButton.focus();
+    await this.page.keyboard.press('Tab');
+  }
+
+  /**
+   * Presses Space or Enter on the focused control.
    * The listener is registered before the key, because the event is gone if nothing is listening.
    * @param key - Space or Enter
    * @returns The tag and class of the element that received the click
    */
-  async pressWarningButton(key: 'Space' | 'Enter'): Promise<WarningClick> {
-    await this.warningButton.focus();
+  async pressFocusedKey(key: 'Space' | 'Enter'): Promise<WarningClick> {
     await this.listenForClick();
-    await this.warningButton.press(key);
+    await this.page.keyboard.press(key);
     return this.recordedClick();
   }
 

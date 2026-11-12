@@ -2,7 +2,7 @@ import { test, expect } from '@/fixtures/base-test';
 
 /**
  * The two name tables share their headers. Jackson is in both, and Jones is also in the Table section.
- * Warning has the disabled class and pointer-events none, and the disabled property is false. Space still clicks it.
+ * Warning has the disabled class and pointer-events none, and the disabled property is false. Tab from Danger reaches it, and Space still clicks it.
  * Button-1 starts active. Reset sits outside the name form, and Enter does not add a row.
  * The case list is specs/data-tables.plan.md.
  */
@@ -65,6 +65,15 @@ test.describe('Data Tables', { tag: ['@data-tables'] }, () => {
   });
 
   test('a pointer click misses the warning button', { tag: ['@smoke', '@regression'] }, async ({ dataTablesPage }) => {
+    await test.step('the other outline buttons still take the pointer', async () => {
+      await expect.soft(dataTablesPage.dangerButton).toBeEnabled();
+      await expect.soft(dataTablesPage.dangerButton).toHaveCSS('pointer-events', 'auto');
+      await expect.soft(dataTablesPage.infoButton).toBeEnabled();
+      await expect.soft(dataTablesPage.infoButton).toHaveCSS('pointer-events', 'auto');
+      await expect.soft(dataTablesPage.alertButton).toBeEnabled();
+      await expect.soft(dataTablesPage.alertButton).toHaveCSS('pointer-events', 'auto');
+    });
+
     await test.step('warning is enabled and ignores the pointer', async () => {
       await expect(dataTablesPage.warningButton).toBeVisible();
       await expect(dataTablesPage.warningButton).toBeEnabled();
@@ -75,33 +84,24 @@ test.describe('Data Tables', { tag: ['@data-tables'] }, () => {
 
     await test.step('the click lands on the group behind the button', async () => {
       const hit = await dataTablesPage.clickWarningButton();
-      expect(hit.tag).toBe('DIV');
-      expect(hit.className).toBe('traversal-button-states');
-      await expect(dataTablesPage.warningButton).toHaveClass(/disabled/);
-    });
-
-    await test.step('the other outline buttons still take the pointer', async () => {
-      await expect.soft(dataTablesPage.dangerButton).toBeEnabled();
-      await expect.soft(dataTablesPage.dangerButton).toHaveCSS('pointer-events', 'auto');
-      await expect.soft(dataTablesPage.infoButton).toBeEnabled();
-      await expect.soft(dataTablesPage.infoButton).toHaveCSS('pointer-events', 'auto');
-      await expect.soft(dataTablesPage.alertButton).toBeEnabled();
-      await expect.soft(dataTablesPage.alertButton).toHaveCSS('pointer-events', 'auto');
+      expect.soft(hit.tag).toBe('DIV');
+      expect.soft(hit.className).toBe('traversal-button-states');
+      await expect.soft(dataTablesPage.warningButton).toHaveClass(/disabled/);
     });
   });
 
   test('space activates the warning button', { tag: ['@regression'] }, async ({ dataTablesPage }) => {
-    await test.step('warning is in the tab order', async () => {
-      await dataTablesPage.warningButton.focus();
+    await test.step('tab from danger reaches warning', async () => {
+      await dataTablesPage.tabFromDanger();
       await expect(dataTablesPage.warningButton).toBeFocused();
       await expect(dataTablesPage.warningButton).toBeEnabled();
       await expect(dataTablesPage.warningButton).toHaveCSS('pointer-events', 'none');
     });
 
     await test.step('space clicks the button', async () => {
-      const hit = await dataTablesPage.pressWarningButton('Space');
-      expect(hit.tag).toBe('BUTTON');
-      expect(hit.className).toBe('btn btn-outline-warning disabled');
+      const hit = await dataTablesPage.pressFocusedKey('Space');
+      expect.soft(hit.tag).toBe('BUTTON');
+      expect.soft(hit.className).toBe('btn btn-outline-warning disabled');
       await expect.soft(dataTablesPage.warningButton).toBeFocused();
     });
   });
@@ -117,8 +117,8 @@ test.describe('Data Tables', { tag: ['@data-tables'] }, () => {
     });
 
     await test.step('button 1 stays the active one', async () => {
-      await expect(dataTablesPage.button1).toHaveClass(/active/);
-      await expect(dataTablesPage.button2).not.toHaveClass(/active/);
+      await expect.soft(dataTablesPage.button1).toHaveClass(/active/);
+      await expect.soft(dataTablesPage.button2).not.toHaveClass(/active/);
       await expect.soft(dataTablesPage.button3).not.toHaveClass(/active/);
       await expect.soft(dataTablesPage.button4).not.toHaveClass(/active/);
     });
@@ -143,7 +143,7 @@ test.describe('Data Tables', { tag: ['@data-tables'] }, () => {
     });
 
     await test.step('the typed values stay', async () => {
-      await expect(dataTablesPage.firstNameField).toHaveValue(firstName);
+      await expect.soft(dataTablesPage.firstNameField).toHaveValue(firstName);
       await expect.soft(dataTablesPage.lastNameField).toHaveValue(lastName);
       await expect.soft(dataTablesPage.inputTextField).toHaveValue(text);
     });

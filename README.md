@@ -379,12 +379,12 @@ npx playwright test tests/data-tables.spec.ts --grep @smoke
 | The second table lists Jason Jones 27, Sarah Jackson 56, and Bob Woods 80        | `@regression`          |
 | The Table section lists Andy Otto, Jacob Jones, and Larry Scott                  | `@regression`          |
 | Warning is enabled, and a pointer click lands on the group instead of the button | `@smoke` `@regression` |
-| Space clicks Warning itself                                                      | `@regression`          |
+| Tab from Danger reaches Warning, and Space clicks it                             | `@regression`          |
 | Button-1 stays active after a click on Button-2                                  | `@regression`          |
 | Reset leaves the typed first name, last name, and text                           | `@regression`          |
 | Enter on a filled name does not add a row                                        | `@regression`          |
 
-The name tables are `#t01` and `#t02`. They share the headers Firstname, Lastname, and Age, and Jackson is in both, so each row is read from its own table. The Table section has no id. Warning has the class `disabled` and `pointer-events: none`, and the disabled property is false. It sits below the fold at 1280×720. Space still clicks it, because it stays in the tab order. Button-1 starts with `active`, and a click on Button-2 does not move that class. The name form has no submit button. Reset is outside the form. The breadcrumb, badges, pagination, and lists are not covered.
+The name tables are `#t01` and `#t02`. They share the headers Firstname, Lastname, and Age, and Jackson is in both, so each row is read from its own table. The Table section has no id. Warning has the class `disabled` and `pointer-events: none`, and the disabled property is false. It sits below the fold at 1280×720. Tab from Danger reaches it, and Space still clicks it. Button-1 starts with `active`, and a click on Button-2 does not move that class. The name form has no submit button. Reset is outside the form. The breadcrumb, badges, pagination, and lists are not covered.
 
 ## Project layout
 
