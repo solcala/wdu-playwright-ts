@@ -53,6 +53,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | To Do List challenge                                         | ✅ Done                |
 | Accordion Items challenge                                    | ✅ Done                |
 | Hidden Elements challenge                                    | ✅ Done                |
+| Data Tables challenge                                        | ✅ Done                |
 | Scrolling challenge                                          | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
@@ -63,7 +64,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-133 challenge tests in 15 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+141 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
@@ -82,10 +83,12 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | To Do List                 | `tests/todo-list.spec.ts`               |     8 | ✅ Done |
 | Accordion Items            | `tests/accordion-items.spec.ts`         |    11 | ✅ Done |
 | Hidden Elements            | `tests/hidden-elements.spec.ts`         |     5 | ✅ Done |
-| Data Tables                | `tests/data-tables.spec.ts`             |     — | Pending |
+| Data Tables                | `tests/data-tables.spec.ts`             |     8 | ✅ Done |
 | Page Object Model          | `tests/page-object-model.spec.ts`       |     — | Pending |
 | Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
 | AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
+
+The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
@@ -391,6 +394,30 @@ npx playwright test tests/hidden-elements.spec.ts --grep @smoke
 
 The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
 
+### Data Tables
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/data-tables.spec.ts
+npx playwright test tests/data-tables.spec.ts --grep @smoke
+```
+
+`tests/data-tables.spec.ts` uses the `dataTablesPage` fixture. The describe block is tagged `@data-tables`. The live path is `/Data-Table/index.html`. The case list is `specs/data-tables.plan.md`. Scenarios:
+
+| What it checks                                                                   | Tag                    |
+| -------------------------------------------------------------------------------- | ---------------------- |
+| The first table lists John Smith 45, Jemma Jackson 94, and Michael Doe 20        | `@smoke` `@regression` |
+| The second table lists Jason Jones 27, Sarah Jackson 56, and Bob Woods 80        | `@regression`          |
+| The Table section lists Andy Otto, Jacob Jones, and Larry Scott                  | `@regression`          |
+| Warning is enabled, and a pointer click lands on the group instead of the button | `@smoke` `@regression` |
+| Tab from Danger reaches Warning, and Space clicks it                             | `@regression`          |
+| Button-1 stays active after a click on Button-2                                  | `@regression`          |
+| Reset leaves the typed first name, last name, and text                           | `@regression`          |
+| Enter on a filled name does not add a row                                        | `@regression`          |
+
+The name tables are `#t01` and `#t02`. They share the headers Firstname, Lastname, and Age, and Jackson is in both, so each row is read from its own table. The Table section has no id. Warning has the class `disabled` and `pointer-events: none`, and the disabled property is false. It sits below the fold at 1280×720. Tab from Danger reaches it, and Space still clicks it. Button-1 starts with `active`, and a click on Button-2 does not move that class. The name form has no submit button. Reset is outside the form. The breadcrumb, badges, pagination, and lists are not covered.
+
 ### Scrolling
 
 Run all seven tests, or only the smoke tests:
@@ -433,6 +460,7 @@ pages/                  Page objects (one class per file, kebab-case file names)
   todo-list-page.ts
   accordion-items-page.ts
   hidden-elements-page.ts
+  data-tables-page.ts
   scrolling-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
@@ -443,6 +471,7 @@ specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not cove
 specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and what is not covered
 specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
 specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
+specs/data-tables.plan.md  Data Tables cases: outcomes, categories, and what is not covered
 specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
@@ -491,6 +520,7 @@ npx playwright test tests/file-upload.spec.ts              # File Upload (see Co
 npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
 npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
 npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
+npx playwright test tests/data-tables.spec.ts              # Data Tables (see Coverage)
 npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
