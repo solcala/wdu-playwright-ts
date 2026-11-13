@@ -88,6 +88,8 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Scrolling                  | `tests/scrolling.spec.ts`               |     7 | ✅ Done |
 | AI Testing Playground      | `tests/ai-testing-playground.spec.ts`   |     — | Pending |
 
+The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
+
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
 ### Login Portal
