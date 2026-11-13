@@ -64,13 +64,13 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-140 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+141 challenge tests in 16 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                  | Spec                                    | Tests | Status  |
 | -------------------------- | --------------------------------------- | ----: | ------- |
 | Home page                  | `tests/home.spec.ts`                    |     1 | ✅ Done |
 | Contact Us                 | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
-| Login Portal               | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
+| Login Portal               | `tests/login-portal.spec.ts`            |     7 | ✅ Done |
 | Button Clicks              | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
 | Dropdown, Checkbox & Radio | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
 | Popup & Alerts             | `tests/popup-alerts.spec.ts`            |     9 | ✅ Done |
@@ -94,7 +94,7 @@ Contact Us covers: page elements, valid submit, empty and invalid-email errors, 
 
 ### Login Portal
 
-Run all six tests, or only the smoke test:
+Run all seven tests, or only the smoke test:
 
 ```bash
 npx playwright test tests/login-portal.spec.ts
@@ -109,10 +109,11 @@ npx playwright test tests/login-portal.spec.ts --grep @smoke
 | Submit                 | Empty submit shows the alert `validation failed`                         | `@regression`          |
 | Submit / Happy path    | `webdriver` / `webdriver123` shows the alert `validation succeeded`      | `@smoke` `@regression` |
 | Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed`       | `@regression`          |
+| Submit / Negative path | `wrong-username` / `webdriver123` shows the alert `validation failed`    | `@regression`          |
 | Submit / Edge cases    | `Webdriver` fails because the check is case-sensitive                    | `@regression`          |
 | Submit / Edge cases    | `webdriver` with a trailing space fails because the value is not trimmed | `@regression`          |
 
-The five submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
+The six submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
 
 ### Button Clicks
 
