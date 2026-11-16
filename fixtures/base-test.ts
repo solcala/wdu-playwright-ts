@@ -15,6 +15,7 @@ import { TodoListPage } from '@/pages/todo-list-page';
 import { HiddenElementsPage } from '@/pages/hidden-elements-page';
 import { AccordionItemsPage } from '@/pages/accordion-items-page';
 import { ScrollingPage } from '@/pages/scrolling-page';
+import { DataTablesPage } from '@/pages/data-tables-page';
 import { AiTestingPlaygroundPage } from '@/pages/ai-testing-playground-page';
 
 type MyFixtures = {
@@ -33,6 +34,7 @@ type MyFixtures = {
   hiddenElementsPage: HiddenElementsPage;
   accordionItemsPage: AccordionItemsPage;
   scrollingPage: ScrollingPage;
+  dataTablesPage: DataTablesPage;
   aiTestingPlaygroundPage: AiTestingPlaygroundPage;
 };
 
@@ -96,6 +98,10 @@ export const test = base.extend<MyFixtures>({
   scrollingPage: async ({ page }, use) => {
     const scrollingPage = new ScrollingPage(page);
     await use(scrollingPage);
+  },
+  dataTablesPage: async ({ page }, use) => {
+    const dataTablesPage = new DataTablesPage(page);
+    await use(dataTablesPage);
   },
   aiTestingPlaygroundPage: async ({ page }, use) => {
     const aiTestingPlaygroundPage = new AiTestingPlaygroundPage(page);
