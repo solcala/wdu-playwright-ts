@@ -270,6 +270,10 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
   test.describe('Race Condition', () => {
     test('starting both races names one winner and then clears', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('both races are running', async () => {
+        /**
+         * The record starts before either click. A poll can miss a winner that was replaced before the next read.
+         */
+        await aiTestingPlaygroundPage.beginRaceResultLog();
         await aiTestingPlaygroundPage.startRaceA();
         /**
          * The running line is set in the click. The timer is at least 0.5 seconds,
@@ -289,25 +293,10 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
          * Each timer is 0.5 to 2.5 seconds. Either name is a pass.
          * The result starts empty, so the empty check comes after the win.
          */
-        /**
-         * The winner is the text from the read that first matches. A second read could already name the other race.
-         */
-        let winner = '';
-        await expect
-          .poll(async () => {
-            const next = await aiTestingPlaygroundPage.readRaceWinner(winner);
-            winner = next.winner;
-            return next.text;
-          })
-          .toMatch(raceWinnerText);
-        let replaced = false;
-        await expect
-          .poll(async () => {
-            const next = await aiTestingPlaygroundPage.raceTextWhileWinnerHolds(winner, replaced);
-            replaced = next.replaced;
-            return next.value;
-          })
-          .toBe('');
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
+        const winners = [...new Set((await aiTestingPlaygroundPage.raceResultLog()).filter((line) => raceWinnerText.test(line)))];
+        expect(winners).toHaveLength(1);
       });
     });
 

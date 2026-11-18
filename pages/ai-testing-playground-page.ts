@@ -322,15 +322,30 @@ export class AiTestingPlaygroundPage extends BasePage {
   }
 
   /**
-   * Reads the race result and keeps the first win line from that same read.
-   * A later read can name the other race. The first win line is the one this read accepted.
-   * @param lockedWinner - The win line already accepted, or an empty string when none has been accepted
-   * @returns The locked win line, and the current result text
+   * Records every race result text from now on, including the current text.
+   * A later poll can miss a line that was replaced before the next read.
    */
-  async readRaceWinner(lockedWinner: string): Promise<{ winner: string; text: string }> {
-    const text = await this.raceResult.innerText();
-    const winner = lockedWinner || (/^Race [AB] won!$/.test(text) ? text : '');
-    return { winner, text };
+  async beginRaceResultLog(): Promise<void> {
+    await this.raceResult.evaluate((result) => {
+      const node = result as HTMLElement & { raceResultLog?: string[] };
+      const log = [node.textContent ?? ''];
+      const observer = new MutationObserver(() => {
+        log.push(node.textContent ?? '');
+      });
+      observer.observe(node, { childList: true, characterData: true, subtree: true });
+      node.raceResultLog = log;
+    });
+  }
+
+  /**
+   * Returns the race result lines recorded since beginRaceResultLog.
+   * @returns The lines in order, including the text at the start of the record
+   */
+  async raceResultLog(): Promise<string[]> {
+    return this.raceResult.evaluate((result) => {
+      const log = (result as HTMLElement & { raceResultLog?: string[] }).raceResultLog;
+      return log ? [...log] : [];
+    });
   }
 
   /**
