@@ -17,6 +17,12 @@ const lazySelectorText = /^#lazy-\d+$/;
 
 const verificationMessage = 'Verification required. Please enter the code.';
 
+const conditionalEmailErrorText = 'Valid email required';
+
+const raceARunning = 'Race A running…';
+
+const raceBRunning = 'Race B running…';
+
 const conditionalSuccessMessage = 'Submitted successfully.';
 
 const verificationColor = 'rgb(192, 57, 43)';
@@ -99,6 +105,11 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
     test('a valid email and a six-digit code submit', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('a valid email asks for a code', async () => {
         await aiTestingPlaygroundPage.fillConditionalEmail('ada@example.com');
+        /**
+         * The code field appears on Submit, not while the email is typed.
+         * It starts hidden, so this check is after the email is filled.
+         */
+        await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
         await aiTestingPlaygroundPage.submitConditionalForm();
         await expect(aiTestingPlaygroundPage.conditionalResult).toHaveText(verificationMessage);
         await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeVisible();
@@ -121,7 +132,11 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
       await test.step('an email without a dot in the domain is rejected', async () => {
         await aiTestingPlaygroundPage.fillConditionalEmail('ada@example');
         await aiTestingPlaygroundPage.submitConditionalForm();
+        /**
+         * The sentence is already in the page. The visibility check is the wait.
+         */
         await expect(aiTestingPlaygroundPage.conditionalEmailError).toBeVisible();
+        await expect(aiTestingPlaygroundPage.conditionalEmailError).toHaveText(conditionalEmailErrorText);
         await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
         await expect.soft(aiTestingPlaygroundPage.conditionalResult).toHaveText('');
         await expect.soft(aiTestingPlaygroundPage.conditionalEmailField).toHaveValue('ada@example');
@@ -131,7 +146,11 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
     test('an empty email shows the email error', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('Submit with an empty email is rejected', async () => {
         await aiTestingPlaygroundPage.submitConditionalForm();
+        /**
+         * The sentence is already in the page. The visibility check is the wait.
+         */
         await expect(aiTestingPlaygroundPage.conditionalEmailError).toBeVisible();
+        await expect(aiTestingPlaygroundPage.conditionalEmailError).toHaveText(conditionalEmailErrorText);
         await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
         await expect.soft(aiTestingPlaygroundPage.conditionalResult).toHaveText('');
       });
@@ -203,8 +222,12 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
 
       await test.step('a new email hides the code field and clears the code', async () => {
         await aiTestingPlaygroundPage.fillConditionalEmail('bey@example.com');
-        await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
-        await expect(aiTestingPlaygroundPage.conditionalCodeField).toHaveValue('');
+        /**
+         * Hiding the field and clearing the code are separate results of the same input.
+         * Either can fail on its own.
+         */
+        await expect.soft(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
+        await expect.soft(aiTestingPlaygroundPage.conditionalCodeField).toHaveValue('');
         await expect.soft(aiTestingPlaygroundPage.conditionalResult).toHaveText('');
         await expect.soft(aiTestingPlaygroundPage.conditionalEmailField).toHaveValue('bey@example.com');
       });
@@ -246,22 +269,36 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
 
   test.describe('Race Condition', () => {
     test('starting both races names one winner and then clears', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
-      await test.step('one of the two wins', async () => {
+      await test.step('both races are running', async () => {
         await aiTestingPlaygroundPage.startRaceA();
+        /**
+         * The running line is set in the click. The timer is at least 0.5 seconds,
+         * so this check passes on the first poll. It fails if Race A never started.
+         */
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceARunning);
         await aiTestingPlaygroundPage.startRaceB();
         /**
-         * Each timer is 0.5 to 2.5 seconds. Either name is a pass.
-         * The running line is replaced by the winner, so it is not the check.
+         * Race B overwrites that line while no winner is set.
+         * If Race A had already won, or this click did nothing, the line stays Race A.
          */
-        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceBRunning);
       });
 
-      await test.step('the result clears', async () => {
+      await test.step('one winner holds until the result clears', async () => {
         /**
-         * The result starts empty. This check comes after the win.
-         * An empty check that ran first would pass on the first poll.
+         * Each timer is 0.5 to 2.5 seconds. Either name is a pass.
+         * The result starts empty, so the empty check comes after the win.
          */
-        await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
+        const winner = await aiTestingPlaygroundPage.raceResult.innerText();
+        let replaced = false;
+        await expect
+          .poll(async () => {
+            const next = await aiTestingPlaygroundPage.raceTextWhileWinnerHolds(winner, replaced);
+            replaced = next.replaced;
+            return next.value;
+          })
+          .toBe('');
       });
     });
 
@@ -291,16 +328,18 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
       });
 
       await test.step('Race B does not appear before the result clears', async () => {
-        await aiTestingPlaygroundPage.startRaceB();
         /**
+         * The win is still showing. The click is the next line, inside that window.
          * A click after the winner is set returns immediately. The line is cleared 3 seconds after the win.
-         * An empty check on its own would also pass if Race B had won and then been cleared.
+         * An empty check on its own would also pass if another line had been shown and then cleared.
          */
-        let seenRaceB = false;
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
+        await aiTestingPlaygroundPage.startRaceB();
+        let replaced = false;
         await expect
           .poll(async () => {
-            const next = await aiTestingPlaygroundPage.raceTextAfterLateStart(seenRaceB);
-            seenRaceB = next.seenRaceB;
+            const next = await aiTestingPlaygroundPage.raceTextWhileWinnerHolds('Race A won!', replaced);
+            replaced = next.replaced;
             return next.value;
           })
           .toBe('');

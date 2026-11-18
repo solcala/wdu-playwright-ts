@@ -536,7 +536,7 @@ npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
 | Changing the email after the code field is showing hides that field and clears the code                  | `@regression`          |
 | `1234567` is stored as `123456` and submits                                                              | `@regression`          |
 | ` 12345` stays in the code field, including the space, and shows the code error                          | `@regression`          |
-| Starting both races ends on `Race A won!` or `Race B won!`, then the result clears                       | `@regression`          |
+| Both races show their running lines, then one winner holds until the result clears                       | `@regression`          |
 | Start Race A ends on `Race A won!`                                                                       | `@regression`          |
 | Before a click, the race result is empty                                                                 | `@regression`          |
 | After `Race A won!`, Start Race B does not name Race B before the result clears                          | `@regression`          |

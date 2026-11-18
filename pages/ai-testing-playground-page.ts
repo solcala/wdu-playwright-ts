@@ -141,14 +141,15 @@ export class AiTestingPlaygroundPage extends BasePage {
     /**
      * The Email caption is not tied to the control. The placeholder you@example.com is also on the
      * invisible-success field, so the id is the field. Valid email required appears on other
-     * challenges, so the id is the error. The code field's placeholder is unique, but a role lookup
-     * skips it while the extra block is display:none, and the tests read the value in both states.
+     * challenges, so the id is the error. The code field's placeholder is unique. A role lookup
+     * skips it while the extra block is display:none. The placeholder still matches, and the tests
+     * read the value in both states.
      * Submit is also on the multi-step form and the invisible-success form. The result line has no
      * role. Its text changes.
      */
     this.conditionalEmailField = page.locator('#cond-email');
     this.conditionalEmailError = page.locator('#cond-email-err');
-    this.conditionalCodeField = page.locator('#cond-code');
+    this.conditionalCodeField = page.getByPlaceholder('6-digit code', { exact: true });
     this.conditionalCodeError = page.getByText('Valid 6-digit code required', { exact: true });
     this.conditionalSubmitButton = page.locator('#cond-submit');
     this.conditionalResult = page.locator('#cond-result');
@@ -321,15 +322,16 @@ export class AiTestingPlaygroundPage extends BasePage {
   }
 
   /**
-   * Returns the race result, and keeps a Race B name after the line is cleared.
-   * The win line is removed after 3 seconds, and a stolen win is removed too, so an empty result on its own cannot show that Race B never appeared.
-   * @param seenRaceB - Whether the result has already named Race B
-   * @returns The next seen flag, and `replaced` once Race B has been named, otherwise the current text
+   * Returns the race result, and keeps a different line after the winner is cleared.
+   * The win line is removed after 3 seconds. A later line is removed too, so an empty result on its own cannot show that the first winner held.
+   * @param winner - The win line that should hold, such as `Race A won!`
+   * @param replaced - Whether a different line has already been seen
+   * @returns The next replaced flag, and `replaced` once another line has been named, otherwise the current text
    */
-  async raceTextAfterLateStart(seenRaceB: boolean): Promise<{ seenRaceB: boolean; value: string }> {
+  async raceTextWhileWinnerHolds(winner: string, replaced: boolean): Promise<{ replaced: boolean; value: string }> {
     const text = await this.raceResult.innerText();
-    const seen = seenRaceB || text.includes('Race B');
-    return { seenRaceB: seen, value: seen ? 'replaced' : text };
+    const changed = replaced || (text !== winner && text !== '');
+    return { replaced: changed, value: changed ? 'replaced' : text };
   }
 
   /**
