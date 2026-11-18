@@ -289,8 +289,17 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
          * Each timer is 0.5 to 2.5 seconds. Either name is a pass.
          * The result starts empty, so the empty check comes after the win.
          */
-        await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
-        const winner = await aiTestingPlaygroundPage.raceResult.innerText();
+        /**
+         * The winner is the text from the read that first matches. A second read could already name the other race.
+         */
+        let winner = '';
+        await expect
+          .poll(async () => {
+            const next = await aiTestingPlaygroundPage.readRaceWinner(winner);
+            winner = next.winner;
+            return next.text;
+          })
+          .toMatch(raceWinnerText);
         let replaced = false;
         await expect
           .poll(async () => {

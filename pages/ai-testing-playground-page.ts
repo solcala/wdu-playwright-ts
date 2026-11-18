@@ -322,6 +322,18 @@ export class AiTestingPlaygroundPage extends BasePage {
   }
 
   /**
+   * Reads the race result and keeps the first win line from that same read.
+   * A later read can name the other race. The first win line is the one this read accepted.
+   * @param lockedWinner - The win line already accepted, or an empty string when none has been accepted
+   * @returns The locked win line, and the current result text
+   */
+  async readRaceWinner(lockedWinner: string): Promise<{ winner: string; text: string }> {
+    const text = await this.raceResult.innerText();
+    const winner = lockedWinner || (/^Race [AB] won!$/.test(text) ? text : '');
+    return { winner, text };
+  }
+
+  /**
    * Returns the race result, and keeps a different line after the winner is cleared.
    * The win line is removed after 3 seconds. A later line is removed too, so an empty result on its own cannot show that the first winner held.
    * @param winner - The win line that should hold, such as `Race A won!`

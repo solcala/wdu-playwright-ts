@@ -84,25 +84,25 @@ Ordered by ROI within each challenge. The smoke test is the one named in the roa
 
 ## Not automated
 
-| Category                                            | Reason                                                                                                                                                                   |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A stored coordinate for Catch Me                    | The button jumps every 1.5 seconds. Playwright's click waits until it is stable. A point from before the jump misses.                                                    |
-| One Catch Me position                               | `left` and `top` are random. The test waits until one of them changes.                                                                                                   |
-| Keyboard on Catch Me                                | It is a button. Enter and Space activate the focused button. There is no separate key handler. The challenge is the move.                                                |
-| `toBeVisible()` on the toast                        | Opacity is what changes. Visibility does not.                                                                                                                            |
-| A `Got it!` text check before opacity `1`           | The text is set in the click, while opacity is still `0`. The check would pass on the first poll.                                                                        |
-| A whitespace-only conditional email                 | The field is `type="email"`. Chromium stores it as empty before the page reads it. The empty submit is the case.                                                         |
-| Spaces around a valid conditional email             | Chromium stores `ada@example.com`. The page then takes the valid path. The spaces are not in the value.                                                                  |
-| An uppercase email                                  | `ADA@EXAMPLE.COM` passes the same email check as `ada@example.com`. The regex does not fold case. The success path covers that check.                                    |
-| Letters in the code                                 | `abcdef` fails `/^\d{6}$/`, the same check as `12345`. The five-digit case is the one that looks almost valid.                                                           |
-| An inner space in the code                          | `12 345` fails that same check after trim. The leading-space case is the one that also fills `maxlength`.                                                                |
-| Asserting Race A wins when both buttons are clicked | Each timer is 0.5 to 2.5 seconds. Either callback can be first.                                                                                                          |
-| The running line as the outcome of a single race    | It is replaced by the winner. The both-buttons test reads it immediately after each click, while the timer is still at least 0.5 seconds away. A later poll can miss it. |
-| Starting only Race B                                | The same single-starter path as Race A. The result would be `Race B won!`.                                                                                               |
-| Clicking Race A again while its win is showing      | A click after the winner is set returns immediately, for either button. The late Race B case is the one that would steal a Race A win.                                   |
-| The lazy selector changing on the second click      | The number is `Math.floor(Math.random() * 9999)`. The same value can be drawn twice.                                                                                     |
-| Locating the lazy element by the generated selector | `#lazy-` plus digits changes on every click. The stable node is the sentence that is already in the page.                                                                |
-| The lazy node being detached                        | The click removes `hidden`. The node stays in the page.                                                                                                                  |
+| Category                                            | Reason                                                                                                                                                                           |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A stored coordinate for Catch Me                    | The button jumps every 1.5 seconds. Playwright's click waits until it is stable. A point from before the jump misses.                                                            |
+| One Catch Me position                               | `left` and `top` are random. The test waits until one of them changes.                                                                                                           |
+| Keyboard on Catch Me                                | It is a button. Enter and Space activate the focused button. There is no separate key handler. The challenge is the move.                                                        |
+| `toBeVisible()` on the toast                        | Opacity is what changes. Visibility does not.                                                                                                                                    |
+| A `Got it!` text check before opacity `1`           | The text is set in the click, while opacity is still `0`. The check would pass on the first poll.                                                                                |
+| A whitespace-only conditional email                 | The field is `type="email"`. Chromium stores it as empty before the page reads it. The empty submit is the case.                                                                 |
+| Spaces around a valid conditional email             | Chromium stores `ada@example.com`. The page then takes the valid path. The spaces are not in the value.                                                                          |
+| An uppercase email                                  | `ADA@EXAMPLE.COM` passes the same email check as `ada@example.com`. The regex does not fold case. The success path covers that check.                                            |
+| Letters in the code                                 | `abcdef` fails `/^\d{6}$/`, the same check as `12345`. The five-digit case is the one that looks almost valid.                                                                   |
+| An inner space in the code                          | `12 345` fails that same check after trim. The leading-space case is the one that also fills `maxlength`.                                                                        |
+| Asserting Race A wins when both buttons are clicked | Each timer is 0.5 to 2.5 seconds. Either callback can be first.                                                                                                                  |
+| The running line as the outcome of a single race    | It is replaced by the winner. The both-buttons test reads it immediately after each click, while the timer is still at least 0.5 seconds away. A later poll can miss it.         |
+| Starting only Race B                                | The same single-starter path as Race A. The result would be `Race B won!`.                                                                                                       |
+| Clicking Race A again while its win is showing      | A click after the winner is set returns immediately, for either button. The late Race B case is the one that would steal a Race A win.                                           |
+| The lazy selector changing on the second click      | The number is `Math.floor(Math.random() * 9999)`. The same value can be drawn twice.                                                                                             |
+| Locating the lazy element by the generated selector | The selector is `#lazy-` plus a random number. It can change on each click, and the same number can be drawn twice. The stable node is the sentence that is already in the page. |
+| The lazy node being detached                        | The click removes `hidden`. The node stays in the page.                                                                                                                          |
 
 ## Runtime
 
