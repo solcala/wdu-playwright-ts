@@ -43,6 +43,23 @@ export class AiTestingPlaygroundPage extends BasePage {
   readonly reEnableButton: Locator;
   readonly reEnableStatus: Locator;
 
+  readonly movingTargetButton: Locator;
+
+  readonly conditionalEmailField: Locator;
+  readonly conditionalEmailError: Locator;
+  readonly conditionalCodeField: Locator;
+  readonly conditionalCodeError: Locator;
+  readonly conditionalSubmitButton: Locator;
+  readonly conditionalResult: Locator;
+
+  readonly raceAButton: Locator;
+  readonly raceBButton: Locator;
+  readonly raceResult: Locator;
+
+  readonly revealElementButton: Locator;
+  readonly lazyMessage: Locator;
+  readonly lazySelector: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -113,6 +130,44 @@ export class AiTestingPlaygroundPage extends BasePage {
      */
     this.reEnableButton = page.getByRole('button', { name: 'Click Me', exact: true });
     this.reEnableStatus = page.locator('#reenable-status');
+
+    /**
+     * Basics B: Moving Target, Conditional Validation, Race Condition, Lazy-Rendered Element.
+     * Catch Me is the only button with that name. It is position absolute, and its left and top
+     * change on a timer. The click shows the shared toast.
+     */
+    this.movingTargetButton = page.getByRole('button', { name: 'Catch Me', exact: true });
+
+    /**
+     * The Email caption is not tied to the control. The placeholder you@example.com is also on the
+     * invisible-success field, so the id is the field. Valid email required appears on other
+     * challenges, so the id is the error. The code field's placeholder is unique, but a role lookup
+     * skips it while the extra block is display:none, and the tests read the value in both states.
+     * Submit is also on the multi-step form and the invisible-success form. The result line has no
+     * role. Its text changes.
+     */
+    this.conditionalEmailField = page.locator('#cond-email');
+    this.conditionalEmailError = page.locator('#cond-email-err');
+    this.conditionalCodeField = page.locator('#cond-code');
+    this.conditionalCodeError = page.getByText('Valid 6-digit code required', { exact: true });
+    this.conditionalSubmitButton = page.locator('#cond-submit');
+    this.conditionalResult = page.locator('#cond-result');
+
+    this.raceAButton = page.getByRole('button', { name: 'Start Race A', exact: true });
+    this.raceBButton = page.getByRole('button', { name: 'Start Race B', exact: true });
+    /**
+     * The result line has no role and no accessible name. The id is the locator.
+     */
+    this.raceResult = page.locator('#race-result');
+
+    this.revealElementButton = page.getByRole('button', { name: 'Reveal Element', exact: true });
+    /**
+     * The sentence is in the page from the start, inside a display:none div. The text locator is the
+     * paragraph. The click removes hidden from the div, which is what shows the sentence.
+     * The code element has no accessible name. Its text is empty until the click.
+     */
+    this.lazyMessage = page.getByText('I just appeared!');
+    this.lazySelector = page.locator('#lazy-selector');
   }
 
   /**
@@ -207,5 +262,80 @@ export class AiTestingPlaygroundPage extends BasePage {
    */
   async clickReEnableButton(): Promise<void> {
     await this.reEnableButton.click();
+  }
+
+  /**
+   * Clicks Catch Me. The button moves on a timer. The click shows the toast.
+   */
+  async catchMovingTarget(): Promise<void> {
+    await this.movingTargetButton.click();
+  }
+
+  /**
+   * Returns the Catch Me button's left and top.
+   * The button jumps on a timer. The strings are the inline offsets, such as `12px`.
+   * @returns The left and top set on the button
+   */
+  async movingTargetOffset(): Promise<{ left: string; top: string }> {
+    return this.movingTargetButton.evaluate((button) => ({
+      left: button.style.left,
+      top: button.style.top,
+    }));
+  }
+
+  /**
+   * Fills the conditional email field.
+   * @param emailAddress - The email entered in the Email field
+   */
+  async fillConditionalEmail(emailAddress: string): Promise<void> {
+    await this.conditionalEmailField.fill(emailAddress);
+  }
+
+  /**
+   * Fills the verification code.
+   * @param code - The code entered in the Verification code field
+   */
+  async fillConditionalCode(code: string): Promise<void> {
+    await this.conditionalCodeField.fill(code);
+  }
+
+  /**
+   * Clicks Submit on the conditional form.
+   */
+  async submitConditionalForm(): Promise<void> {
+    await this.conditionalSubmitButton.click();
+  }
+
+  /**
+   * Clicks Start Race A.
+   */
+  async startRaceA(): Promise<void> {
+    await this.raceAButton.click();
+  }
+
+  /**
+   * Clicks Start Race B.
+   */
+  async startRaceB(): Promise<void> {
+    await this.raceBButton.click();
+  }
+
+  /**
+   * Returns the race result, and keeps a Race B name after the line is cleared.
+   * The win line is removed after 3 seconds, and a stolen win is removed too, so an empty result on its own cannot show that Race B never appeared.
+   * @param seenRaceB - Whether the result has already named Race B
+   * @returns The next seen flag, and `replaced` once Race B has been named, otherwise the current text
+   */
+  async raceTextAfterLateStart(seenRaceB: boolean): Promise<{ seenRaceB: boolean; value: string }> {
+    const text = await this.raceResult.innerText();
+    const seen = seenRaceB || text.includes('Race B');
+    return { seenRaceB: seen, value: seen ? 'replaced' : text };
+  }
+
+  /**
+   * Clicks Reveal Element.
+   */
+  async revealLazyElement(): Promise<void> {
+    await this.revealElementButton.click();
   }
 }
