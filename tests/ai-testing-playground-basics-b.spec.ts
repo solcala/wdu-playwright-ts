@@ -295,8 +295,20 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
          */
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
-        const winners = [...new Set((await aiTestingPlaygroundPage.raceResultLog()).filter((line) => raceWinnerText.test(line)))];
-        expect(winners).toHaveLength(1);
+        /**
+         * From the first winner, repeated copies of that line are allowed. The next different line has to be empty.
+         */
+        expect(await aiTestingPlaygroundPage.raceLogShowsOneWinner(raceWinnerText)).toBe(true);
+      });
+    });
+
+    test('the result record keeps two winners from one turn', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
+      await test.step('both win lines are in the record', async () => {
+        await aiTestingPlaygroundPage.beginRaceResultLog();
+        await aiTestingPlaygroundPage.writeBothRaceWinnersInOneTurn();
+        const lines = await aiTestingPlaygroundPage.raceResultLog();
+        expect(lines).toContain('Race A won!');
+        expect(lines).toContain('Race B won!');
       });
     });
 

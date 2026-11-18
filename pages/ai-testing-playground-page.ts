@@ -329,8 +329,24 @@ export class AiTestingPlaygroundPage extends BasePage {
     await this.raceResult.evaluate((result) => {
       const node = result as HTMLElement & { raceResultLog?: string[] };
       const log = [node.textContent ?? ''];
-      const observer = new MutationObserver(() => {
-        log.push(node.textContent ?? '');
+      /**
+       * Each record is one text change. Reading the node at callback time would keep only the last change in the batch.
+       */
+      const observer = new MutationObserver((records) => {
+        for (const record of records) {
+          if (record.type === 'characterData') {
+            log.push(record.target.textContent ?? '');
+            continue;
+          }
+          if (record.type !== 'childList' || record.target !== node) continue;
+          if (record.addedNodes.length === 0) {
+            log.push('');
+            continue;
+          }
+          for (const added of record.addedNodes) {
+            log.push(added.textContent ?? '');
+          }
+        }
       });
       observer.observe(node, { childList: true, characterData: true, subtree: true });
       node.raceResultLog = log;
@@ -345,6 +361,35 @@ export class AiTestingPlaygroundPage extends BasePage {
     return this.raceResult.evaluate((result) => {
       const log = (result as HTMLElement & { raceResultLog?: string[] }).raceResultLog;
       return log ? [...log] : [];
+    });
+  }
+
+  /**
+   * Returns whether the record shows one win line, then only that line, until the result is empty.
+   * Repeated copies of the win line are the same observation. The next different line has to be empty.
+   * @param winnerText - The pattern for a win line, such as Race A won! or Race B won!
+   * @returns True when one winner is followed by that same line or an empty result
+   */
+  async raceLogShowsOneWinner(winnerText: RegExp): Promise<boolean> {
+    const lines = await this.raceResultLog();
+    const start = lines.findIndex((line) => winnerText.test(line));
+    if (start < 0) return false;
+    const winner = lines[start];
+    for (const line of lines.slice(start + 1)) {
+      if (line === winner) continue;
+      return line === '';
+    }
+    return false;
+  }
+
+  /**
+   * Writes both win lines in one turn.
+   * The record can then be checked for an intermediate line that a single read would miss.
+   */
+  async writeBothRaceWinnersInOneTurn(): Promise<void> {
+    await this.raceResult.evaluate((result) => {
+      result.textContent = 'Race A won!';
+      result.textContent = 'Race B won!';
     });
   }
 

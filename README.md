@@ -67,7 +67,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-194 challenge tests in 19 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+195 challenge tests in 19 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                      | Spec                                           | Tests | Status  |
 | ------------------------------ | ---------------------------------------------- | ----: | ------- |
@@ -90,7 +90,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Page Object Model              | `tests/page-object-model.spec.ts`              |    10 | ✅ Done |
 | Scrolling                      | `tests/scrolling.spec.ts`                      |     7 | ✅ Done |
 | AI Testing Playground basics A | `tests/ai-testing-playground-basics-a.spec.ts` |    22 | ✅ Done |
-| AI Testing Playground basics B | `tests/ai-testing-playground-basics-b.spec.ts` |    21 | ✅ Done |
+| AI Testing Playground basics B | `tests/ai-testing-playground-basics-b.spec.ts` |    22 | ✅ Done |
 | AI Testing Playground          | `tests/ai-testing-playground.spec.ts`          |     — | Pending |
 
 The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
@@ -512,7 +512,7 @@ The login controls are rebuilt with new classes on each load. The tests use the 
 
 ### AI Testing Playground basics B
 
-Run all 21 tests, or only the smoke test:
+Run all 22 tests, or only the smoke test:
 
 ```bash
 npx playwright test tests/ai-testing-playground-basics-b.spec.ts
@@ -537,6 +537,7 @@ npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
 | `1234567` is stored as `123456` and submits                                                              | `@regression`          |
 | ` 12345` stays in the code field, including the space, and shows the code error                          | `@regression`          |
 | Both races show their running lines, then one winner holds until the result clears                       | `@regression`          |
+| Two win lines written in one turn are both in the result record                                          | `@regression`          |
 | Start Race A ends on `Race A won!`                                                                       | `@regression`          |
 | Before a click, the race result is empty                                                                 | `@regression`          |
 | After `Race A won!`, Start Race B does not name Race B before the result clears                          | `@regression`          |
