@@ -303,12 +303,14 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
     });
 
     test('the result record keeps two winners from one turn', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
-      await test.step('both win lines are in the record', async () => {
+      await test.step('the record is the empty start, then Race A, then Race B', async () => {
         await aiTestingPlaygroundPage.beginRaceResultLog();
         await aiTestingPlaygroundPage.writeBothRaceWinnersInOneTurn();
         const lines = await aiTestingPlaygroundPage.raceResultLog();
-        expect(lines).toContain('Race A won!');
-        expect(lines).toContain('Race B won!');
+        /**
+         * The first entry is the text before either write. The order is the order of the writes.
+         */
+        expect(lines.slice(1)).toEqual(['Race A won!', 'Race B won!']);
       });
     });
 
