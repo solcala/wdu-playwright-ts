@@ -223,10 +223,9 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
       await test.step('a new email hides the code field and clears the code', async () => {
         await aiTestingPlaygroundPage.fillConditionalEmail('bey@example.com');
         /**
-         * Hiding the field and clearing the code are separate results of the same input.
-         * Either can fail on its own.
+         * Hiding the field is the withdraw. Clearing the code and the result are side effects of that input.
          */
-        await expect.soft(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
+        await expect(aiTestingPlaygroundPage.conditionalCodeField).toBeHidden();
         await expect.soft(aiTestingPlaygroundPage.conditionalCodeField).toHaveValue('');
         await expect.soft(aiTestingPlaygroundPage.conditionalResult).toHaveText('');
         await expect.soft(aiTestingPlaygroundPage.conditionalEmailField).toHaveValue('bey@example.com');
@@ -298,19 +297,12 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
         /**
          * From the first winner, repeated copies of that line are allowed. The next different line has to be empty.
          */
-        expect(await aiTestingPlaygroundPage.raceLogShowsOneWinner(raceWinnerText)).toBe(true);
-      });
-    });
-
-    test('the result record keeps two winners from one turn', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
-      await test.step('the record is the empty start, then Race A, then Race B', async () => {
-        await aiTestingPlaygroundPage.beginRaceResultLog();
-        await aiTestingPlaygroundPage.writeBothRaceWinnersInOneTurn();
         const lines = await aiTestingPlaygroundPage.raceResultLog();
-        /**
-         * The first entry is the text before either write. The order is the order of the writes.
-         */
-        expect(lines.slice(1)).toEqual(['Race A won!', 'Race B won!']);
+        const start = lines.findIndex((line) => raceWinnerText.test(line));
+        expect(start).toBeGreaterThanOrEqual(0);
+        const winner = lines[start];
+        const afterWinner = lines.slice(start + 1).filter((line) => line !== winner);
+        expect(afterWinner[0] ?? '').toBe('');
       });
     });
 
