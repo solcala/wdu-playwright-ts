@@ -57,6 +57,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Scrolling challenge                                          | ✅ Done                |
 | Page Object Model challenge                                  | ✅ Done                |
 | AI Testing Playground basics A                               | ✅ Done                |
+| AI Testing Playground basics B                               | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -66,7 +67,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-173 challenge tests in 18 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+194 challenge tests in 19 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                      | Spec                                           | Tests | Status  |
 | ------------------------------ | ---------------------------------------------- | ----: | ------- |
@@ -89,6 +90,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Page Object Model              | `tests/page-object-model.spec.ts`              |    10 | ✅ Done |
 | Scrolling                      | `tests/scrolling.spec.ts`                      |     7 | ✅ Done |
 | AI Testing Playground basics A | `tests/ai-testing-playground-basics-a.spec.ts` |    22 | ✅ Done |
+| AI Testing Playground basics B | `tests/ai-testing-playground-basics-b.spec.ts` |    21 | ✅ Done |
 | AI Testing Playground          | `tests/ai-testing-playground.spec.ts`          |     — | Pending |
 
 The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
@@ -508,6 +510,43 @@ npx playwright test tests/ai-testing-playground-basics-a.spec.ts --grep @smoke
 
 The login controls are rebuilt with new classes on each load. The tests use the card's test id and the Username, Password, and Login roles. Any non-empty pair, after trim, is accepted. There is no password check. The loader waits 3 to 8 seconds, so the smoke test waits until the success line is visible. That sentence is in the page while it is hidden, so the check is visibility. The toast stays in the page and fades with opacity. `toBeVisible()` ignores opacity. The re-enable button starts enabled, disables on click, and shows `Ready` about three seconds later. Challenges 6–27 are later specs.
 
+### AI Testing Playground basics B
+
+Run all 21 tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
+```
+
+`tests/ai-testing-playground-basics-b.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-basics-b`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-testing-playground-basics-b.plan.md`. This spec is challenges 6–9. Scenarios:
+
+| What it checks                                                                                           | Tag                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Catch Me shows `Got it!` at opacity `1`, then opacity `0`                                                | `@smoke` `@regression` |
+| Before the click, the toast opacity is `0` and the text is `Notification triggered`                      | `@regression`          |
+| Catch Me's left or top changes                                                                           | `@regression`          |
+| After the toast fades, a second Catch Me shows `Got it!` again                                           | `@regression`          |
+| `ada@example.com` asks for a code, and `123456` reaches `Submitted successfully.`                        | `@regression`          |
+| `ada@example` shows `Valid email required`, and the code field stays hidden                              | `@regression`          |
+| An empty email shows `Valid email required`, and the code field stays hidden                             | `@regression`          |
+| An empty code shows `Valid 6-digit code required`, and the verification sentence stays                   | `@regression`          |
+| `12345` shows the code error, and the verification sentence stays                                        | `@regression`          |
+| Replacing `ada@example` with `still-bad` hides the email error and does not show the code field          | `@regression`          |
+| Changing the email after the code field is showing hides that field and clears the code                  | `@regression`          |
+| `1234567` is stored as `123456` and submits                                                              | `@regression`          |
+| ` 12345` stays in the code field, including the space, and shows the code error                          | `@regression`          |
+| Both races show their running lines, then one winner holds until the result clears                       | `@regression`          |
+| Start Race A ends on `Race A won!`                                                                       | `@regression`          |
+| Before a click, the race result is empty                                                                 | `@regression`          |
+| After `Race A won!`, Start Race B does not name Race B before the result clears                          | `@regression`          |
+| After the result clears, Start Race A shows `Race A won!` again                                          | `@regression`          |
+| Reveal Element shows `I just appeared!` and a selector matching `#lazy-` plus digits                     | `@regression`          |
+| Before the click, that sentence is in the page and hidden, and the selector is empty                     | `@regression`          |
+| A second Reveal Element leaves the sentence visible, and the selector still matches `#lazy-` plus digits | `@regression`          |
+
+Catch Me jumps about every 1.5 seconds. The click retries until the button is stable. The toast is the same fade as basics A, with the sentence `Got it!`. The code field appears on Submit of a valid email, not while the email is typed. Either race timer can finish first, so the test accepts `Race A won!` or `Race B won!`. The lazy sentence is already in the page under `display: none`, so the check is visibility. The selector is `#lazy-` plus digits, not one number. Challenges 10–27 are later specs.
+
 ## Project layout
 
 ```text
@@ -544,6 +583,7 @@ specs/data-tables.plan.md  Data Tables cases: outcomes, categories, and what is 
 specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
 specs/page-object-model.plan.md Page Object Model cases: outcomes, categories, and what is not covered
 specs/ai-testing-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
+specs/ai-testing-playground-basics-b.plan.md  AI Testing Playground basics B cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -595,6 +635,7 @@ npx playwright test tests/data-tables.spec.ts              # Data Tables (see Co
 npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
 npx playwright test tests/page-object-model.spec.ts        # Page Object Model (see Coverage)
 npx playwright test tests/ai-testing-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts   # AI Testing Playground basics B (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
