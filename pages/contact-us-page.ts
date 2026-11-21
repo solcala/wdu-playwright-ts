@@ -2,7 +2,6 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './base-page';
 
 export class ContactUsPage extends BasePage {
-
   readonly path = '/Contact-Us/contactus.html';
   readonly heading: Locator;
   readonly firstNameField: Locator;
@@ -36,7 +35,6 @@ export class ContactUsPage extends BasePage {
     this.errorMessageInvalidEmail = page.getByText('Error: invalid email address');
     this.homeButton = page.getByRole('link', { name: 'Home' });
     this.tryAgainButton = page.getByRole('link', { name: '← Try Again' });
-
   }
   async fillForm(firstName: string, lastName: string, emailAddress: string, comments: string) {
     await this.firstNameField.fill(firstName);
@@ -74,5 +72,4 @@ export class ContactUsPage extends BasePage {
 
     return { before: beforeBox.height, after: afterBox.height };
   }
-
 }

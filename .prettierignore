@@ -1,6 +1,7 @@
-# Prettier is a devDependency for the afterFileEdit hook only.
-# Ignore everything except Markdown so a repo-wide format cannot rewrite TypeScript.
-*
-!*/
-!**/*.md
-!*.md
+# Markdown, TypeScript, and ES modules are checked. Prettier skips the paths below.
+node_modules/
+playwright-report/
+test-results/
+blob-report/
+playwright/.auth/
+package-lock.json

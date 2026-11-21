@@ -2,7 +2,6 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
 export class DropdownCheckboxRadioPage extends BasePage {
-
   readonly path = '/Dropdown-Checkboxes-RadioButtons/index.html';
   readonly languageDropdown: Locator;
   readonly toolDropdown: Locator;
@@ -97,5 +96,4 @@ export class DropdownCheckboxRadioPage extends BasePage {
   async selectFruit(label: string): Promise<void> {
     await this.fruitDropdown.selectOption({ label });
   }
-
 }

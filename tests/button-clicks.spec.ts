@@ -8,13 +8,12 @@ import { test, expect } from '@/fixtures/base-test';
  * Escape leaves a modal open. The open modal covers its control, so a second click never lands.
  */
 
-test.describe('Button Clicks', () => {
-
+test.describe('Button Clicks', { tag: ['@button-clicks'] }, () => {
   test.beforeEach(async ({ buttonClicksPage }) => {
     await buttonClicksPage.navigateTo();
   });
 
-  test('web element click opens the congratulations modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('web element click opens the congratulations modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!', async () => {
       await buttonClicksPage.clickWebElementButton();
     });
@@ -22,9 +21,7 @@ test.describe('Button Clicks', () => {
     await test.step('modal shows the click() result', async () => {
       await expect(buttonClicksPage.webElementClickModal).toBeVisible();
       await expect.soft(buttonClicksPage.webElementClickModalTitle).toHaveText('Congratulations!');
-      await expect.soft(buttonClicksPage.webElementClickModal).toContainText(
-        'Well done for successfully using the click() method!',
-      );
+      await expect.soft(buttonClicksPage.webElementClickModal).toContainText('Well done for successfully using the click() method!');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -33,7 +30,7 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('javascript click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('javascript click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!', async () => {
       await buttonClicksPage.clickJavaScriptButton();
     });
@@ -41,9 +38,7 @@ test.describe('Button Clicks', () => {
     await test.step('modal shows the JavaScript click result', async () => {
       await expect(buttonClicksPage.javaScriptClickModal).toBeVisible();
       await expect.soft(buttonClicksPage.javaScriptClickModalTitle).toHaveText('It’s that Easy!! Well I think it is.....');
-      await expect.soft(buttonClicksPage.javaScriptClickModal).toContainText(
-        'We can use JavaScript code if all else fails!',
-      );
+      await expect.soft(buttonClicksPage.javaScriptClickModal).toContainText('We can use JavaScript code if all else fails!');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -52,19 +47,19 @@ test.describe('Button Clicks', () => {
     });
   });
 
-  test('action move and click opens its modal', { tag: ['@smoke'] }, async ({ buttonClicksPage }) => {
+  test('action move and click opens its modal', { tag: ['@smoke', '@regression'] }, async ({ buttonClicksPage }) => {
     await test.step('click CLICK ME!!!', async () => {
       await buttonClicksPage.clickActionMoveButton();
     });
 
     await test.step('modal shows the action move result', async () => {
       await expect(buttonClicksPage.actionMoveClickModal).toBeVisible();
-      await expect.soft(buttonClicksPage.actionMoveClickModalTitle).toHaveText(
-        'Well done! the Action Move & Click can become very useful!',
-      );
-      await expect.soft(buttonClicksPage.actionMoveClickModal).toContainText(
-        'Advanced user interactions (API) has been developed to enable you to perform more complex interactions such as:',
-      );
+      await expect
+        .soft(buttonClicksPage.actionMoveClickModalTitle)
+        .toHaveText('Well done! the Action Move & Click can become very useful!');
+      await expect
+        .soft(buttonClicksPage.actionMoveClickModal)
+        .toContainText('Advanced user interactions (API) has been developed to enable you to perform more complex interactions such as:');
     });
 
     await test.step('Close hides the modal', async () => {
@@ -165,5 +160,4 @@ test.describe('Button Clicks', () => {
       await expect(buttonClicksPage.actionMoveClickModal).toBeHidden();
     });
   });
-
 });

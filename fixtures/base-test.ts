@@ -5,6 +5,19 @@ import { ContactUsPage } from '@/pages/contact-us-page';
 import { LoginPortalPage } from '@/pages/login-portal-page';
 import { ButtonClicksPage } from '@/pages/button-clicks-page';
 import { DropdownCheckboxRadioPage } from '@/pages/dropdown-checkbox-radio-page';
+import { ActionsPage } from '@/pages/actions-page';
+import { IframePage } from '@/pages/iframe-page';
+import { AjaxLoaderPage } from '@/pages/ajax-loader-page';
+import { AutocompletePage } from '@/pages/autocomplete-page';
+import { PopupAlertsPage } from '@/pages/popup-alerts-page';
+import { FileUploadPage } from '@/pages/file-upload-page';
+import { TodoListPage } from '@/pages/todo-list-page';
+import { HiddenElementsPage } from '@/pages/hidden-elements-page';
+import { AccordionItemsPage } from '@/pages/accordion-items-page';
+import { ScrollingPage } from '@/pages/scrolling-page';
+import { DataTablesPage } from '@/pages/data-tables-page';
+import { PageObjectModelPage } from '@/pages/page-object-model-page';
+import { AiTestingPlaygroundPage } from '@/pages/ai-testing-playground-page';
 
 type MyFixtures = {
   homePage: HomePage;
@@ -12,10 +25,22 @@ type MyFixtures = {
   loginPortalPage: LoginPortalPage;
   buttonClicksPage: ButtonClicksPage;
   dropdownCheckboxRadioPage: DropdownCheckboxRadioPage;
-}
+  actionsPage: ActionsPage;
+  iframePage: IframePage;
+  ajaxLoaderPage: AjaxLoaderPage;
+  autocompletePage: AutocompletePage;
+  popupAlertsPage: PopupAlertsPage;
+  fileUploadPage: FileUploadPage;
+  todoListPage: TodoListPage;
+  hiddenElementsPage: HiddenElementsPage;
+  accordionItemsPage: AccordionItemsPage;
+  scrollingPage: ScrollingPage;
+  dataTablesPage: DataTablesPage;
+  pageObjectModelPage: PageObjectModelPage;
+  aiTestingPlaygroundPage: AiTestingPlaygroundPage;
+};
 
 export const test = base.extend<MyFixtures>({
-
   homePage: async ({ page }, use) => {
     const homePage = new HomePage(page);
     await use(homePage);
@@ -36,7 +61,58 @@ export const test = base.extend<MyFixtures>({
     const dropdownCheckboxRadioPage = new DropdownCheckboxRadioPage(page);
     await use(dropdownCheckboxRadioPage);
   },
-
-})
+  actionsPage: async ({ page }, use) => {
+    const actionsPage = new ActionsPage(page);
+    await use(actionsPage);
+  },
+  iframePage: async ({ page }, use) => {
+    const iframePage = new IframePage(page);
+    await use(iframePage);
+  },
+  ajaxLoaderPage: async ({ page }, use) => {
+    const ajaxLoaderPage = new AjaxLoaderPage(page);
+    await use(ajaxLoaderPage);
+  },
+  autocompletePage: async ({ page }, use) => {
+    const autocompletePage = new AutocompletePage(page);
+    await use(autocompletePage);
+  },
+  popupAlertsPage: async ({ page }, use) => {
+    const popupAlertsPage = new PopupAlertsPage(page);
+    await use(popupAlertsPage);
+  },
+  fileUploadPage: async ({ page }, use) => {
+    const fileUploadPage = new FileUploadPage(page);
+    await use(fileUploadPage);
+  },
+  todoListPage: async ({ page }, use) => {
+    const todoListPage = new TodoListPage(page);
+    await use(todoListPage);
+  },
+  hiddenElementsPage: async ({ page }, use) => {
+    const hiddenElementsPage = new HiddenElementsPage(page);
+    await use(hiddenElementsPage);
+  },
+  accordionItemsPage: async ({ page }, use) => {
+    const accordionItemsPage = new AccordionItemsPage(page);
+    await use(accordionItemsPage);
+  },
+  scrollingPage: async ({ page }, use) => {
+    const scrollingPage = new ScrollingPage(page);
+    await use(scrollingPage);
+  },
+  dataTablesPage: async ({ page }, use) => {
+    const dataTablesPage = new DataTablesPage(page);
+    await use(dataTablesPage);
+  },
+  pageObjectModelPage: async ({ page }, use) => {
+    const pageObjectModelPage = new PageObjectModelPage(page);
+    await use(pageObjectModelPage);
+  },
+  aiTestingPlaygroundPage: async ({ page }, use) => {
+    const aiTestingPlaygroundPage = new AiTestingPlaygroundPage(page);
+    await use(aiTestingPlaygroundPage);
+  },
+});
 
 export { expect } from '@playwright/test';

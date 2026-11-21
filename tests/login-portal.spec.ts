@@ -9,14 +9,12 @@ import { test, expect } from '@/fixtures/base-test';
  * Not automated: the jQuery fade never runs, and the Home link is left out because it is not login behavior.
  */
 
-test.describe('Login Portal', () => {
-
+test.describe('Login Portal', { tag: ['@login-portal'] }, () => {
   test.beforeEach(async ({ loginPortalPage }) => {
     await loginPortalPage.navigateTo();
   });
 
   test.describe('Form validation', () => {
-
     // The accessible name is the placeholder. There are no labels.
     test('fields show their placeholders', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
       await test.step('username placeholder is Username', async () => {
@@ -27,11 +25,9 @@ test.describe('Login Portal', () => {
         await expect.soft(loginPortalPage.passwordField).toHaveAttribute('placeholder', 'Password');
       });
     });
-
   });
 
   test.describe('Submit', () => {
-
     // The form GET wins, so every submit stays on the login page.
     test.afterEach(async ({ loginPortalPage }) => {
       await expect(loginPortalPage.page).toHaveURL(/\/Login-Portal\/index\.html\?/);
@@ -47,7 +43,6 @@ test.describe('Login Portal', () => {
     });
 
     test.describe('Happy path', () => {
-
       // The only exact match in `validate()`.
       test('valid credentials show validation succeeded', { tag: ['@smoke', '@regression'] }, async ({ loginPortalPage }) => {
         const expectedMessage = 'validation succeeded';
@@ -60,11 +55,9 @@ test.describe('Login Portal', () => {
           expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
         });
       });
-
     });
 
     test.describe('Negative path', () => {
-
       // A wrong password still reaches `validate()` and takes the else branch.
       test('wrong password shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
         const expectedMessage = 'validation failed';
@@ -78,10 +71,21 @@ test.describe('Login Portal', () => {
         });
       });
 
+      // A wrong username still reaches `validate()` and takes the else branch.
+      test('wrong username shows validation failed', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
+        const expectedMessage = 'validation failed';
+
+        await test.step('fill a wrong username', async () => {
+          await loginPortalPage.fillCredentials('wrong-username', 'webdriver123');
+        });
+
+        await test.step(`accept the ${expectedMessage} alert`, async () => {
+          expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
+        });
+      });
     });
 
     test.describe('Edge cases', () => {
-
       // `==` is case-sensitive. `Webdriver` is not `webdriver`.
       test('username case must match', { tag: ['@regression'] }, async ({ loginPortalPage }) => {
         const expectedMessage = 'validation failed';
@@ -107,9 +111,6 @@ test.describe('Login Portal', () => {
           expect(await loginPortalPage.submitLogin()).toBe(expectedMessage);
         });
       });
-
     });
-
   });
-
 });

@@ -15,11 +15,11 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 - Locators in order: role with a name, label, placeholder, text, test id when the app has them, a stable unique id, CSS, then XPath only as a last resort
 - No fixed sleeps: only Playwright's auto-waiting and web-first assertions
 - Negative paths, edge cases, keyboard flow, and accessible-name checks, not only the happy path
-- Tags (`@smoke`, `@regression`) for running a subset
+- Tags: every test gets its section tag (the spec name in kebab-case, such as `@button-clicks`) and `@regression`; `@smoke` is a small subset, and those tests carry both
 
 ### Quality gates (built)
 
-- ESLint with `eslint-plugin-playwright`, strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
+- ESLint with `eslint-plugin-playwright`, then Prettier (`prettier --check`), strict TypeScript, and a Husky pre-commit hook that runs lint, typecheck, and tests
 - GitHub Actions running inside the official Playwright Docker image, pinned to the package version
 - Same image for local Docker runs, so a CI failure reproduces locally
 - HTML report, traces, screenshots, and video kept as CI artifacts, and the latest `main` report published on GitHub Pages
@@ -44,6 +44,20 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Login Portal challenge                                       | ✅ Done                |
 | Button Clicks challenge                                      | ✅ Done                |
 | Dropdown, Checkbox & Radio challenge                         | ✅ Done                |
+| Actions challenge                                            | ✅ Done                |
+| IFrame challenge                                             | ✅ Done                |
+| Ajax Loader challenge                                        | ✅ Done                |
+| Autocomplete challenge                                       | ✅ Done                |
+| Popup & Alerts challenge                                     | ✅ Done                |
+| File Upload challenge                                        | ✅ Done                |
+| To Do List challenge                                         | ✅ Done                |
+| Accordion Items challenge                                    | ✅ Done                |
+| Hidden Elements challenge                                    | ✅ Done                |
+| Data Tables challenge                                        | ✅ Done                |
+| Scrolling challenge                                          | ✅ Done                |
+| Page Object Model challenge                                  | ✅ Done                |
+| AI Testing Playground basics A                               | ✅ Done                |
+| AI Testing Playground basics B                               | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -53,33 +67,39 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-54 challenge tests in 5 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+194 challenge tests in 19 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
-| Challenge                   | Spec                                    | Tests | Status  |
-| --------------------------- | --------------------------------------- | ----: | ------- |
-| Home page                   | `tests/home.spec.ts`                    |     1 | ✅ Done |
-| Contact Us                  | `tests/contact-us.spec.ts`              |    15 | ✅ Done |
-| Login Portal                | `tests/login-portal.spec.ts`            |     6 | ✅ Done |
-| Button Clicks               | `tests/button-clicks.spec.ts`           |     6 | ✅ Done |
-| Dropdown, Checkbox & Radio  | `tests/dropdown-checkbox-radio.spec.ts` |    26 | ✅ Done |
-| Popup & Alerts              | `tests/popup-alerts.spec.ts`            |     — | Pending |
-| Actions                     | `tests/actions.spec.ts`                 |     — | Pending |
-| IFrame                      | `tests/iframe.spec.ts`                  |     — | Pending |
-| Ajax Loader                 | `tests/ajax-loader.spec.ts`             |     — | Pending |
-| Autocomplete                | `tests/autocomplete.spec.ts`            |     — | Pending |
-| Datepicker                  | `tests/datepicker.spec.ts`              |     — | Pending |
-| File Upload                 | `tests/file-upload.spec.ts`             |     — | Pending |
-| To Do List                  | `tests/todo-list.spec.ts`               |     — | Pending |
-| Accordion / Hidden Elements | `tests/accordion-hidden.spec.ts`        |     — | Pending |
-| Data Tables                 | `tests/data-tables.spec.ts`             |     — | Pending |
-| Page Object Model           | `tests/page-object-model.spec.ts`       |     — | Pending |
-| Scrolling                   | `tests/scrolling.spec.ts`               |     — | Pending |
+| Challenge                      | Spec                                           | Tests | Status  |
+| ------------------------------ | ---------------------------------------------- | ----: | ------- |
+| Home page                      | `tests/home.spec.ts`                           |     1 | ✅ Done |
+| Contact Us                     | `tests/contact-us.spec.ts`                     |    15 | ✅ Done |
+| Login Portal                   | `tests/login-portal.spec.ts`                   |     7 | ✅ Done |
+| Button Clicks                  | `tests/button-clicks.spec.ts`                  |     6 | ✅ Done |
+| Dropdown, Checkbox & Radio     | `tests/dropdown-checkbox-radio.spec.ts`        |    26 | ✅ Done |
+| Popup & Alerts                 | `tests/popup-alerts.spec.ts`                   |     9 | ✅ Done |
+| Actions                        | `tests/actions.spec.ts`                        |    12 | ✅ Done |
+| IFrame                         | `tests/iframe.spec.ts`                         |     5 | ✅ Done |
+| Ajax Loader                    | `tests/ajax-loader.spec.ts`                    |     4 | ✅ Done |
+| Autocomplete                   | `tests/autocomplete.spec.ts`                   |     9 | ✅ Done |
+| Datepicker                     | `tests/datepicker.spec.ts`                     |     — | Pending |
+| File Upload                    | `tests/file-upload.spec.ts`                    |     8 | ✅ Done |
+| To Do List                     | `tests/todo-list.spec.ts`                      |     8 | ✅ Done |
+| Accordion Items                | `tests/accordion-items.spec.ts`                |    11 | ✅ Done |
+| Hidden Elements                | `tests/hidden-elements.spec.ts`                |     5 | ✅ Done |
+| Data Tables                    | `tests/data-tables.spec.ts`                    |     8 | ✅ Done |
+| Page Object Model              | `tests/page-object-model.spec.ts`              |    10 | ✅ Done |
+| Scrolling                      | `tests/scrolling.spec.ts`                      |     7 | ✅ Done |
+| AI Testing Playground basics A | `tests/ai-testing-playground-basics-a.spec.ts` |    22 | ✅ Done |
+| AI Testing Playground basics B | `tests/ai-testing-playground-basics-b.spec.ts` |    21 | ✅ Done |
+| AI Testing Playground          | `tests/ai-testing-playground.spec.ts`          |     — | Pending |
+
+The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
 
 Contact Us covers: page elements, valid submit, empty and invalid-email errors, reset, navigation buttons on the success and error pages, valid and invalid email formats, special characters and whitespace-only input, tab order and Enter to submit, accessible names, and the resizable comments box.
 
 ### Login Portal
 
-Run all six tests, or only the smoke test:
+Run all seven tests, or only the smoke test:
 
 ```bash
 npx playwright test tests/login-portal.spec.ts
@@ -94,10 +114,11 @@ npx playwright test tests/login-portal.spec.ts --grep @smoke
 | Submit                 | Empty submit shows the alert `validation failed`                         | `@regression`          |
 | Submit / Happy path    | `webdriver` / `webdriver123` shows the alert `validation succeeded`      | `@smoke` `@regression` |
 | Submit / Negative path | `webdriver` / `wrong-password` shows the alert `validation failed`       | `@regression`          |
+| Submit / Negative path | `wrong-username` / `webdriver123` shows the alert `validation failed`    | `@regression`          |
 | Submit / Edge cases    | `Webdriver` fails because the check is case-sensitive                    | `@regression`          |
 | Submit / Edge cases    | `webdriver` with a trailing space fails because the value is not trimmed | `@regression`          |
 
-The five submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
+The six submit tests each accept the alert and check that text against a message stored in the test. They share an `afterEach` that checks the page stays on `/Login-Portal/index.html?`. The login button submits the form, and the page's jQuery never loads, so the script that would cancel the submit never runs. The jQuery fade and the Home link are not covered.
 
 ### Button Clicks
 
@@ -110,14 +131,14 @@ npx playwright test tests/button-clicks.spec.ts --grep @smoke
 
 `tests/button-clicks.spec.ts` uses the `buttonClicksPage` fixture. Scenarios:
 
-| What it checks                                                                                            | Tag           |
-| --------------------------------------------------------------------------------------------------------- | ------------- |
-| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it         | `@smoke`      |
-| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke`      |
-| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke`      |
-| Before a click every modal is hidden, and a click opens only that control's modal                         | `@regression` |
-| The × button hides the open modal, and the same control opens it again                                    | `@regression` |
-| A click on the overlay, outside the dialog, hides the modal                                               | `@regression` |
+| What it checks                                                                                            | Tag                    |
+| --------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `CLICK ME!` opens the Congratulations! modal, including the `click()` message, and Close hides it         | `@smoke` `@regression` |
+| `CLICK ME!!` opens the It’s that Easy!! modal, including the JavaScript click message, and Close hides it | `@smoke` `@regression` |
+| `CLICK ME!!!` opens the Action Move & Click modal, including the interactions message, and Close hides it | `@smoke` `@regression` |
+| Before a click every modal is hidden, and a click opens only that control's modal                         | `@regression`          |
+| The × button hides the open modal, and the same control opens it again                                    | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                                               | `@regression`          |
 
 The three controls are spans. A normal click opens each modal. The column text asks for an XPath click, a JavaScript click, and an action move and click; the controls do not move, and a normal click is what opens them. Escape does not close a modal, and the open modal covers its control, so those two are not tests. `js/script.js` is not valid JavaScript, and Bootstrap is loaded twice. Neither of those is asserted.
 
@@ -132,36 +153,399 @@ npx playwright test tests/dropdown-checkbox-radio.spec.ts --grep @smoke
 
 `tests/dropdown-checkbox-radio.spec.ts` uses the `dropdownCheckboxRadioPage` fixture. The live path is `/Dropdown-Checkboxes-RadioButtons/index.html`. Scenarios:
 
-| What it checks                                                                                          | Tag           |
-| ------------------------------------------------------------------------------------------------------- | ------------- |
-| `C#` becomes the selected language, and its value is `c#`                                               | `@smoke`      |
-| `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke`      |
-| `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke`      |
-| The language menu starts on `JAVA`                                                                      | `@regression` |
-| The tool menu starts on `Eclipse`                                                                       | `@regression` |
-| The technology menu starts on `HTML`                                                                    | `@regression` |
-| Selecting `Python` leaves the tool, technology, and fruit menus unchanged                               | `@regression` |
-| Selecting `Apple` leaves the language, tool, and technology menus unchanged                             | `@regression` |
-| `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression` |
-| `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression` |
-| `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression` |
-| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked         | `@smoke`      |
-| Option 3 starts checked and the other boxes do not                                                      | `@regression` |
-| Option 3 can be unchecked, and the other boxes stay clear                                               | `@regression` |
-| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                | `@regression` |
-| Blue can be selected, and the other colors stay clear                                                   | `@smoke`      |
-| No color radio starts selected                                                                          | `@regression` |
-| Selecting Orange after Yellow leaves only Orange selected                                               | `@regression` |
-| Clicking the selected Purple radio again leaves it selected                                             | `@regression` |
-| Lettuce can be selected, which clears Pumpkin                                                           | `@smoke`      |
-| Pear can be selected                                                                                    | `@smoke`      |
-| Pumpkin starts selected, and Lettuce does not                                                           | `@regression` |
-| Cabbage is disabled and not selected                                                                    | `@regression` |
-| The fruit menu starts on Grape                                                                          | `@regression` |
-| Orange is disabled                                                                                      | `@regression` |
-| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression` |
+| What it checks                                                                                          | Tag                    |
+| ------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `C#` becomes the selected language, and its value is `c#`                                               | `@smoke` `@regression` |
+| `TestNG` becomes the selected tool, and its value is `testng`                                           | `@smoke` `@regression` |
+| `JQuery` becomes the selected technology, and its value is `jquery`                                     | `@smoke` `@regression` |
+| The language menu starts on `JAVA`                                                                      | `@regression`          |
+| The tool menu starts on `Eclipse`                                                                       | `@regression`          |
+| The technology menu starts on `HTML`                                                                    | `@regression`          |
+| Selecting `Python` leaves the tool, technology, and fruit menus unchanged                               | `@regression`          |
+| Selecting `Apple` leaves the language, tool, and technology menus unchanged                             | `@regression`          |
+| `SQL` replaces `Python`, and only `SQL` stays selected                                                  | `@regression`          |
+| `JUnit` replaces `Maven`, and only `JUnit` stays selected                                               | `@regression`          |
+| `CSS` replaces `JavaScript`, and only `CSS` stays selected                                              | `@regression`          |
+| Option 1 and Option 4 can be checked together, Option 2 stays clear, and Option 3 stays checked         | `@smoke` `@regression` |
+| Option 3 starts checked and the other boxes do not                                                      | `@regression`          |
+| Option 3 can be unchecked, and the other boxes stay clear                                               | `@regression`          |
+| Unchecking Option 1 leaves Option 2 and Option 3 checked                                                | `@regression`          |
+| Blue can be selected, and the other colors stay clear                                                   | `@smoke` `@regression` |
+| No color radio starts selected                                                                          | `@regression`          |
+| Selecting Orange after Yellow leaves only Orange selected                                               | `@regression`          |
+| Clicking the selected Purple radio again leaves it selected                                             | `@regression`          |
+| Lettuce can be selected, which clears Pumpkin                                                           | `@smoke` `@regression` |
+| Pear can be selected                                                                                    | `@smoke` `@regression` |
+| Pumpkin starts selected, and Lettuce does not                                                           | `@regression`          |
+| Cabbage is disabled and not selected                                                                    | `@regression`          |
+| The fruit menu starts on Grape                                                                          | `@regression`          |
+| Orange is disabled                                                                                      | `@regression`          |
+| Selecting a color does not change the vegetable radios, and selecting Lettuce does not clear that color | `@regression`          |
 
 The controls are native. Option values are lower case (`C#` is `c#`, `TestNG` is `testng`, `JQuery` is `jquery`). The color and vegetable captions are not labels, so a click on the word does not select the radio; the tests use the inputs. `selectOption` on the disabled Orange option waits until the action timeout, so the test asserts that the option is disabled instead. The `autofocus` attribute on that option does nothing. The navbar and the old `Dropdown-Checkboxe-RadioButtons` URL, which is a 404, are not covered.
+
+### Popup & Alerts
+
+Run all nine tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/popup-alerts.spec.ts
+npx playwright test tests/popup-alerts.spec.ts --grep @smoke
+```
+
+`tests/popup-alerts.spec.ts` uses the `popupAlertsPage` fixture. The describe block is tagged `@popup-alerts`. The live path is `/Popup-Alerts/index.html`. The case list is `specs/popup-alerts.plan.md`. Scenarios:
+
+| What it checks                                                                    | Tag                    |
+| --------------------------------------------------------------------------------- | ---------------------- |
+| The alert says `I am an alert box!`, and the confirm result stays empty           | `@smoke` `@regression` |
+| OK on the confirm box shows `You pressed OK!` in green                            | `@smoke` `@regression` |
+| Cancel on the confirm box shows `You pressed Cancel!` in gray                     | `@regression`          |
+| A second choice replaces the confirm result                                       | `@regression`          |
+| Modal Popup shows its title and the `WebElement.click()` body, and Close hides it | `@smoke` `@regression` |
+| The × button hides the modal                                                      | `@regression`          |
+| The control opens the modal again                                                 | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                       | `@regression`          |
+| The Ajax Loader control opens `/Ajax-Loader/index.html`                           | `@regression`          |
+
+The alert and the confirm box are spans. The listener is registered before the click. The confirm box writes the choice into the result paragraph: OK is green, Cancel is gray. The modal is Bootstrap, not a JavaScript dialog. Escape leaves it open, and the three popup spans are not in the tab order, so those are not tests. The modal body spells it `allot`. The Ajax Loader control is a link; the loader page is covered in `tests/ajax-loader.spec.ts`.
+
+### Actions
+
+Run all 12 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/actions.spec.ts
+npx playwright test tests/actions.spec.ts --grep @smoke
+```
+
+`tests/actions.spec.ts` uses the `actionsPage` fixture. The live path is `/Actions/index.html`. Every test is also tagged `@actions`. The case list is `specs/actions.plan.md`. Scenarios:
+
+| What it checks                                                                                                         | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Dragging onto the target shows `Dropped!`, highlights the target, and turns both labels green                          | `@smoke` `@regression` |
+| A drag onto the page heading moves the box and leaves `DROP HERE!`                                                     | `@regression`          |
+| After a drop, dragging the box onto the heading leaves `Dropped!`                                                      | `@regression`          |
+| A double click adds the `double` class and turns the heading green                                                     | `@smoke` `@regression` |
+| A single click leaves the double-click box off                                                                         | `@regression`          |
+| A second double click removes `double` and turns the heading back                                                      | `@regression`          |
+| Hovering the first menu reveals `Link 1`, and clicking it alerts `Well done you clicked on the link!`                  | `@smoke` `@regression` |
+| Each hover shows only that menu's links, including `Link 2` on the third menu                                          | `@regression`          |
+| Moving the pointer to the heading hides the open menu                                                                  | `@regression`          |
+| `Link 2` alerts `Well done you clicked on the link!`                                                                   | `@regression`          |
+| Pressing the box shows `Well done! keep holding that click now.....`, and releasing over it shows `Dont release me!!!` | `@smoke` `@regression` |
+| Releasing the pointer over the heading keeps the hold message                                                          | `@regression`          |
+
+The drop does not reset. The double-click listener is `dblclick`, and it toggles. The hover links share one alert, so the other `Link 1` clicks are not separate tests. `mouseup` on the hold box is the only release. The page has no fields and no keyboard handlers for these widgets. The release text is spelled `Dont`.
+
+### IFrame
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/iframe.spec.ts
+npx playwright test tests/iframe.spec.ts --grep @smoke
+```
+
+`tests/iframe.spec.ts` uses the `iframePage` fixture. The live path is `/IFrame/index.html`. Every test is tagged `@iframe`. The case list is `specs/iframe.plan.md`. Scenarios:
+
+| What it checks                                                                                      | Tag                              |
+| --------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `Find Out More!` opens the welcome dialog, Close hides it, and the parent stays on the IFrame page  | `@iframe` `@smoke` `@regression` |
+| Our Products loads inside the frame, and the parent stays on the IFrame page                        | `@iframe` `@regression`          |
+| Contact Us loads the contact form inside the frame, and the parent stays on the IFrame page         | `@iframe` `@regression`          |
+| The parent brand link leaves the IFrame page for the site home                                      | `@iframe` `@regression`          |
+| The framed brand link loads the site home inside the frame, and the parent stays on the IFrame page | `@iframe` `@regression`          |
+
+`#frame` has no name or title and loads the Page Object Model home. Contact Us inside the frame is `/Contact-Us/contactus.html`; the test stops when that form is showing and does not submit it. The dialog's other dismiss controls, Escape, the product tiles (`href="#"`), and the carousel are not covered. This spec uses a 1280×1400 viewport because the frame is 1000px tall.
+
+### Ajax Loader
+
+Run all four tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ajax-loader.spec.ts
+npx playwright test tests/ajax-loader.spec.ts --grep @smoke
+```
+
+`tests/ajax-loader.spec.ts` uses the `ajaxLoaderPage` fixture. The describe block is tagged `@ajax-loader`. The live path is `/Ajax-Loader/index.html`. Scenarios:
+
+| What it checks                                                                      | Tag                    |
+| ----------------------------------------------------------------------------------- | ---------------------- |
+| The loader finishes, `CLICK ME!` opens the waiting-result modal, and Close hides it | `@smoke` `@regression` |
+| While the loader is showing, `CLICK ME!` and the modal stay hidden                  | `@regression`          |
+| The × button hides the modal, and `CLICK ME!` opens it again                        | `@regression`          |
+| A click on the overlay, outside the dialog, hides the modal                         | `@regression`          |
+
+The delay is a timer of about five seconds in the page, not an XHR. The tests wait until `CLICK ME!` is visible. The span is not keyboard accessible, and Escape does not close the modal, so those are not tests. The `clicked` class changes the control's color; the asserted result is the modal.
+
+### Autocomplete
+
+Run all nine tests, or only the smoke test:
+
+```bash
+npx playwright test tests/autocomplete.spec.ts
+npx playwright test tests/autocomplete.spec.ts --grep @smoke
+```
+
+`tests/autocomplete.spec.ts` uses the `autocompletePage` fixture. The describe block is tagged `@autocomplete`. The live path is `/Autocomplete-TextField/autocomplete-textfield.html`. The case list is `specs/autocomplete.plan.md`. Scenarios:
+
+| What it checks                                                                                     | Tag                    |
+| -------------------------------------------------------------------------------------------------- | ---------------------- |
+| `Pi` shows only `Pizza`, the click puts `Pizza` in the field, and Submit sends `food-item=Pizza`   | `@smoke` `@regression` |
+| `a` shows `Asparagus`, `Avacado`, `Almond`, `Artichoke`, and `Apple`, in that order                | `@regression`          |
+| `zz` leaves the field as `zz` and the suggestion list has no rows                                  | `@regression`          |
+| `App` shows `Apple`, and Submit sends `food-item=App`                                              | `@regression`          |
+| `APP` shows `Apple` and leaves `APP` in the field                                                  | `@regression`          |
+| Arrow Down highlights `Grapes`, and Enter puts `Grapes` in the field without submitting            | `@regression`          |
+| Enter with nothing highlighted leaves `Pi` in the field, leaves `Pizza` shown, and does not submit | `@regression`          |
+| A click on the heading closes the suggestions and leaves the typed text                            | `@regression`          |
+| An empty field submits as `food-item=`                                                             | `@regression`          |
+
+The list is built in the input handler. A suggestion click, or Enter on a highlighted row, copies that catalog value into the field and closes the list. Enter does not submit the form. Submit posts the field as the `food-item` query on the same page. The catalog spells `Avacado` with one c. The navbar and the shop logo are not covered.
+
+### File Upload
+
+Run all eight tests, or only the smoke test:
+
+```bash
+npx playwright test tests/file-upload.spec.ts
+npx playwright test tests/file-upload.spec.ts --grep @smoke
+```
+
+`tests/file-upload.spec.ts` uses the `fileUploadPage` fixture. The describe block is tagged `@file-upload`. The live path is `/File-Upload/index.html`. The case list is `specs/file-upload.plan.md`. Scenarios:
+
+| What it checks                                                                                                     | Tag                    |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The title is `File Upload`, the file input starts empty, and Submit is enabled                                     | `@regression`          |
+| `notes.txt` alerts `Your file has now been uploaded!`, the query is `filename=notes.txt`, and the reload clears it | `@smoke` `@regression` |
+| Enter on Submit alerts `Your file has now been uploaded!` and the query is `filename=notes.txt`                    | `@regression`          |
+| Submitting with no file alerts `You need to select a file to upload!` and the query is `filename=`                 | `@regression`          |
+| A zero-byte file alerts `Your file has now been uploaded!` and the query is `filename=empty.txt`                   | `@regression`          |
+| Choosing `first.txt` and then `second.txt` submits `filename=second.txt`                                           | `@regression`          |
+| Clearing a chosen file alerts `You need to select a file to upload!` and the query is `filename=`                  | `@regression`          |
+| `quarterly report.txt` is submitted as `filename=quarterly+report.txt`                                             | `@regression`          |
+
+The check is the file input's value length, not the file size or type. The form has no action and no method, so submit is a GET of this page and the file bytes are not sent. Chromium shows the chosen name as `C:\fakepath\` plus the file name. The fixtures live in `test-data/file-upload/`. Enter on the file control opens the browser chooser, so that is not a test. The navbar is not covered.
+
+### To Do List
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/todo-list.spec.ts
+npx playwright test tests/todo-list.spec.ts --grep @smoke
+```
+
+`tests/todo-list.spec.ts` uses the `todoListPage` fixture. The describe block is tagged `@todo-list`. The live path is `/To-Do-List/index.html`. The case list is `specs/todo-list.plan.md`. Scenarios:
+
+| What it checks                                                                                               | Tag                    |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| The list starts as `Go to potion class`, `Buy new robes`, and `Practice magic`, none struck through          | `@regression`          |
+| Enter on `Brew a potion` adds that row, clears the field, and leaves the count at 4                          | `@smoke` `@regression` |
+| Clicking `Buy new robes` strikes it through, leaves the count at 3, and leaves the other rows open           | `@smoke` `@regression` |
+| Hovering `Practice magic` opens its delete control, and the click removes that row and leaves the count at 2 | `@smoke` `@regression` |
+| Enter on an empty field adds a blank row and leaves the count at 4                                           | `@regression`          |
+| A second click on `Buy new robes` clears the strike-through and leaves the count at 3                        | `@regression`          |
+| The plus icon hides the add field, then shows it again, and the count stays 3                                | `@regression`          |
+| Enter on `Practice "magic" & potions` shows that text and leaves the count at 4                              | `@regression`          |
+
+Enter is the only way to add a row. The plus icon toggles the field and does not add one. A click toggles the `completed` class, which strikes the text through. The delete control is a span at width 0 until the row is hovered; the click fades that row out and removes it. Empty Enter is not rejected. The quotes-and-ampersand row is stored as text.
+
+### Accordion Items
+
+Run all 11 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/accordion-items.spec.ts
+npx playwright test tests/accordion-items.spec.ts --grep @smoke
+```
+
+`tests/accordion-items.spec.ts` uses the `accordionItemsPage` fixture. The live path is `/Accordion/index.html`. The describe block is tagged `@accordion-items`. The case list is `specs/accordion-items.plan.md`. Scenarios:
+
+| What it checks                                                                                                                                                | Tag                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Manual Testing opens its description, and the other panels stay closed                                                                                        | `@accordion-items` `@smoke` `@regression` |
+| Cucumber BDD opens its description                                                                                                                            | `@accordion-items` `@regression`          |
+| Automation Testing opens its description                                                                                                                      | `@accordion-items` `@regression`          |
+| After `LOADING COMPLETE.`, Keep Clicking reveals `This text has appeared after 5 seconds!`                                                                    | `@accordion-items` `@smoke` `@regression` |
+| While the line still says `LOADING.. PLEASE WAIT..`, the delayed panel is empty                                                                               | `@accordion-items` `@regression`          |
+| Hovering Cucumber BDD leaves that panel closed                                                                                                                | `@accordion-items` `@regression`          |
+| Clicking the loading line leaves the delayed panel closed                                                                                                     | `@accordion-items` `@regression`          |
+| A second click on Manual Testing closes it, and the description stays in the panel                                                                            | `@accordion-items` `@regression`          |
+| Cucumber BDD opens while Manual Testing stays open                                                                                                            | `@accordion-items` `@regression`          |
+| Opening Keep Clicking before the text arrives leaves that text clipped; the first click after loading closes the panel, and the second click reveals the text | `@accordion-items` `@regression`          |
+| Enter opens Cucumber BDD, and Space closes it                                                                                                                 | `@accordion-items` `@regression`          |
+
+The headers are buttons. A click toggles that panel only. A closed panel is `max-height: 0`, and the text inside still has a box, so the tests check `max-height` rather than visibility. The button says the text appears after 5 seconds. The timer is 10 seconds, and the tests wait until the loading line reads `LOADING COMPLETE.` A click while the delayed panel is empty stores a height of 0, so the sentence stays clipped. The first click after loading closes the panel, and the second click reveals the text. The page has no fields.
+
+### Hidden Elements
+
+Run all five tests, or only the smoke test:
+
+```bash
+npx playwright test tests/hidden-elements.spec.ts
+npx playwright test tests/hidden-elements.spec.ts --grep @smoke
+```
+
+`tests/hidden-elements.spec.ts` uses the `hiddenElementsPage` fixture. The describe block is tagged `@hidden-elements`. The live path is `/Hidden-Elements/index.html`. The case list is `specs/hidden-elements.plan.md`. Scenarios:
+
+| What it checks                                                                                   | Tag                    |
+| ------------------------------------------------------------------------------------------------ | ---------------------- |
+| `CLICK ME!!!` is at opacity `0` and opens the Action Move & Click modal                          | `@smoke` `@regression` |
+| `CLICK ME!` is in the page, `display: none`, and its modal stays hidden                          | `@regression`          |
+| A pointer click on the visibility-hidden section hits the thumbnail, and that modal stays hidden | `@regression`          |
+| Not Displayed has no layout box, and the other two sections keep the 70px height                 | `@regression`          |
+| After Close, the section is still opacity `0` and `CLICK ME!!!` opens the modal again            | `@regression`          |
+
+The three controls are spans. Not Displayed is `display: none` and has no box. Visibility Hidden keeps its box and does not receive the click. Zero Opacity keeps its box, and a normal click still opens the modal because Playwright treats opacity `0` as visible. The click does not change that opacity. Escape, ×, and the overlay are the same Bootstrap modal as Button Clicks, so they are not repeated here. The spans are not in the tab order. `js/script.js` is wrapped in a script tag, so the jQuery dialog stays hidden.
+
+### Data Tables
+
+Run all eight tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/data-tables.spec.ts
+npx playwright test tests/data-tables.spec.ts --grep @smoke
+```
+
+`tests/data-tables.spec.ts` uses the `dataTablesPage` fixture. The describe block is tagged `@data-tables`. The live path is `/Data-Table/index.html`. The case list is `specs/data-tables.plan.md`. Scenarios:
+
+| What it checks                                                                   | Tag                    |
+| -------------------------------------------------------------------------------- | ---------------------- |
+| The first table lists John Smith 45, Jemma Jackson 94, and Michael Doe 20        | `@smoke` `@regression` |
+| The second table lists Jason Jones 27, Sarah Jackson 56, and Bob Woods 80        | `@regression`          |
+| The Table section lists Andy Otto, Jacob Jones, and Larry Scott                  | `@regression`          |
+| Warning is enabled, and a pointer click lands on the group instead of the button | `@smoke` `@regression` |
+| Tab from Danger reaches Warning, and Space clicks it                             | `@regression`          |
+| Button-1 stays active after a click on Button-2                                  | `@regression`          |
+| Reset leaves the typed first name, last name, and text                           | `@regression`          |
+| Enter on a filled name does not add a row                                        | `@regression`          |
+
+The name tables are `#t01` and `#t02`. They share the headers Firstname, Lastname, and Age, and Jackson is in both, so each row is read from its own table. The Table section has no id. Warning has the class `disabled` and `pointer-events: none`, and the disabled property is false. It sits below the fold at 1280×720. Tab from Danger reaches it, and Space still clicks it. Button-1 starts with `active`, and a click on Button-2 does not move that class. The name form has no submit button. Reset is outside the form. The breadcrumb, badges, pagination, and lists are not covered.
+
+### Scrolling
+
+Run all seven tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/scrolling.spec.ts
+npx playwright test tests/scrolling.spec.ts --grep @smoke
+```
+
+`tests/scrolling.spec.ts` uses the `scrollingPage` fixture. The describe block is tagged `@scrolling`. The live path is `/Scrolling/index.html`. The case list is `specs/scrolling.plan.md`. Scenarios:
+
+| What it checks                                                                                           | Tag                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Hovering the first zone replaces `Scroll to me first!` with `Well done for scrolling to me!`             | `@smoke` `@regression` |
+| Hovering the last zone replaces `Dont forget to scroll to me!` with pointer coordinates                  | `@smoke` `@regression` |
+| Hovering the left entries box changes `0 Entries` to `1 Entries`, and the right box stays at `0 Entries` | `@regression`          |
+| Hovering the right entries box changes `0 Entries` to `1 Entries`, and the left box stays at `0 Entries` | `@regression`          |
+| Scrolling the last zone into view leaves `Dont forget to scroll to me!`                                  | `@regression`          |
+| Leaving the left entries box and entering it again shows `2 Entries`                                     | `@regression`          |
+| The first zone keeps `Well done for scrolling to me!` after the pointer moves to the left entries box    | `@regression`          |
+
+The first zone is already in view. The last zone starts below the 720px viewport, and scrolling it into view does not change its text. `mouseover` on those two zones replaces the box text. Neither has a `mouseout`. The two entries boxes listen for `mouseenter`, and each has its own count. The tests check that the last zone's text matches `X:` and `Y:` with digits. They do not check the coordinate numbers. `subpage.css` reverts `background-color` and `color` on these boxes, so the green and black backgrounds in the page script are not what the page shows. The modal in the markup is never opened. The boxes are not in the tab order.
+
+### Page Object Model
+
+Run all 10 tests, or only the smoke tests:
+
+```bash
+npx playwright test tests/page-object-model.spec.ts
+npx playwright test tests/page-object-model.spec.ts --grep @smoke
+```
+
+`tests/page-object-model.spec.ts` uses the `pageObjectModelPage` fixture. The describe block is tagged `@page-object-model`. The home path is `/Page-Object-Model/index.html`. The case list is `specs/page-object-model.plan.md`. Scenarios:
+
+| What it checks                                                                                                   | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `Find Out More!` shows the welcome dialog, including the goods sentence, and Close hides it                      | `@smoke` `@regression` |
+| Special Offers shows `NEWCUSTOMER773322`, the 30% heading, and the £50 terms, at `products.html#`                | `@smoke` `@regression` |
+| Our Products loads the catalogue, titled `WebDriver (New Approach To Learning)`, with Special Offers and Cameras | `@regression`          |
+| Cameras shows that same offer, including `NEWCUSTOMER773322`                                                     | `@regression`          |
+| The next control walks the slides and wraps from `../img/nintendo.svg` back to `../img/amp.svg`                  | `@regression`          |
+| `Find Out More` inside the welcome dialog hides it and leaves `/Page-Object-Model/index.html`                    | `@regression`          |
+| Proceed hides the offer and leaves Special Offers on the catalogue                                               | `@regression`          |
+| Enter on `Find Out More!` shows the welcome dialog                                                               | `@regression`          |
+| Home from the catalogue loads `/Page-Object-Model/index.html`                                                    | `@regression`          |
+| Contact Us loads `/Contact-Us/contactus.html` with the heading `CONTACT US`                                      | `@regression`          |
+
+The homepage card `PAGE OBJECT MODEL` opens `Page-Object-Model/index.html`. The product tiles share one dialog, and that dialog's copy is in the products document while it is hidden. The checks wait until the heading or the coupon is visible, and until a dismiss hides it again. Cameras stands for the other tiles, which open the same dialog. The dialog's `Find Out More` button and Proceed only dismiss. The carousel advances on a timer of about five seconds, so the next-slide test stops that timer before it reads the current image. The first two slide images share an id. Enter and Space both open the welcome dialog; Space is the same button activation. The contact form is not submitted. Escape leaves these dialogs open. × and the backdrop hide them, the same as Close.
+
+### AI Testing Playground basics A
+
+Run all 22 tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts --grep @smoke
+```
+
+`tests/ai-testing-playground-basics-a.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-basics-a`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-testing-playground-basics-a.plan.md`. This spec is challenges 1–5. Scenarios:
+
+| What it checks                                                                                                         | Tag                    |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `ada` / `secret` shows `Login successful`, and `Invalid credentials` stays hidden                                      | `@regression`          |
+| An empty login shows `Invalid credentials`, and the success line stays hidden                                          | `@regression`          |
+| A username with an empty password shows `Invalid credentials`                                                          | `@regression`          |
+| Whitespace-only fields show `Invalid credentials`                                                                      | `@regression`          |
+| `  ada  ` / `  secret  ` shows `Login successful`, and the fields keep the spaces                                      | `@regression`          |
+| Load Content shows `Content loaded successfully!`, hides `Loading...`, and shows `Click Me Now`                        | `@smoke` `@regression` |
+| Before the click, the success line is in the page and hidden, and the loading line is hidden                           | `@regression`          |
+| `Click Me Now` shows `Flaky button clicked!` at opacity `1`, then opacity `0`                                          | `@regression`          |
+| A full name, email, United Kingdom, an empty phone, empty comments, and the terms reach `Form submitted successfully.` | `@regression`          |
+| An empty first step shows both errors and stays on `Step 1 of 3`                                                       | `@regression`          |
+| `Jane` with a valid email shows the name error and stays on step 1                                                     | `@regression`          |
+| `jane@example` shows the email error and stays on step 1                                                               | `@regression`          |
+| Next without a country shows `Country is required` and stays on step 2                                                 | `@regression`          |
+| Submit without the terms shows `You must accept the terms` and stays on step 3                                         | `@regression`          |
+| Replacing `jane@example` with `jane@example.com` opens step 2                                                          | `@regression`          |
+| Back from the country step returns to step 1 and keeps the name and email                                              | `@regression`          |
+| Germany and `abc` open step 3                                                                                          | `@regression`          |
+| Before Trigger Toast, the toast opacity is `0` and the text is `Notification triggered`                                | `@regression`          |
+| Trigger Toast reaches opacity `1` with `Action completed`, then opacity `0`, and the text stays                        | `@regression`          |
+| After the toast fades, a second trigger reaches opacity `1` with `Action completed`                                    | `@regression`          |
+| Click Me disables the button, then enables it and shows `Ready`                                                        | `@regression`          |
+| After `Ready`, a second click disables the button again                                                                | `@regression`          |
+
+The login controls are rebuilt with new classes on each load. The tests use the card's test id and the Username, Password, and Login roles. Any non-empty pair, after trim, is accepted. There is no password check. The loader waits 3 to 8 seconds, so the smoke test waits until the success line is visible. That sentence is in the page while it is hidden, so the check is visibility. The toast stays in the page and fades with opacity. `toBeVisible()` ignores opacity. The re-enable button starts enabled, disables on click, and shows `Ready` about three seconds later. Challenges 6–27 are later specs.
+
+### AI Testing Playground basics B
+
+Run all 21 tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
+```
+
+`tests/ai-testing-playground-basics-b.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-basics-b`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-testing-playground-basics-b.plan.md`. This spec is challenges 6–9. Scenarios:
+
+| What it checks                                                                                           | Tag                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Catch Me shows `Got it!` at opacity `1`, then opacity `0`                                                | `@smoke` `@regression` |
+| Before the click, the toast opacity is `0` and the text is `Notification triggered`                      | `@regression`          |
+| Catch Me's left or top changes                                                                           | `@regression`          |
+| After the toast fades, a second Catch Me shows `Got it!` again                                           | `@regression`          |
+| `ada@example.com` asks for a code, and `123456` reaches `Submitted successfully.`                        | `@regression`          |
+| `ada@example` shows `Valid email required`, and the code field stays hidden                              | `@regression`          |
+| An empty email shows `Valid email required`, and the code field stays hidden                             | `@regression`          |
+| An empty code shows `Valid 6-digit code required`, and the verification sentence stays                   | `@regression`          |
+| `12345` shows the code error, and the verification sentence stays                                        | `@regression`          |
+| Replacing `ada@example` with `still-bad` hides the email error and does not show the code field          | `@regression`          |
+| Changing the email after the code field is showing hides that field and clears the code                  | `@regression`          |
+| `1234567` is stored as `123456` and submits                                                              | `@regression`          |
+| ` 12345` stays in the code field, including the space, and shows the code error                          | `@regression`          |
+| Both races show their running lines, then one winner holds until the result clears                       | `@regression`          |
+| Start Race A ends on `Race A won!`                                                                       | `@regression`          |
+| Before a click, the race result is empty                                                                 | `@regression`          |
+| After `Race A won!`, Start Race B does not name Race B before the result clears                          | `@regression`          |
+| After the result clears, Start Race A shows `Race A won!` again                                          | `@regression`          |
+| Reveal Element shows `I just appeared!` and a selector matching `#lazy-` plus digits                     | `@regression`          |
+| Before the click, that sentence is in the page and hidden, and the selector is empty                     | `@regression`          |
+| A second Reveal Element leaves the sentence visible, and the selector still matches `#lazy-` plus digits | `@regression`          |
+
+Catch Me jumps about every 1.5 seconds. The click retries until the button is stable. The toast is the same fade as basics A, with the sentence `Got it!`. The code field appears on Submit of a valid email, not while the email is typed. Either race timer can finish first, so the test accepts `Race A won!` or `Race B won!`. The lazy sentence is already in the page under `display: none`, so the check is visibility. The selector is `#lazy-` plus digits, not one number. Challenges 10–27 are later specs.
 
 ## Project layout
 
@@ -173,16 +557,39 @@ pages/                  Page objects (one class per file, kebab-case file names)
   login-portal-page.ts
   button-clicks-page.ts
   dropdown-checkbox-radio-page.ts
+  popup-alerts-page.ts
+  actions-page.ts
+  iframe-page.ts
+  ajax-loader-page.ts
+  autocomplete-page.ts
+  file-upload-page.ts
+  todo-list-page.ts
+  accordion-items-page.ts
+  hidden-elements-page.ts
+  data-tables-page.ts
+  scrolling-page.ts
+  page-object-model-page.ts
+  ai-testing-playground-page.ts
 fixtures/base-test.ts   test.extend page fixtures; specs import test/expect from here
 support/bot-wall.ts     Waits for the site's browser check to finish. No test runner calls
 tests/                  *.spec.ts files, plus bot-wall.setup.ts which passes the check once and saves the browser state
+test-data/file-upload/  Small files the File Upload spec chooses
 playwright.config.ts    baseURL, reporters, trace/screenshot/video on failure
+specs/iframe.plan.md    IFrame cases: outcomes, categories, and what is not covered
+specs/accordion-items.plan.md Accordion Items cases: outcomes, categories, and what is not covered
+specs/file-upload.plan.md  File Upload cases: outcomes, categories, and what is not covered
+specs/hidden-elements.plan.md  Hidden Elements cases: outcomes, categories, and what is not covered
+specs/data-tables.plan.md  Data Tables cases: outcomes, categories, and what is not covered
+specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not covered
+specs/page-object-model.plan.md Page Object Model cases: outcomes, categories, and what is not covered
+specs/ai-testing-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
+specs/ai-testing-playground-basics-b.plan.md  AI Testing Playground basics B cases: outcomes, categories, and what is not covered
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
 .cursor/rules/          Cursor rule for test, page, fixture, and support files
-.cursor/hooks.json      Agent hooks: format Markdown after an edit; typecheck when the agent stops
-.cursor/hooks/          format-md.js and check-ts.js
+.cursor/hooks.json      Agent hooks: format Markdown, TypeScript, and ES modules after an edit; typecheck when the agent stops
+.cursor/hooks/          format-file.js and check-ts.js
 .cursor/mcp.json        Project MCP servers: Playwright browser and Playwright Test
 ```
 
@@ -215,7 +622,22 @@ npx playwright test tests/contact-us.spec.ts     # one spec
 npx playwright test tests/login-portal.spec.ts   # Login Portal (see Coverage)
 npx playwright test tests/button-clicks.spec.ts  # Button Clicks (see Coverage)
 npx playwright test tests/dropdown-checkbox-radio.spec.ts  # Dropdown, Checkbox & Radio (see Coverage)
-npx playwright test --grep @smoke                # smoke subset
+npx playwright test tests/popup-alerts.spec.ts             # Popup & Alerts (see Coverage)
+npx playwright test tests/actions.spec.ts                  # Actions (see Coverage)
+npx playwright test tests/iframe.spec.ts                   # IFrame (see Coverage)
+npx playwright test tests/ajax-loader.spec.ts              # Ajax Loader (see Coverage)
+npx playwright test tests/autocomplete.spec.ts             # Autocomplete (see Coverage)
+npx playwright test tests/file-upload.spec.ts              # File Upload (see Coverage)
+npx playwright test tests/todo-list.spec.ts                # To Do List (see Coverage)
+npx playwright test tests/accordion-items.spec.ts          # Accordion Items (see Coverage)
+npx playwright test tests/hidden-elements.spec.ts          # Hidden Elements (see Coverage)
+npx playwright test tests/data-tables.spec.ts              # Data Tables (see Coverage)
+npx playwright test tests/scrolling.spec.ts                # Scrolling (see Coverage)
+npx playwright test tests/page-object-model.spec.ts        # Page Object Model (see Coverage)
+npx playwright test tests/ai-testing-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
+npx playwright test tests/ai-testing-playground-basics-b.spec.ts   # AI Testing Playground basics B (see Coverage)
+npx playwright test --grep @smoke                # smoke subset (also `@regression`)
+npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser
 npx playwright test --debug                      # step through with the inspector
 npx playwright test --ui                         # UI mode
@@ -224,12 +646,12 @@ npx playwright show-report                       # open the last HTML report
 
 ### Checks
 
-| Script              | What it runs                                 |
-| ------------------- | -------------------------------------------- |
-| `npm run lint`      | ESLint, including `eslint-plugin-playwright` |
-| `npm run typecheck` | `tsc --noEmit`                               |
-| `npm run test`      | `playwright test`                            |
-| `npm run check`     | All three, in that order                     |
+| Script              | What it runs                  |
+| ------------------- | ----------------------------- |
+| `npm run lint`      | ESLint, then prettier --check |
+| `npm run typecheck` | `tsc --noEmit`                |
+| `npm run test`      | `playwright test`             |
+| `npm run check`     | All three, in that order      |
 
 The pre-commit hook runs `npm run check` and blocks the commit if it fails.
 
@@ -285,7 +707,7 @@ The only thing deployed is the test report. This repo is a test suite, so there 
 ## Working with AI agents
 
 - Rules live in `AGENTS.md`. Any agent that opens the repo reads it: Cursor chats, cloud agents, and review bots. `.cursor/rules/playwright-tests.mdc` repeats the test rules with examples for Cursor; if the two differ, `AGENTS.md` wins.
-- Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, Prettier formats the file when it is Markdown. When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
+- Cursor hooks in `.cursor/hooks.json` run even when an agent ignores those rules. After an edit, `node .cursor/hooks/format-file.js` formats `.md`, `.ts`, and `.mjs` files with Prettier, which infers the parser from the path, and skips paths in `.prettierignore` (`node_modules/`, `playwright-report/`, `test-results/`, `blob-report/`, `playwright/.auth/`, `package-lock.json`). When the agent stops, `npm run typecheck` runs on the whole project and, if it fails, Cursor sends the errors back so the agent can fix them (up to 3 times). Husky is the commit gate and still runs `npm run check`. In Cursor, see them under Customize, the Hooks tab, or the Hooks output channel.
 - `.cursor/mcp.json` adds two MCP servers: `playwright` (`@playwright/mcp`, pinned) to explore pages, and `playwright-test` (`playwright run-test-mcp-server`) for Playwright's planner, generator, and healer agents. The second ships with `@playwright/test`, so it always matches the suite's version.
 - How an agent works depends on whether a human is in the conversation. Interactive (a chat in the IDE): edit locally, and do not stage, commit, push, or open a pull request unless the human asks. Autonomous (a cloud agent, background agent, or automation with no human in the conversation): create a branch from `main`, commit, push, and open the pull request, as a draft when a question is still open. Agents never merge. Every change goes through a pull request with passing CI.
 - Playwright's planner, generator, and healer agent definitions are not committed yet. They arrive in the AI phases with this repo's rules added.

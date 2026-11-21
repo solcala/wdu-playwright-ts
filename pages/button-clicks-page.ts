@@ -2,7 +2,6 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
 export class ButtonClicksPage extends BasePage {
-
   readonly path = '/Click-Buttons/index.html';
   readonly webElementClickButton: Locator;
   readonly webElementClickModal: Locator;

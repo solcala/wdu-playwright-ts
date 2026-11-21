@@ -3,7 +3,7 @@
   "hooks": {
     "afterFileEdit": [
       {
-        "command": "node .cursor/hooks/format-md.js"
+        "command": "node .cursor/hooks/format-file.js"
       }
     ],
     "stop": [

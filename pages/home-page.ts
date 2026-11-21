@@ -2,7 +2,6 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
 
 export class HomePage extends BasePage {
-
   readonly path = '/index.html';
   readonly heading: Locator;
 

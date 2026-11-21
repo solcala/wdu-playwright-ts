@@ -1,20 +1,21 @@
 'use strict';
 
 /**
- * afterFileEdit hook. Formats the edited file with Prettier when it is Markdown.
- * Any other file is skipped. Failures are logged and never block the agent (exit 0).
+ * afterFileEdit hook. Formats an edited Markdown, TypeScript, or ES module file with Prettier.
+ * Prettier infers the parser from the path. Files excluded by .prettierignore are skipped.
+ * Failures are logged and never block the agent (exit 0).
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 
+const FORMATTED_EXTENSIONS = new Set(['.md', '.ts', '.mjs']);
+
 let prettier;
 try {
   prettier = require('prettier');
 } catch (error) {
-  console.error(
-    `[format-md] prettier is not installed: ${error instanceof Error ? error.message : error}`,
-  );
+  console.error(`[format-file] prettier is not installed: ${error instanceof Error ? error.message : error}`);
   process.exit(0);
 }
 
@@ -31,22 +32,31 @@ function readStdin() {
  * @param {string} message - What went wrong, without a stack trace
  */
 function failOpen(message) {
-  console.error(`[format-md] ${message}`);
+  console.error(`[format-file] ${message}`);
   process.exit(0);
 }
 
 /**
- * Formats one Markdown file in place. Prettier's parser is forced to markdown.
+ * Formats one file in place when .prettierignore does not exclude it.
+ * Uses the project Prettier config so the result matches `prettier --check`.
  * @param {string} filePath - Absolute or project-relative path from the hook payload
  * @returns {Promise<void>}
  */
-async function formatMarkdown(filePath) {
+async function formatSourceFile(filePath) {
   const root = process.env.CURSOR_PROJECT_DIR || process.cwd();
   const resolved = path.resolve(root, filePath);
+  const info = await prettier.getFileInfo(resolved, {
+    ignorePath: path.resolve(root, '.prettierignore'),
+  });
+  if (info.ignored) {
+    return;
+  }
+
   const source = fs.readFileSync(resolved, 'utf8');
+  const config = (await prettier.resolveConfig(resolved)) ?? {};
   const formatted = await prettier.format(source, {
+    ...config,
     filepath: resolved,
-    parser: 'markdown',
   });
   if (formatted !== source) {
     fs.writeFileSync(resolved, formatted);
@@ -80,12 +90,12 @@ async function main() {
     return;
   }
 
-  if (path.extname(filePath).toLowerCase() !== '.md') {
+  if (!FORMATTED_EXTENSIONS.has(path.extname(filePath).toLowerCase())) {
     process.exit(0);
   }
 
   try {
-    await formatMarkdown(filePath);
+    await formatSourceFile(filePath);
   } catch (error) {
     failOpen(error instanceof Error ? error.message : String(error));
   }
