@@ -18,7 +18,7 @@ The two stay apart. A model miss must not fail `npm run check` or the Playwright
 | Stagehand              | Natural-language actions. Stagehand v4 does not take a Playwright page, and it has no `expect` and no trace viewer.                                                          |
 | Playwright test agents | Planner, generator, and healer. They draft or repair scripted tests. `playwright-test` is already in `.cursor/mcp.json`, and the README assigns them to the authoring track. |
 
-Use Playwright MCP. The Playwright test keeps the page, the bot-wall storage state, the trace, and the assertions. The model only picks the next action.
+Use Playwright MCP. The spike launches Chromium with a remote debugging port and starts `@playwright/mcp` with `--cdp-endpoint` so snapshots and actions use that browser, not a separate MCP profile. The spec's context loads the bot-wall storage state (`playwright/.auth/site.json`). The Playwright test keeps the page, the trace, and the assertions; the model only picks the next action. Verify the binding: a fill the spec performs appears in the model's next snapshot and in the trace. Leave `.cursor/mcp.json` as the authoring default; the agentic run passes `--cdp-endpoint` at start time.
 
 ## 3. First spike
 
