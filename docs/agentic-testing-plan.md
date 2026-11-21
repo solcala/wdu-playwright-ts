@@ -54,11 +54,11 @@ playwright.agentic.config.ts             config for that spec
 
 `playwright.config.ts` sets `testDir` to `./tests`, so `npm run test` and `npm run check` never collect `agentic/`. Keep the spec out of `tests/`.
 
-The agentic config sets its own `testDir` to `./agentic` and turns trace on. Its setup project points at `tests/bot-wall.setup.ts`, which writes `playwright/.auth/site.json`. The agentic project reuses that `storageState`. Do not skip or fake the browser check.
+The agentic config sets its own `testDir` to `./agentic`, sets `retries: 0`, and turns trace on. The setup project sets `testDir` to `./tests` and points at `tests/bot-wall.setup.ts`, which writes `playwright/.auth/site.json`. The agentic project reuses that `storageState`. Do not skip or fake the browser check. If that setup fails (including a bot wall), the five agentic repetitions never start: record five environment outcomes and leave them out of the pass rate.
 
 The spec imports `test` and `expect` from `@/fixtures/base-test` and uses the existing `contactUsPage` fixture for assertions only. No new fixture. No change to `BasePage`.
 
-Tag it `@agentic` only. Do not tag it `@smoke` or `@regression`.
+Tag it `@agentic @regression`. Add `@smoke` only if that run belongs in the small high-value smoke subset.
 
 ## 5. CI
 
@@ -66,7 +66,7 @@ Add `.github/workflows/agentic.yml`. Do not add a job to `.github/workflows/play
 
 - Same image as the suite, `mcr.microsoft.com/playwright:v1.64.1-noble`. `npm ci`, then `npx playwright test -c playwright.agentic.config.ts --repeat-each=5`. One worker.
 - Triggers: `workflow_dispatch` and a weekly schedule. Not on every pull request.
-- Not a required check. The test step uses `continue-on-error`. The job summary prints how many of the 5 runs passed, failed, or hit the bot wall.
+- Not a required check. The test step uses `continue-on-error`. The job summary prints how many of the 5 runs passed, failed, or were environment outcomes (bot wall or setup failure). Environment outcomes stay outside the pass rate. `retries: 0` in the agentic config means `--repeat-each=5` is five attempts with no Playwright retries.
 - Artifacts: the HTML report and `test-results/` (traces included), kept 7 days. Do not mix them with the main `playwright-report` artifact.
 - Model key: repository secret `AGENTIC_MODEL_API_KEY`. The workflow must not print it. If the secret is empty, write "skipped, no model key" and exit 0.
 - This job does not run `npm run check`.
