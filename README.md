@@ -58,6 +58,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Page Object Model challenge                                  | ✅ Done                |
 | AI Testing Playground basics A                               | ✅ Done                |
 | AI Testing Playground basics B                               | ✅ Done                |
+| AI Testing Playground core                                   | ✅ Done                |
 | CI on GitHub Actions (Playwright Docker image)               | ✅ Done                |
 | Published test report (GitHub Pages)                         | ✅ Done                |
 | Agent context (`AGENTS.md`, Cursor rules, Playwright agents) | ✅ Done                |
@@ -67,7 +68,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 
 ## Coverage
 
-194 challenge tests in 19 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
+216 challenge tests in 20 spec files, plus one setup test that passes the site's browser check and stops the run if it cannot. Chromium only.
 
 | Challenge                      | Spec                                           | Tests | Status  |
 | ------------------------------ | ---------------------------------------------- | ----: | ------- |
@@ -91,6 +92,7 @@ Portfolio project: an end-to-end test suite for [WebdriverUniversity](https://we
 | Scrolling                      | `tests/scrolling.spec.ts`                      |     7 | ✅ Done |
 | AI Testing Playground basics A | `tests/ai-testing-playground-basics-a.spec.ts` |    22 | ✅ Done |
 | AI Testing Playground basics B | `tests/ai-testing-playground-basics-b.spec.ts` |    21 | ✅ Done |
+| AI Testing Playground core     | `tests/ai-testing-playground-core.spec.ts`     |    22 | ✅ Done |
 | AI Testing Playground          | `tests/ai-testing-playground.spec.ts`          |     — | Pending |
 
 The AI Testing Playground roadmap, which splits that page into small specs, is [specs/ai-playground.plan.md](specs/ai-playground.plan.md).
@@ -547,6 +549,44 @@ npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
 
 Catch Me jumps about every 1.5 seconds. The click retries until the button is stable. The toast is the same fade as basics A, with the sentence `Got it!`. The code field appears on Submit of a valid email, not while the email is typed. Either race timer can finish first, so the test accepts `Race A won!` or `Race B won!`. The lazy sentence is already in the page under `display: none`, so the check is visibility. The selector is `#lazy-` plus digits, not one number. Challenges 10–27 are later specs.
 
+### AI Testing Playground core
+
+Run all 22 tests, or only the smoke test:
+
+```bash
+npx playwright test tests/ai-testing-playground-core.spec.ts
+npx playwright test tests/ai-testing-playground-core.spec.ts --grep @smoke
+```
+
+`tests/ai-testing-playground-core.spec.ts` uses the `aiTestingPlaygroundPage` fixture. The describe block is tagged `@ai-testing-playground` and `@ai-testing-playground-core`. The live path is `/AI-Playground/index.html`. The case list is `specs/ai-testing-playground-core.plan.md`. This spec is challenges 10–14. Scenarios:
+
+| What it checks                                                                          | Tag                    |
+| --------------------------------------------------------------------------------------- | ---------------------- |
+| Inside `#login-frame`, `admin` / `secret123` shows `Login successful`                   | `@smoke` `@regression` |
+| `admin` / `wrong` shows `Invalid credentials`                                           | `@regression`          |
+| An empty iframe login shows `Invalid credentials`                                       | `@regression`          |
+| `not-admin` / `secret123` shows `Invalid credentials`                                   | `@regression`          |
+| Inside `wdu-shadow-form`, `playwright` then Submit shows `Echo: playwright`             | `@regression`          |
+| An empty shadow Submit shows `Please enter a value.`                                    | `@regression`          |
+| Whitespace-only shadow input shows `Please enter a value.` and keeps the spaces         | `@regression`          |
+| `Engineering` leaves five rows, all Engineering                                         | `@regression`          |
+| The first Salary sort puts Fiona Walsh / `£28,000` first with ` ↑`                      | `@regression`          |
+| The second Salary sort puts Daniel Wright / `£55,000` first with ` ↓`                   | `@regression`          |
+| `zzz-no-match` leaves zero employee rows                                                | `@regression`          |
+| Clearing the Engineering filter restores fifteen rows                                   | `@regression`          |
+| Sarah Mitchell shows Engineering, `£45,000`, `active`, `2019-03-15`                     | `@regression`          |
+| `dot.png` shows File accepted with name, size, and `image/png`                          | `@regression`          |
+| Validate & Upload with no file shows `No file selected.`                                | `@regression`          |
+| `notes.txt` shows an invalid type error naming `text/plain`                             | `@regression`          |
+| A PNG over 2 MB shows a File too large error                                            | `@regression`          |
+| `note.pdf` shows File accepted with `application/pdf`                                   | `@regression`          |
+| Dragging `Fix login bug` to In Progress updates the result and columns                  | `@regression`          |
+| Before any drag, Backlog has three tasks, In Progress is empty, and the result is empty | `@regression`          |
+| Dragging a task back to Backlog updates the result and clears In Progress               | `@regression`          |
+| A second task can join In Progress alongside the first                                  | `@regression`          |
+
+The iframe form is only in `#login-frame`; credentials are an exact `admin` / `secret123` match. The shadow widget is an open root on `wdu-shadow-form`, and Submit is scoped to that host. The directory filter and salary sort re-render `#employee-tbody` in place. Upload fixtures live under `test-data/ai-testing-playground/`; the oversize case builds a buffer in memory. Priority Board moves use `dragTo` on the HTML5 task cards. Challenges 15–27 are later specs.
+
 ## Project layout
 
 ```text
@@ -584,6 +624,8 @@ specs/scrolling.plan.md Scrolling cases: outcomes, categories, and what is not c
 specs/page-object-model.plan.md Page Object Model cases: outcomes, categories, and what is not covered
 specs/ai-testing-playground-basics-a.plan.md  AI Testing Playground basics A cases: outcomes, categories, and what is not covered
 specs/ai-testing-playground-basics-b.plan.md  AI Testing Playground basics B cases: outcomes, categories, and what is not covered
+specs/ai-testing-playground-core.plan.md  AI Testing Playground core cases: outcomes, categories, and what is not covered
+test-data/ai-testing-playground/  Small files the AI Testing Playground core upload tests choose
 .github/workflows/      GitHub Actions workflow
 Dockerfile              Runs the suite in the same image as CI
 AGENTS.md               Rules every coding agent follows in this repo
@@ -636,6 +678,7 @@ npx playwright test tests/scrolling.spec.ts                # Scrolling (see Cove
 npx playwright test tests/page-object-model.spec.ts        # Page Object Model (see Coverage)
 npx playwright test tests/ai-testing-playground-basics-a.spec.ts   # AI Testing Playground basics A (see Coverage)
 npx playwright test tests/ai-testing-playground-basics-b.spec.ts   # AI Testing Playground basics B (see Coverage)
+npx playwright test tests/ai-testing-playground-core.spec.ts       # AI Testing Playground core (see Coverage)
 npx playwright test --grep @smoke                # smoke subset (also `@regression`)
 npx playwright test --grep @regression           # regression subset, which includes smoke
 npx playwright test --headed                     # watch the browser

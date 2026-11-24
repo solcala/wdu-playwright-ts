@@ -1,5 +1,11 @@
-import { Locator, Page } from '@playwright/test';
+import { FrameLocator, Locator, Page } from '@playwright/test';
 import { BasePage } from '@/pages/base-page';
+
+export type PlaygroundUploadFile = {
+  name: string;
+  mimeType: string;
+  buffer: Buffer;
+};
 
 export class AiTestingPlaygroundPage extends BasePage {
   readonly path = '/AI-Playground/index.html';
@@ -59,6 +65,35 @@ export class AiTestingPlaygroundPage extends BasePage {
   readonly revealElementButton: Locator;
   readonly lazyMessage: Locator;
   readonly lazySelector: Locator;
+
+  readonly iframeLoginFrame: FrameLocator;
+  readonly iframeUsernameField: Locator;
+  readonly iframePasswordField: Locator;
+  readonly iframeLoginButton: Locator;
+  readonly iframeLoginResult: Locator;
+
+  readonly shadowForm: Locator;
+  readonly shadowValueField: Locator;
+  readonly shadowSubmitButton: Locator;
+  readonly shadowResult: Locator;
+
+  readonly employeeFilterField: Locator;
+  readonly employeeTable: Locator;
+  readonly employeeTableBody: Locator;
+  readonly employeeSalaryHeader: Locator;
+  readonly employeeSalarySortArrow: Locator;
+
+  readonly playgroundFileInput: Locator;
+  readonly playgroundFileSubmitButton: Locator;
+  readonly playgroundFileResult: Locator;
+  readonly playgroundFileError: Locator;
+
+  readonly backlogColumn: Locator;
+  readonly inProgressColumn: Locator;
+  readonly boardResult: Locator;
+  readonly fixLoginBugTask: Locator;
+  readonly writeUnitTestsTask: Locator;
+  readonly updateDocsTask: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -169,6 +204,59 @@ export class AiTestingPlaygroundPage extends BasePage {
      */
     this.lazyMessage = page.getByText('I just appeared!');
     this.lazySelector = page.locator('#lazy-selector');
+
+    /**
+     * Core: iFrame Login, Shadow DOM Widget, Employee Directory, File Upload Validator, Priority Board.
+     * The login form is only in #login-frame's srcdoc. The Username and Password labels are siblings,
+     * not tied with for, so the placeholders are the accessible names inside the frame.
+     */
+    this.iframeLoginFrame = page.frameLocator('#login-frame');
+    this.iframeUsernameField = this.iframeLoginFrame.getByPlaceholder('admin', { exact: true });
+    this.iframePasswordField = this.iframeLoginFrame.getByPlaceholder('secret123', { exact: true });
+    this.iframeLoginButton = this.iframeLoginFrame.getByRole('button', { name: 'Login', exact: true });
+    /**
+     * The result paragraph has no role and no accessible name. Its text changes. The id is unique in the frame.
+     */
+    this.iframeLoginResult = this.iframeLoginFrame.locator('#frame-result');
+
+    /**
+     * The widget is an open shadow root on wdu-shadow-form. Playwright pierces it. Submit appears on
+     * other challenges, so the host scopes the button and the result. The placeholder is unique.
+     */
+    this.shadowForm = page.locator('wdu-shadow-form');
+    this.shadowValueField = this.shadowForm.getByPlaceholder('Enter any value', { exact: true });
+    this.shadowSubmitButton = this.shadowForm.getByRole('button', { name: 'Submit', exact: true });
+    this.shadowResult = this.shadowForm.locator('#shadow-result');
+
+    /**
+     * The filter placeholder uses an ellipsis character. The table has no accessible name. The salary
+     * header is the th with data-col salary. The arrow has no accessible name.
+     */
+    this.employeeFilterField = page.getByPlaceholder('Filter employees…', { exact: true });
+    this.employeeTable = page.locator('#employee-table');
+    this.employeeTableBody = page.locator('#employee-tbody');
+    this.employeeSalaryHeader = this.employeeTable.locator('th[data-col="salary"]');
+    this.employeeSalarySortArrow = this.employeeSalaryHeader.locator('.sort-arrow');
+
+    /**
+     * The file label is not tied with for. The input has no accessible name from that label.
+     * Validate & Upload is unique. The result and error start hidden with class hidden.
+     */
+    this.playgroundFileInput = page.locator('#file-input');
+    this.playgroundFileSubmitButton = page.getByRole('button', { name: 'Validate & Upload', exact: true });
+    this.playgroundFileResult = page.locator('#file-result');
+    this.playgroundFileError = page.locator('#file-error');
+
+    /**
+     * The columns and cards are divs with no accessible name. Each id is unique.
+     * The board result has no role. Its text changes.
+     */
+    this.backlogColumn = page.locator('#backlog-column');
+    this.inProgressColumn = page.locator('#inprogress-column');
+    this.boardResult = page.locator('#board-result');
+    this.fixLoginBugTask = page.locator('#task-1');
+    this.writeUnitTestsTask = page.locator('#task-2');
+    this.updateDocsTask = page.locator('#task-3');
   }
 
   /**
@@ -367,5 +455,112 @@ export class AiTestingPlaygroundPage extends BasePage {
    */
   async revealLazyElement(): Promise<void> {
     await this.revealElementButton.click();
+  }
+
+  /**
+   * Fills the iframe login fields and clicks Login.
+   * @param username - The username entered in the Username field
+   * @param password - The password entered in the Password field
+   */
+  async logInThroughIframe(username: string, password: string): Promise<void> {
+    await this.iframeUsernameField.fill(username);
+    await this.iframePasswordField.fill(password);
+    await this.iframeLoginButton.click();
+  }
+
+  /**
+   * Fills the shadow form value and clicks Submit.
+   * @param value - The text entered in the shadow field
+   */
+  async submitShadowValue(value: string): Promise<void> {
+    await this.shadowValueField.fill(value);
+    await this.shadowSubmitButton.click();
+  }
+
+  /**
+   * Clicks Submit on the shadow form without changing the field.
+   */
+  async submitShadowForm(): Promise<void> {
+    await this.shadowSubmitButton.click();
+  }
+
+  /**
+   * Filters the employee table.
+   * @param text - The text entered in the filter field
+   */
+  async filterEmployees(text: string): Promise<void> {
+    await this.employeeFilterField.fill(text);
+  }
+
+  /**
+   * Clears the employee filter.
+   */
+  async clearEmployeeFilter(): Promise<void> {
+    await this.employeeFilterField.fill('');
+  }
+
+  /**
+   * Clicks the Salary header to sort.
+   */
+  async sortEmployeesBySalary(): Promise<void> {
+    await this.employeeSalaryHeader.click();
+  }
+
+  /**
+   * Returns the employee row whose accessible name is this text.
+   * The name is the cells in order, so a full row string is one row.
+   * @param name - The accessible name of the row
+   * @returns The matching row
+   */
+  employeeRow(name: string): Locator {
+    return this.employeeTable.getByRole('row', { name, exact: true });
+  }
+
+  /**
+   * Returns every body row in the employee table.
+   * @returns The body rows
+   */
+  employeeRows(): Locator {
+    return this.employeeTableBody.getByRole('row');
+  }
+
+  /**
+   * Chooses a file for the playground upload input.
+   * @param file - Path relative to the project root, or a name, MIME type, and buffer
+   */
+  async choosePlaygroundFile(file: string | PlaygroundUploadFile): Promise<void> {
+    await this.playgroundFileInput.setInputFiles(file);
+  }
+
+  /**
+   * Clears the playground file input.
+   */
+  async clearPlaygroundFile(): Promise<void> {
+    await this.playgroundFileInput.setInputFiles([]);
+  }
+
+  /**
+   * Clicks Validate & Upload.
+   */
+  async submitPlaygroundFile(): Promise<void> {
+    await this.playgroundFileSubmitButton.click();
+  }
+
+  /**
+   * Drags a task card onto a board column.
+   * @param task - The task card to drag
+   * @param column - The column that receives the drop
+   */
+  async moveTaskToColumn(task: Locator, column: Locator): Promise<void> {
+    await task.dragTo(column);
+  }
+
+  /**
+   * Returns the task cards currently in a board column.
+   * @param column - The backlog or in-progress column
+   * @returns The task cards in that column
+   */
+  tasksInColumn(column: Locator): Locator {
+    return column.locator('.task-card');
   }
 }
