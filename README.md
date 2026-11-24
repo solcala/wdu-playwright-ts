@@ -545,7 +545,7 @@ npx playwright test tests/ai-testing-playground-basics-b.spec.ts --grep @smoke
 | Before the click, that sentence is in the page and hidden, and the selector is empty                     | `@regression`          |
 | A second Reveal Element leaves the sentence visible, and the selector still matches `#lazy-` plus digits | `@regression`          |
 
-Catch Me jumps about every 1.5 seconds. The click retries until the button is stable. The toast is the same fade as basics A, with the sentence `Got it!`. The code field appears on Submit of a valid email, not while the email is typed. Either race timer can finish first, so the test accepts `Race A won!` or `Race B won!`. The lazy sentence is already in the page under `display: none`, so the check is visibility. The selector is `#lazy-` plus digits, not one number. Challenges 10–27 are later specs.
+Catch Me jumps about every 1.5 seconds. The click retries until the button is stable. The toast is the same fade as basics A, with the sentence `Got it!`. Moving Target and Race Condition install Playwright's `page.clock` before navigation: jumps and toast dismiss use `fastForward`, and race timers use `pauseAt` plus `runFor`, so those waits are not real-time. The code field appears on Submit of a valid email, not while the email is typed. Either race timer can finish first, so the test accepts `Race A won!` or `Race B won!`. The lazy sentence is already in the page under `display: none`, so the check is visibility. The selector is `#lazy-` plus digits, not one number. Challenges 10–27 are later specs.
 
 ## Project layout
 
