@@ -4,8 +4,8 @@ import { test, expect } from '@/fixtures/base-test';
  * Basics B on AI Testing Playground: Moving Target, Conditional Validation, Race Condition,
  * and Lazy-Rendered Element.
  * Catch Me jumps about every 1.5 seconds. The click shows the shared toast, Got it!.
- * Moving Target and Race Condition install Playwright's page.clock before navigation so
- * jumps, toast dismiss, race timers, and the clear are advanced with fastForward or runFor.
+ * Moving Target installs Playwright's page.clock so jumps and toast dismiss accelerate with fastForward.
+ * Only Race Condition is fully pause-controlled: pauseAt, then runFor for race timers and the clear.
  * The code field appears on Submit of a valid email, not while the email is typed.
  * Either race can win. The lazy sentence is in the page, hidden, until Reveal Element.
  * The case list is specs/ai-testing-playground-basics-b.plan.md.
@@ -93,10 +93,18 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
         const start = await aiTestingPlaygroundPage.movingTargetOffset();
         /**
          * One interval tick repositions the button. Fast-forward fires that interval without a real wait.
+         * The site picks left/top at random, so a single tick can land on the same offset; poll retries.
          */
-        await aiTestingPlaygroundPage.fastForwardClock(movingJumpMs);
-        const now = await aiTestingPlaygroundPage.movingTargetOffset();
-        expect(now.left !== start.left || now.top !== start.top).toBe(true);
+        await expect
+          .poll(
+            async () => {
+              await aiTestingPlaygroundPage.fastForwardClock(movingJumpMs);
+              const now = await aiTestingPlaygroundPage.movingTargetOffset();
+              return now.left !== start.left || now.top !== start.top;
+            },
+            { timeout: 5_000 },
+          )
+          .toBe(true);
       });
     });
 
