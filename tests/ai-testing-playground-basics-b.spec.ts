@@ -4,6 +4,8 @@ import { test, expect } from '@/fixtures/base-test';
  * Basics B on AI Testing Playground: Moving Target, Conditional Validation, Race Condition,
  * and Lazy-Rendered Element.
  * Catch Me jumps about every 1.5 seconds. The click shows the shared toast, Got it!.
+ * Moving Target installs Playwright's page.clock so jumps and toast dismiss accelerate with fastForward.
+ * Only Race Condition is fully pause-controlled: pauseAt, then runFor for race timers and the clear.
  * The code field appears on Submit of a valid email, not while the email is typed.
  * Either race can win. The lazy sentence is in the page, hidden, until Reveal Element.
  * The case list is specs/ai-testing-playground-basics-b.plan.md.
@@ -29,23 +31,43 @@ const verificationColor = 'rgb(192, 57, 43)';
 
 const conditionalSuccessColor = 'rgb(31, 143, 58)';
 
-test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-testing-playground-basics-b'] }, () => {
-  test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
-    await aiTestingPlaygroundPage.navigateTo();
-  });
+/**
+ * Catch Me repositions on this interval. Toast dismiss and race delays match the page script.
+ */
+const movingJumpMs = 1_500;
 
+const toastDismissMs = 2_000;
+
+const raceTimerMaxMs = 2_500;
+
+const raceClearMs = 3_000;
+
+test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-testing-playground-basics-b'] }, () => {
   test.describe('Moving Target', () => {
+    test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
+      /**
+       * Install before navigate so the jump interval and toast dismiss use the fake clock.
+       * Time stays synced for CSS opacity; fastForward jumps the dismiss and the jump timer.
+       */
+      await aiTestingPlaygroundPage.installClock();
+      await aiTestingPlaygroundPage.navigateTo();
+    });
+
     test('clicking the moving button shows got it', { tag: ['@smoke', '@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('Catch Me shows the toast and the toast fades out', async () => {
         await aiTestingPlaygroundPage.catchMovingTarget();
         /**
-         * The text is set in the click. Opacity fades in, so the opacity check is the wait.
+         * The text is set in the click. Opacity fades in with CSS, so the opacity check is the wait.
          * A text check on its own would pass on the first poll while the toast is still transparent.
          * The click retries until the button is stable. The button jumps about every 1.5 seconds.
          */
         await expect(aiTestingPlaygroundPage.toast).toHaveCSS('opacity', '1');
         await expect(aiTestingPlaygroundPage.toast).toHaveText('Got it!');
         await expect.soft(aiTestingPlaygroundPage.toast).toHaveClass(toastShownClass);
+        /**
+         * The dismiss timer is 2 seconds. Fast-forward fires it; CSS then fades opacity to 0.
+         */
+        await aiTestingPlaygroundPage.fastForwardClock(toastDismissMs);
         await expect(aiTestingPlaygroundPage.toast).toHaveCSS('opacity', '0');
         await expect.soft(aiTestingPlaygroundPage.toast).toHaveText('Got it!');
       });
@@ -70,14 +92,18 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
         await expect(aiTestingPlaygroundPage.movingTargetButton).toBeVisible();
         const start = await aiTestingPlaygroundPage.movingTargetOffset();
         /**
-         * The catch can land during the pause between jumps. The condition is a new offset.
-         * The jump is about 1.5 seconds. The poll is the wait.
+         * One interval tick repositions the button. Fast-forward fires that interval without a real wait.
+         * The site picks left/top at random, so a single tick can land on the same offset; poll retries.
          */
         await expect
-          .poll(async () => {
-            const now = await aiTestingPlaygroundPage.movingTargetOffset();
-            return now.left !== start.left || now.top !== start.top;
-          })
+          .poll(
+            async () => {
+              await aiTestingPlaygroundPage.fastForwardClock(movingJumpMs);
+              const now = await aiTestingPlaygroundPage.movingTargetOffset();
+              return now.left !== start.left || now.top !== start.top;
+            },
+            { timeout: 5_000 },
+          )
           .toBe(true);
       });
     });
@@ -86,6 +112,7 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
       await test.step('the first toast fades out', async () => {
         await aiTestingPlaygroundPage.catchMovingTarget();
         await expect(aiTestingPlaygroundPage.toast).toHaveCSS('opacity', '1');
+        await aiTestingPlaygroundPage.fastForwardClock(toastDismissMs);
         await expect(aiTestingPlaygroundPage.toast).toHaveCSS('opacity', '0');
       });
 
@@ -102,6 +129,10 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
   });
 
   test.describe('Conditional Validation', () => {
+    test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
+      await aiTestingPlaygroundPage.navigateTo();
+    });
+
     test('a valid email and a six-digit code submit', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('a valid email asks for a code', async () => {
         await aiTestingPlaygroundPage.fillConditionalEmail('ada@example.com');
@@ -267,15 +298,26 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
   });
 
   test.describe('Race Condition', () => {
+    test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
+      /**
+       * Install before navigate, then pause so race timers only fire when runClockFor advances time.
+       * That keeps Start Race B inside the winner window and both running lines before either win.
+       */
+      await aiTestingPlaygroundPage.installClock();
+      await aiTestingPlaygroundPage.navigateTo();
+      await aiTestingPlaygroundPage.pauseClock();
+    });
+
     test('starting both races names one winner and then clears', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('both races are running', async () => {
         /**
          * The record starts before either click. A poll can miss a winner that was replaced before the next read.
+         * With the clock paused, neither timer can win between the clicks.
          */
         await aiTestingPlaygroundPage.beginRaceResultLog();
         await aiTestingPlaygroundPage.startRaceA();
         /**
-         * The running line is set in the click. The timer is at least 0.5 seconds,
+         * The running line is set in the click. The timer is at least 0.5 seconds and is paused,
          * so this check passes on the first poll. It fails if Race A never started.
          */
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceARunning);
@@ -289,10 +331,12 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
 
       await test.step('one winner holds until the result clears', async () => {
         /**
-         * Each timer is 0.5 to 2.5 seconds. Either name is a pass.
-         * The result starts empty, so the empty check comes after the win.
+         * Each timer is 0.5 to 2.5 seconds. Advancing the max fires both; the first callback wins.
+         * Either name is a pass. The empty check comes after the three-second clear.
          */
+        await aiTestingPlaygroundPage.runClockFor(raceTimerMaxMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText(raceWinnerText);
+        await aiTestingPlaygroundPage.runClockFor(raceClearMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
         /**
          * From the first winner, repeated copies of that line are allowed. The next different line has to be empty.
@@ -309,6 +353,7 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
     test('starting only race A names race A', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('the only timer is Race A', async () => {
         await aiTestingPlaygroundPage.startRaceA();
+        await aiTestingPlaygroundPage.runClockFor(raceTimerMaxMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
       });
     });
@@ -328,32 +373,29 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
     test('a late start does not replace the winner', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('Race A wins', async () => {
         await aiTestingPlaygroundPage.startRaceA();
+        await aiTestingPlaygroundPage.runClockFor(raceTimerMaxMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
       });
 
       await test.step('Race B does not appear before the result clears', async () => {
         /**
-         * The win is still showing. The click is the next line, inside that window.
-         * A click after the winner is set returns immediately. The line is cleared 3 seconds after the win.
-         * An empty check on its own would also pass if another line had been shown and then cleared.
+         * The win is still showing because the clear timer is paused. The click is inside that window.
+         * A click after the winner is set returns immediately. runClockFor then fires the three-second clear.
          */
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
         await aiTestingPlaygroundPage.startRaceB();
-        let replaced = false;
-        await expect
-          .poll(async () => {
-            const next = await aiTestingPlaygroundPage.raceTextWhileWinnerHolds('Race A won!', replaced);
-            replaced = next.replaced;
-            return next.value;
-          })
-          .toBe('');
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
+        await aiTestingPlaygroundPage.runClockFor(raceClearMs);
+        await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
       });
     });
 
     test('race A can win again after the result clears', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('the first win clears', async () => {
         await aiTestingPlaygroundPage.startRaceA();
+        await aiTestingPlaygroundPage.runClockFor(raceTimerMaxMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
+        await aiTestingPlaygroundPage.runClockFor(raceClearMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('');
       });
 
@@ -363,12 +405,17 @@ test.describe('AI Testing Playground', { tag: ['@ai-testing-playground', '@ai-te
          * The empty result above is the gate.
          */
         await aiTestingPlaygroundPage.startRaceA();
+        await aiTestingPlaygroundPage.runClockFor(raceTimerMaxMs);
         await expect(aiTestingPlaygroundPage.raceResult).toHaveText('Race A won!');
       });
     });
   });
 
   test.describe('Lazy-Rendered Element', () => {
+    test.beforeEach(async ({ aiTestingPlaygroundPage }) => {
+      await aiTestingPlaygroundPage.navigateTo();
+    });
+
     test('revealing the element shows a generated selector', { tag: ['@regression'] }, async ({ aiTestingPlaygroundPage }) => {
       await test.step('the sentence is shown and the selector is a #lazy- value', async () => {
         await aiTestingPlaygroundPage.revealLazyElement();

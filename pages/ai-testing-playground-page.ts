@@ -266,6 +266,38 @@ export class AiTestingPlaygroundPage extends BasePage {
   }
 
   /**
+   * Installs Playwright's fake clock before navigation.
+   * Call this before navigateTo when a test needs to control page timers.
+   */
+  async installClock(): Promise<void> {
+    await this.page.clock.install({ time: new Date('2024-01-01T08:00:00Z') });
+  }
+
+  /**
+   * Pauses the fake clock after the page has loaded.
+   * Pending timers stay until runClockFor or fastForwardClock.
+   */
+  async pauseClock(): Promise<void> {
+    await this.page.clock.pauseAt(new Date('2024-01-01T10:00:00Z'));
+  }
+
+  /**
+   * Advances the paused clock, firing every timer in the interval.
+   * @param milliseconds - How far to advance the clock
+   */
+  async runClockFor(milliseconds: number): Promise<void> {
+    await this.page.clock.runFor(milliseconds);
+  }
+
+  /**
+   * Jumps the clock forward, firing due timers at most once.
+   * @param milliseconds - How far to jump
+   */
+  async fastForwardClock(milliseconds: number): Promise<void> {
+    await this.page.clock.fastForward(milliseconds);
+  }
+
+  /**
    * Clicks Catch Me. The button moves on a timer. The click shows the toast.
    */
   async catchMovingTarget(): Promise<void> {
@@ -347,19 +379,6 @@ export class AiTestingPlaygroundPage extends BasePage {
       const log = (result as HTMLElement & { raceResultLog?: string[] }).raceResultLog;
       return log ? [...log] : [];
     });
-  }
-
-  /**
-   * Returns the race result, and keeps a different line after the winner is cleared.
-   * The win line is removed after 3 seconds. A later line is removed too, so an empty result on its own cannot show that the first winner held.
-   * @param winner - The win line that should hold, such as `Race A won!`
-   * @param replaced - Whether a different line has already been seen
-   * @returns The next replaced flag, and `replaced` once another line has been named, otherwise the current text
-   */
-  async raceTextWhileWinnerHolds(winner: string, replaced: boolean): Promise<{ replaced: boolean; value: string }> {
-    const text = await this.raceResult.innerText();
-    const changed = replaced || (text !== winner && text !== '');
-    return { replaced: changed, value: changed ? 'replaced' : text };
   }
 
   /**
